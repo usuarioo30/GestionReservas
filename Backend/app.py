@@ -7,6 +7,7 @@ from google_auth_oauthlib.flow import Flow
 import google.auth.transport.requests
 import google.auth
 from sqlalchemy import cast, Integer
+from flask_cors import CORS  # Importa Flask-CORS
 
 # Configuración de la base de datos y otros parámetros
 class Config:
@@ -53,6 +54,9 @@ def create_app():
     # Inicializa SQLAlchemy y JWT con la aplicación
     db.init_app(app)
     jwt.init_app(app)
+
+    # Habilita CORS para todas las rutas
+    CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
 
     return app
 
