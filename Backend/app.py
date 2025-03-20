@@ -7,6 +7,7 @@ from google_auth_oauthlib.flow import Flow
 import google.auth.transport.requests
 import google.auth
 from sqlalchemy import cast, Integer
+from flask_cors import CORS
 
 # Configuración de la base de datos y otros parámetros
 class Config:
@@ -53,6 +54,7 @@ def create_app():
     # Inicializa SQLAlchemy y JWT con la aplicación
     db.init_app(app)
     jwt.init_app(app)
+    CORS(app)  # Habilita CORS para todas las rutas
 
     return app
 
@@ -118,6 +120,8 @@ def dashboard():
     usuarioActual = get_jwt_identity()
     return jsonify(logged_in_as=usuarioActual), 200
 
+
+
 # Ruta para registrar una reserva
 @app.route('/registrarReserva', methods=['POST'])
 # @jwt_required()
@@ -157,7 +161,6 @@ def registrar_reserva():
         return jsonify({"message": "Reserva creada con éxito"}), 201
 
     except Exception as e:
-        # Manejo de errores generales
         return jsonify({"message": "Ocurrió un error al registrar la reserva", "error": str(e)}), 500
 
 # Ruta para eliminar reserva
@@ -213,6 +216,24 @@ def editarReserva(id):
     except Exception as e:
         return jsonify({"message": "Reserva no encontrada", "error": str(e)}), 500
 
+@app.route('/reservas', methods=['GET'])
+def obtener_reservas():
+    try:
+        reservas = Reserva.query.all()
+        reservas_serializadas = [
+            {
+                "id": reserva.id,
+                "sala": reserva.sala,
+                "fechaHoraInicio": reserva.fechaHoraInicio.strftime('%Y-%m-%d %H:%M:%S'),
+                "duracion": reserva.duracion,
+                "proyectoAsociado": reserva.proyectoAsociado,
+                "descripcion": reserva.descripcion
+            }
+            for reserva in reservas
+        ]
+        return jsonify(reservas_serializadas), 200
+    except Exception as e:
+        return jsonify({"message": "Error al obtener las reservas", "error": str(e)}), 500
 
 # Ejecutar la aplicación Flask
 if __name__ == '__main__':

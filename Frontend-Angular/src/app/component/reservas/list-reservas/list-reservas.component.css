@@ -1,0 +1,50 @@
+th, td {
+  border: none; /* Elimina los bordes de las celdas */
+  padding: 8px;
+  text-align: left;
+}
+
+#hora {
+    color: rgb(167, 158, 158);
+    text-align: center;
+    font-weight:600;
+}
+
+#date {
+    color: rgb(167, 158, 158);
+    font-weight: 490;
+}
+
+#resto {
+    font-weight: 500;
+    text-align: center;
+}
+
+th {
+    font-weight:600;
+}
+
+#proyecto {
+    font-weight: 500;
+}
+
+/* Estilo para la celda de proyecto como botón */
+.proyecto-btn {
+  display: inline-block;
+  border: 2px solid lightgray;
+  border-radius: 25%;
+  background-color: transparent;
+  color: black; /* Texto negro */
+  text-align: center; /* Centra el texto dentro del botón */
+  padding: 5px 10px; /* Espaciado interno del botón */
+}
+
+/* Centra el contenido del td */
+td#proyecto {
+  text-align: center; /* Centra horizontalmente el contenido */
+  vertical-align: middle; /* Centra verticalmente el contenido */
+}
+
+.boton {
+  margin-top: 20px;
+}
