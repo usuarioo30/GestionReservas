@@ -9,8 +9,10 @@ export class LoginService {
 
   constructor() { }
 
+  //Método de iniciar sesión, es llamado cuando el formulario es válido
   async logIn(username: string, password: string) {
 
+    //Llamada a la api para iniciar sesión
     const response = await fetch(`${this.apiUrl}`, {
       method: 'POST',
       headers: {
@@ -19,11 +21,7 @@ export class LoginService {
       body: JSON.stringify({username: username, password: password})
     });
 
-    if (!response.ok) {
-      throw new Error("Credenciales incorrectas");
-    }
-
-    return response.json();
+    return response //Devolvemos la promesa
 
   }
 }

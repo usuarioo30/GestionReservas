@@ -40,9 +40,18 @@ export class LoginComponent implements OnInit {
 
       const response = await this.service.logIn(username, password);
 
-      alert("Sesión iniciada con éxito");
+      if (response.ok) { //Comprobamos la respuesta de la API
 
-      localStorage.setItem("access_token", JSON.stringify(response));
+        const token = await response.json();
+
+        alert("Sesión iniciada con éxito"); //Si la respuesta es correcta, mostramos un mensaje de éxito
+  
+        localStorage.setItem("access_token", JSON.stringify(token.access_token));
+
+      } else {
+        alert("Credenciales incorrectas"); //Si la respuesta es incorrecta, mostramos un mensaje de error
+      }
+
 
     }
   }
