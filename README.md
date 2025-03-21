@@ -1,0 +1,1 @@
+La contraseña para mi entorno es root, si puedo la cambiaré para no fastidiar el proyecto
