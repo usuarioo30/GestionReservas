@@ -48,6 +48,9 @@ export class LoginComponent implements OnInit {
   
         localStorage.setItem("access_token", JSON.stringify(token.access_token));
 
+        // Redirigimos a la página de lista de reservas
+        this.router.navigate(['/reservas']);
+
       } else {
         alert("Credenciales incorrectas"); //Si la respuesta es incorrecta, mostramos un mensaje de error
       }
