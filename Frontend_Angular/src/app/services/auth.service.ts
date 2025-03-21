@@ -4,32 +4,17 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5000'; // Cambia esto según la URL de tu backend
+  private apiUrl = 'http://localhost:5000'; // URL del backend
 
   constructor() {}
 
-  async login(username: string, password: string): Promise<any> {
-    const response = await fetch(`${this.apiUrl}/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Credenciales incorrectas');
-    }
-
-    return response.json(); // Devuelve el token JWT
-  }
-
-  async loginWithGoogle(): Promise<any> {
+  async loginWithGoogle(idToken: string): Promise<any> {
     const response = await fetch(`${this.apiUrl}/login/google`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify({ id_token: idToken }),
     });
 
     if (!response.ok) {
