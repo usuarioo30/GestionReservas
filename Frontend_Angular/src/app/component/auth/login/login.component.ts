@@ -9,7 +9,7 @@ import { RouterOutlet } from '@angular/router';
 import { LoginService } from '../../../services/login.service';
 
 @Component({
-  imports: [RouterOutlet, CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
@@ -47,9 +47,6 @@ export class LoginComponent implements OnInit {
         alert("Sesión iniciada con éxito"); //Si la respuesta es correcta, mostramos un mensaje de éxito
   
         localStorage.setItem("access_token", JSON.stringify(token.access_token));
-
-        // Redirigimos a la página de lista de reservas
-        this.router.navigate(['/reservas']);
 
       } else {
         alert("Credenciales incorrectas"); //Si la respuesta es incorrecta, mostramos un mensaje de error

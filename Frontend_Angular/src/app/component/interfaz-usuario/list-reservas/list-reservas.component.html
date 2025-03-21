@@ -7,12 +7,12 @@
                 </a>
                 <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                     <li class="nav-item">
-                        <a href="#" class="nav-link align-middle px-0">
+                        <a [routerLink]="['/reservas']" [queryParams]="{ sala: 'upper' }" routerLinkActive="router-link-active" class="nav-link align-middle px-0">
                             <i class="bi bi-arrow-bar-up"></i> <span class="ms-1 d-none d-sm-inline">Sala de arriba</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                        <a [routerLink]="['/reservas']" [queryParams]="{ sala: 'lower' }" routerLinkActive="router-link-active" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
                             <i class="bi bi-arrow-bar-down"></i> <span class="ms-1 d-none d-sm-inline">Sala de abajo</span> </a>
                     </li>
                 </ul>
@@ -81,36 +81,55 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="crearReservaModalLabel">Crear Reserva</h5>
+          <h5 *ngIf="sala === 'upper'" class="modal-title" id="crearReservaModalLabel">Crear Reserva Sala Arriba</h5>
+          <h5 *ngIf="sala === 'lower'" class="modal-title" id="crearReservaModalLabel">Crear Reserva Sala Abajo</h5>
+
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form>
+          <form [formGroup]="reservation" (ngSubmit)="submitReservation()">
             <div class="mb-3">
-              <label for="sala" class="form-label">Sala</label>
-              <input type="text" class="form-control" id="sala" placeholder="Nombre de la sala">
+              <label for="sala" class="form-label">Email:</label>
+              <input type="email" class="form-control" id="sala" placeholder="Introduzca su correo">
+
             </div>
             <div class="mb-3">
               <label for="fechaHoraInicio" class="form-label">Fecha y Hora</label>
-              <input type="datetime-local" class="form-control" id="fechaHoraInicio">
+              <input type="datetime-local" class="form-control" id="fechaHoraInicio" formControlName="date">
+              @if (inValidField('date')) {
+                <span class="text-danger">Rellene este campo</span>
+
+              }
             </div>
             <div class="mb-3">
               <label for="duracion" class="form-label">Duración (minutos)</label>
-              <input type="number" class="form-control" id="duracion" placeholder="Duración en minutos">
+              <input type="number" class="form-control" id="duracion" placeholder="Duración en minutos" formControlName="duration">
+              @if (inValidField('date')) {
+                <span class="text-danger">Rellene este campo</span>
+
+              }
             </div>
             <div class="mb-3">
               <label for="proyectoAsociado" class="form-label">Proyecto Asociado</label>
-              <input type="text" class="form-control" id="proyectoAsociado" placeholder="Nombre del proyecto">
+              <input type="text" class="form-control" id="proyectoAsociado" placeholder="Nombre del proyecto" formControlName="project">
+              @if (inValidField('date')) {
+                <span class="text-danger">Rellene este campo</span>
+
+              }
             </div>
             <div class="mb-3">
               <label for="descripcion" class="form-label">Descripción</label>
-              <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción de la reserva"></textarea>
+              <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción de la reserva" formControlName="description"></textarea>
+              @if (inValidField('date')) {
+                <span class="text-danger">Rellene este campo</span>
+
+              }
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary">Guardar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
         </div>
       </div>
     </div>

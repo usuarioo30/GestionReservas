@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -7,7 +8,7 @@ export class LoginService {
 
   private apiUrl = "http://127.0.0.1:5000/login";
 
-  constructor() { }
+  constructor(private http: HttpClient) { } //Próximamente se usará HttpClient
 
   //Método de iniciar sesión, es llamado cuando el formulario es válido
   async logIn(username: string, password: string) {
