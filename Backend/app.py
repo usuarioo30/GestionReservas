@@ -217,6 +217,25 @@ def editarReserva(id):
     except Exception as e:
         return jsonify({"message": "Reserva no encontrada", "error": str(e)}), 500
 
+@app.route('/reservas', methods=['GET'])
+def obtener_reservas():
+    try:
+        reservas = Reserva.query.all()
+        reservas_serializadas = [
+            {
+                "id": reserva.id,
+                "sala": reserva.sala,
+                "fechaHoraInicio": reserva.fechaHoraInicio.strftime('%Y-%m-%d %H:%M:%S'),
+                "duracion": reserva.duracion,
+                "proyectoAsociado": reserva.proyectoAsociado,
+                "descripcion": reserva.descripcion
+            }
+            for reserva in reservas
+        ]
+        return jsonify(reservas_serializadas), 200
+    except Exception as e:
+        return jsonify({"message": "Error al obtener las reservas", "error": str(e)}), 500
+
 
 # Ejecutar la aplicación Flask
 if __name__ == '__main__':
