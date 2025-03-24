@@ -82,6 +82,7 @@
               </tbody>
             </table>
           </div>
+
           <!-- Botón para abrir el modal -->
           <button class="btn btn-primary boton" data-bs-toggle="modal" data-bs-target="#crearReservaModal">
             Crear reserva
@@ -168,12 +169,12 @@
         </div>
         <div class="modal-body">
           <!-- Formulario con data-binding -->
-          <form [formGroup]="editReservation" (ngSubmit)="submitReservation()">
+          <form [formGroup]="editReservation" (ngSubmit)="editReservaSubmit()">
             <!-- Email -->
             <div class="mb-3">
               <label for="email" class="form-label">Email:</label>
               <input type="email" class="form-control bg-light" id="sala" placeholder="Introduzca su correo" formControlName="email" readonly="readonly">
-              <div *ngIf="inValidField('email')" class="text-danger">
+              <div *ngIf="inValidFieldEdit('email')" class="text-danger">
                 Proporcione un correo válido.
               </div>
             </div>
@@ -186,8 +187,8 @@
                 class="form-control"
                 id="fechaHoraInicio"
                 formControlName="fechaHoraInicio"
-                [class.is-invalid]="inValidField('fechaHoraInicio')">
-              <div *ngIf="inValidField('fechaHoraInicio')" class="text-danger">
+                [class.is-invalid]="inValidFieldEdit('fechaHoraInicio')">
+              <div *ngIf="inValidFieldEdit('fechaHoraInicio')" class="text-danger">
                 Proporcione una fecha válida.
               </div>
             </div>
@@ -201,8 +202,8 @@
                 id="duracion"
                 placeholder="Duración en minutos"
                 formControlName="duracion"
-                [class.is-invalid]="inValidField('duracion')">
-              <div *ngIf="inValidField('duracion')" class="text-danger">
+                [class.is-invalid]="inValidFieldEdit('duracion')">
+              <div *ngIf="inValidFieldEdit('duracion')" class="text-danger">
                 Proporcione un valor válido para la duración (mínimo 1).
               </div>
             </div>
@@ -216,8 +217,8 @@
                 id="proyectoAsociado"
                 placeholder="Nombre del proyecto"
                 formControlName="proyectoAsociado"
-                [class.is-invalid]="inValidField('proyectoAsociado')">
-              <div *ngIf="inValidField('proyectoAsociado')" class="text-danger">
+                [class.is-invalid]="inValidFieldEdit('proyectoAsociado')">
+              <div *ngIf="inValidFieldEdit('proyectoAsociado')" class="text-danger">
                 Proporcione un nombre válido (entre 3 y 20 caracteres).
               </div>
             </div>
@@ -231,8 +232,8 @@
                 rows="3"
                 placeholder="Descripción de la reserva"
                 formControlName="descripcion"
-                [class.is-invalid]="inValidField('descripcion')"></textarea>
-              <div *ngIf="inValidField('descripcion')" class="text-danger">
+                [class.is-invalid]="inValidFieldEdit('descripcion')"></textarea>
+              <div *ngIf="inValidFieldEdit('descripcion')" class="text-danger">
                 Proporcione una descripción válida (entre 20 y 140 caracteres).
               </div>
             </div>

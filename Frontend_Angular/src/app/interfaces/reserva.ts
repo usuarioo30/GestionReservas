@@ -5,4 +5,5 @@ export interface Reserva {
     duracion: number;
     proyectoAsociado: string;
     descripcion: string;
+    idUsuario: number;
 }

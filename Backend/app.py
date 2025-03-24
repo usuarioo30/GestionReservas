@@ -22,19 +22,19 @@ jwt = JWTManager()
 
 # Definir el modelo de Usuario
 class Usuario(db.Model):
-    __tablename__ = 'usuario'
+    tablename = 'usuario'
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     username = db.Column(db.String(120), nullable=False)
-    idReserva = db.Column(db.Integer, db.ForeignKey('reserva.id'))
+    roles = db.Column(db.String(255), nullable=False)
 
-    def __repr__(self):
+    def repr(self):
         return f'<Usuario {self.username}>'
 
 class Reserva(db.Model):
-    __tablename__ = 'reserva'
+    tablename = 'reserva'
 
     id = db.Column(db.Integer, primary_key=True)
     sala = db.Column(db.String(120), nullable=False)
@@ -42,8 +42,9 @@ class Reserva(db.Model):
     duracion = db.Column(db.Integer, nullable=False)
     proyectoAsociado = db.Column(db.String(120), nullable=False)
     descripcion = db.Column(db.String(255), nullable=False)
+    idUsuario = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
 
-    def __repr__(self):
+    def repr(self):
         return f'<Reserva {self.sala}>'
 
 # Función para crear la aplicación
@@ -134,6 +135,7 @@ def registrar_reserva():
         duracion = data.get('duracion')
         proyectoAsociado = data.get('proyectoAsociado')
         descripcion = data.get('descripcion')
+        idUsuario = data.get('idUsuario')
 
         # Validar si los campos necesarios están presentes
         if not all([sala, fechaHoraInicio, duracion, proyectoAsociado, descripcion]):
@@ -151,7 +153,8 @@ def registrar_reserva():
             fechaHoraInicio=fechaHoraInicio,
             duracion=duracion,
             proyectoAsociado=proyectoAsociado,
-            descripcion=descripcion
+            descripcion=descripcion,
+            idUsuario=idUsuario
         )
 
         # Guardar la nueva reserva en la base de datos
@@ -197,6 +200,7 @@ def editarReserva(id):
             duracion = data.get('duracion')
             proyectoAsociado = data.get('proyectoAsociado')
             descripcion = data.get('descripcion')
+            idUsuario = data.get('idUsuario')
 
             # Actualizar los campos de la reserva
             if sala:
@@ -209,6 +213,8 @@ def editarReserva(id):
                 reserva.proyectoAsociado = proyectoAsociado
             if descripcion:
                 reserva.descripcion = descripcion
+            if idUsuario:
+                reserva.idUsuario = idUsuario
 
             # Guardar los cambios en la base de datos
             db.session.commit()

@@ -5,13 +5,13 @@ import { Reserva } from '../interfaces/reserva';
   providedIn: 'root'
 })
 export class ReservasService {
-  private apiUrl = 'http://localhost:5000/reservas'; // URL del endpoint de tu backend
+  private apiUrl = 'http://localhost:5000/'; // URL del endpoint de tu backend
 
   constructor() {}
 
   async getReservas(): Promise<any[]> {
     try {
-      const response = await fetch(this.apiUrl); // Realiza la solicitud HTTP con Fetch API
+      const response = await fetch(`${this.apiUrl}reservas`); // Realiza la solicitud HTTP con Fetch API
       if (!response.ok) {
         throw new Error(`Error HTTP: ${response.status}`);
       }
@@ -25,7 +25,7 @@ export class ReservasService {
   async addReserva(reserva: Omit<Reserva, "id">): Promise<void> {
     console.log(localStorage.getItem('access_token'));
     try {
-      const response = await fetch("http://localhost:5000/registrarReserva", {
+      const response = await fetch(`${this.apiUrl}registrarReserva`, { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,6 +40,29 @@ export class ReservasService {
       return await response.json();
     } catch (error) {
       console.error('Error al añadir la reserva:', error);
+      throw error;
+    }
+  }
+
+  async editReserva(reserva: Reserva): Promise<void> { 
+    try {
+
+      const response = await fetch(`${this.apiUrl}editarReserva/${reserva.id}`, {
+        method: 'PUT', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reserva)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+
+      return await response.json();
+
+    } catch (error) {
+      console.error('Error al editar la reserva:', error);
       throw error;
     }
   }

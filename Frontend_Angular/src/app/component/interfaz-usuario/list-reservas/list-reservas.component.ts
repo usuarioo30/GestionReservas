@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { Reserva } from '../../../interfaces/reserva';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
@@ -17,11 +18,23 @@ export class ListReservasComponent implements OnInit, OnChanges {
   showReservas: any[] = []; // Lista completa de reservas
   @Input() sala?: string; // Sala seleccionada (recibida como input)
   email: string | null = null;
-
+  id!: number | undefined;
   constructor(private reservasService: ReservasService,
         private authService: AuthService,
         private router: Router
-  ) {}
+  ) {
+
+    let token = localStorage.getItem('access_token');
+    if(token) { 
+      let userId = jwtDecode(token)?.sub;
+      if (userId) {
+        this.id =  Number.parseInt(userId);
+        console.log(this.id);
+      }
+      
+    }
+
+  }
 
   private fb: FormBuilder = inject(FormBuilder);
 
@@ -31,14 +44,17 @@ export class ListReservasComponent implements OnInit, OnChanges {
     duracion: ['', [Validators.required, Validators.min(1)]],
     proyectoAsociado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
     descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
+    idUsario: [this.id]
   });
 
   editReservation: FormGroup = this.fb.group({
+    id: [''],
     email: [''], // Campo email agregado
     fechaHoraInicio: ['', [Validators.required]],
     duracion: ['', [Validators.required, Validators.min(1)]],
     proyectoAsociado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
     descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
+    idUsario: [this.id]
   });
 
   async ngOnInit(): Promise<void> {
@@ -93,37 +109,35 @@ export class ListReservasComponent implements OnInit, OnChanges {
     return this.reservation?.controls[field]?.invalid && this.reservation?.controls[field]?.touched;
   }
 
+  inValidFieldEdit(field: string): boolean {
+    return this.editReservation?.controls[field]?.invalid;
+  }
+
   private formatearFecha = (fecha: string): string => {
     return fecha.replace("T", " ") + ":00";
   };
 
   async submitReservation() {
-    if (this.reservation.valid) {
+    if (this.reservation.valid && this.id) {
       const reserva: Omit<Reserva, "id"> = {
         sala: this.sala === "upper" ? "arriba" : "abajo",
         fechaHoraInicio: this.formatearFecha(this.reservation.value.fechaHoraInicio),
         duracion: this.reservation.value.duracion,
         proyectoAsociado: this.reservation.value.proyectoAsociado,
         descripcion: this.reservation.value.descripcion,
+        idUsuario: this.id
       };
 
-      // switch (this.sala) { 
-      //   case 'upper':
-      //     reserva.sala = "arriba";
-      //     break;
-      //   case 'lower':
-      //     reserva.sala = "abajo";
-      //     break;
-      // }
+      console.log(reserva); //Esto es para ver que estamos enviando los datos correctos
 
-      console.log(reserva);
-
-      const response = await this.reservasService.addReserva(reserva);
+      await this.reservasService.addReserva(reserva);
 
       alert('Reserva realizada con éxito');
 
       await this.loadReservas();
       this.filterReservas();
+
+      this.reservation.reset();
 
     } else {
       this.reservation.markAllAsTouched();
@@ -144,20 +158,47 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
+  //Método para obtener los datos de la reserva a editar
   editReserva(id: number): void {
     // Encuentra la reserva a editar
     const reserva = this.reservas.find(res => res.id === id);
 
     if (reserva) {
-      this.editReservation.patchValue({
-        email: this.email,
-        fechaHoraInicio: reserva.fechaHoraInicio,
-        duracion: reserva.duracion,
-        proyectoAsociado: reserva.proyectoAsociado,
-        descripcion: reserva.descripcion,
-      });
+
+      // Asigna los valores de la reserva a los campos del formulario
+      this.editReservation.controls['id'].setValue(reserva.id);
+      this.editReservation.controls['email'].setValue(this.email);
+      this.editReservation.controls['fechaHoraInicio'].setValue(reserva.fechaHoraInicio);
+      this.editReservation.controls['duracion'].setValue(reserva.duracion);
+      this.editReservation.controls['proyectoAsociado'].setValue(reserva.proyectoAsociado);
+      this.editReservation.controls['descripcion'].setValue(reserva.descripcion);
+      this.editReservation.controls['idUsuario'].setValue(reserva.idUsuario);
+      
+
     } else {
       console.error(`No se encontró la reserva con ID ${id}`);
+    }
+  }
+
+  async editReservaSubmit() {
+    if (this.editReservation.valid) {
+      const reserva: Reserva = {
+        id: this.editReservation.value.id,
+        sala: this.sala === 'upper' ? 'arriba' : 'abajo',
+        fechaHoraInicio: this.editReservation.value.fechaHoraInicio,
+        duracion: this.editReservation.value.duracion,
+        proyectoAsociado: this.editReservation.value.proyectoAsociado,
+        descripcion: this.editReservation.value.descripcion,
+        idUsuario: this.editReservation.value.idUsuario
+      };
+
+      console.log(reserva);
+
+      await this.reservasService.editReserva(reserva);
+
+      console.log('Reserva editada con éxito');
+      await this.loadReservas();
+      this.filterReservas();
     }
   }
 }
