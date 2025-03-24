@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Reserva } from '../interfaces/reserva';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +9,7 @@ import { Reserva } from '../interfaces/reserva';
 export class ReservasService {
   private apiUrl = 'http://localhost:5000/'; // URL del endpoint de tu backend
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   async getReservas(): Promise<any[]> {
     try {
@@ -65,5 +67,10 @@ export class ReservasService {
       console.error('Error al editar la reserva:', error);
       throw error;
     }
+  }
+
+   // Método para eliminar la reserva
+   deleteReserva(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/eliminarReserva/${id}`);
   }
 }
