@@ -25,6 +25,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   private fb: FormBuilder = inject(FormBuilder);
 
   reservation: FormGroup = this.fb.group({
+    email: ['', [Validators.required, Validators.email]], // Campo email agregado
     date: ['', [Validators.required]],
     duration: ['', [Validators.required, Validators.min(1)]],
     project: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
@@ -79,8 +80,8 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
-  inValidField(field: string):boolean {
-    return this.reservation?.controls[field].invalid && this.reservation?.controls[field].touched;
+  inValidField(field: string): boolean {
+    return this.reservation?.controls[field]?.invalid && this.reservation?.controls[field]?.touched;
   }
 
   submitReservation(): void {
