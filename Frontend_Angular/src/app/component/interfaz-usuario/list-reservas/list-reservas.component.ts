@@ -2,11 +2,9 @@ import { Component, Input, OnChanges, SimpleChanges, OnInit, inject } from '@ang
 import { ReservasService } from '../../../services/reservas.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { Reserva } from '../../../interfaces/reserva';
-
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
@@ -27,12 +25,12 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
   private fb: FormBuilder = inject(FormBuilder);
 
-  reservation: FormGroup = this.fb.group({ 
-    email: [''],
-    fechaHoraInicio: ['', [Validators.required]],
-    duracion: ['', [Validators.required, Validators.min(1)]],
-    proyectoAsociado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
-    descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
+  reservation: FormGroup = this.fb.group({
+    email: ['', [Validators.required, Validators.email]], // Campo email agregado
+    date: ['', [Validators.required]],
+    duration: ['', [Validators.required, Validators.min(1)]],
+    project: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+    description: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
   });
 
   async ngOnInit(): Promise<void> {
@@ -83,15 +81,15 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
-  inValidField(field: string):boolean {
-    return this.reservation?.controls[field].invalid && this.reservation?.controls[field].touched;
+  inValidField(field: string): boolean {
+    return this.reservation?.controls[field]?.invalid && this.reservation?.controls[field]?.touched;
   }
 
   private formatearFecha = (fecha: string): string => {
     return fecha.replace("T", " ") + ":00";
   };
 
-  async submitReservation() { 
+  async submitReservation() {
     if (this.reservation.valid) {
       const reserva: Omit<Reserva, "id"> = {
         sala: this.sala === "upper" ? "arriba" : "abajo",
