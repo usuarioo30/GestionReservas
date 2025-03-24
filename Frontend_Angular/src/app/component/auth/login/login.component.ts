@@ -53,8 +53,6 @@ export class LoginComponent implements OnInit {
 
         localStorage.setItem("access_token", JSON.stringify(token.access_token)); // Almacenar token
 
-
-
         alert("Sesión iniciada con éxito. Redirigiendo en 2 seg..."); //Si la respuesta es correcta, mostramos un mensaje de éxito
 
         setTimeout(() => {
