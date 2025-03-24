@@ -148,16 +148,6 @@ export class ListReservasComponent implements OnInit, OnChanges {
     this.authService.logout();
   }
 
-  // Método para eliminar una reserva según el id
-  deleteReserva(id: number): void {
-    const confirmarEliminacion = confirm('¿Estás seguro de que deseas eliminar esta reserva?');
-    if (confirmarEliminacion) {
-      // Filtremos la lista para eliminar el elemento seleccionado
-      this.reservas = this.reservas.filter(reserva => reserva.id !== id);
-      console.log(`Reserva con id ${id} eliminada`);
-    }
-  }
-
   //Método para obtener los datos de la reserva a editar
   editReserva(id: number): void {
     // Encuentra la reserva a editar
@@ -196,9 +186,33 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
       await this.reservasService.editReserva(reserva);
 
-      console.log('Reserva editada con éxito');
+      alert('Reserva editada con éxito');
       await this.loadReservas();
       this.filterReservas();
+    }
+  }
+
+  deleteReserva(id: number): void {
+    const confirmarEliminacion = confirm('¿Estás seguro de que deseas eliminar esta reserva?');
+    if (confirmarEliminacion) {
+      // Llamar al servicio para eliminar la reserva en la base de datos
+      this.reservasService.deleteReserva(id).subscribe(
+        async () => {
+          // Si la eliminación es exitosa, eliminamos la reserva de la lista
+          this.reservas = this.reservas.filter(reserva => reserva.id !== id);
+          console.log(`Reserva con id ${id} eliminada correctamente`);
+  
+          // Opcional: Mostrar un mensaje de éxito
+          alert('Reserva eliminada con éxito');
+
+          window.location.reload(); // Recarga la página para actualizar la lista de reservas
+        },
+        (error) => {
+          // Si ocurre un error, muestra un mensaje de error
+          console.error('Error al eliminar la reserva', error);
+          alert('Hubo un error al eliminar la reserva');
+        }
+      );
     }
   }
 }

@@ -1,5 +1,9 @@
 /* Estilo para el enlace activo */
 .sala.active {
-    background-color:  #007bff;
-  }
-  
+  background-color: #007bff;
+}
+
+.custom-alert {
+  width: 300px;
+  text-align: center;
+}

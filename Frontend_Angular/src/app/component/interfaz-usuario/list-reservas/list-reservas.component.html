@@ -44,9 +44,10 @@
     </div>
 
     <div class="col py-3">
-          <div *ngIf="reservas.length === 0">
-            <p>No hay reservas activas</p>
-          </div>
+      <h1>Reservas activas</h1>
+      <div class="alert alert-primary custom-alert" *ngIf="reservas.length === 0" role="alert">
+        <b>No hay reservas activas.</b>
+      </div>
           <div class="table-responsive" *ngIf="reservas.length > 0">
             <table class="table">
               <thead>
@@ -84,7 +85,7 @@
           </div>
 
           <!-- Botón para abrir el modal -->
-          <button class="btn btn-primary boton" data-bs-toggle="modal" data-bs-target="#crearReservaModal">
+          <button class="btn btn-primary boton" data-bs-toggle="modal" data-bs-target="#crearReservaModal" *ngIf="sala === 'upper' || sala === 'lower'">
             Crear reserva
           </button>
         </div>
@@ -145,7 +146,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+              <button type="submit" class="btn btn-primary">Crear</button>
             </div>
           </form>
         </div>
