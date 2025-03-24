@@ -234,7 +234,8 @@ def obtener_reservas():
                 "fechaHoraInicio": reserva.fechaHoraInicio.strftime('%Y-%m-%d %H:%M:%S'),
                 "duracion": reserva.duracion,
                 "proyectoAsociado": reserva.proyectoAsociado,
-                "descripcion": reserva.descripcion
+                "descripcion": reserva.descripcion,
+                "idUsuario": reserva.idUsuario
             }
             for reserva in reservas
         ]
@@ -242,6 +243,23 @@ def obtener_reservas():
     except Exception as e:
         return jsonify({"message": "Error al obtener las reservas", "error": str(e)}), 500
 
+# Obtener un usuario por su ID
+@app.route('/usuarios/<int:id>', methods=['GET'])
+def obtener_usuario_por_id(id):
+    try:
+        usuario = Usuario.query.get(id)
+        usuario_serializado = {
+            "id": usuario.id,
+            "email": usuario.email,
+            "username": usuario.username,
+            "roles": usuario.roles 
+        }
+        return jsonify(usuario_serializado), 200
+    except Exception as e:
+        return jsonify({"message": "Error al obtener el usuario", "error": str(e)}), 500
+
+    
+    
 
 # Ejecutar la aplicación Flask
 if __name__ == '__main__':

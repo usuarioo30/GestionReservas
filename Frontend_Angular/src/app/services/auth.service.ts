@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { retry } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +45,17 @@ export class AuthService {
       }
     }
     return null;
+  }
+
+  async getUser(id: number) {
+    const response = await fetch(`${this.apiUrl}/usuarios/${id}`)
+
+    if (!response.ok) {
+      throw new Error('Error al obtener el usuario');
+    }
+
+    return response.json();
+
   }
 
   async loginWithGoogle(idToken: string): Promise<any> {

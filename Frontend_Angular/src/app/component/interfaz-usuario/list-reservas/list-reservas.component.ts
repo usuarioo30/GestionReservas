@@ -6,6 +6,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { Reserva } from '../../../interfaces/reserva';
 import { jwtDecode } from 'jwt-decode';
+import { Showreserva } from '../../../interfaces/showreserva';
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
@@ -14,8 +15,8 @@ import { jwtDecode } from 'jwt-decode';
   styleUrls: ['./list-reservas.component.css']
 })
 export class ListReservasComponent implements OnInit, OnChanges {
-  reservas: any[] = []; // Lista de reservas filtradas
-  showReservas: any[] = []; // Lista completa de reservas
+  reservas: Showreserva[] = []; // Lista de reservas filtradas
+  showReservas: Showreserva[] = []; // Lista completa de reservas
   @Input() sala?: string; // Sala seleccionada (recibida como input)
   email: string | null = null;
   id!: number | undefined;
@@ -80,7 +81,16 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
   async loadReservas(): Promise<void> {
     try {
-      this.showReservas = await this.reservasService.getReservas(); // Llama al servicio para obtener las reservas
+      let reservas = await this.reservasService.getReservas(); 
+      
+      this.showReservas = await Promise.all(
+        reservas.map(async reserva => {
+          let response = await this.authService.getUser(reserva.idUsuario);
+          reserva.owner = response.username; // Asigna el nombre del usuario al campo 'owner'
+          return reserva;
+        })
+      );
+      // Llama al servicio para obtener las reservas
     } catch (error) {
       console.error('Error al cargar las reservas:', error);
     }
@@ -199,6 +209,16 @@ export class ListReservasComponent implements OnInit, OnChanges {
       console.log('Reserva editada con éxito');
       await this.loadReservas();
       this.filterReservas();
+    }
+  }
+
+  async findUser(id: number) { 
+    try {
+      const user = await this.authService.getUser(id);
+      console.log(user);
+      return user.username;
+    } catch (error) {
+      console.error('Error al obtener el usuario:', error);
     }
   }
 }
