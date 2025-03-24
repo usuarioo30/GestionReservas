@@ -30,6 +30,13 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    const token = localStorage.getItem('access_token');
+
+    if(token) {
+      this.router.navigate(['/reservas']);
+    }
+
     this.initializeGoogleAuth();
   }
 
@@ -44,9 +51,15 @@ export class LoginComponent implements OnInit {
 
         const token = await response.json();
 
-        alert("Sesión iniciada con éxito"); //Si la respuesta es correcta, mostramos un mensaje de éxito
-  
-        localStorage.setItem("access_token", JSON.stringify(token.access_token));
+        localStorage.setItem("access_token", JSON.stringify(token.access_token)); // Almacenar token
+
+
+
+        alert("Sesión iniciada con éxito. Redirigiendo en 2 seg..."); //Si la respuesta es correcta, mostramos un mensaje de éxito
+
+        setTimeout(() => {
+          this.router.navigate(['/reservas']); // Redirige a la nueva ruta
+        }, 2000);
 
       } else {
         alert("Credenciales incorrectas"); //Si la respuesta es incorrecta, mostramos un mensaje de error
