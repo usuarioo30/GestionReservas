@@ -53,6 +53,7 @@
               <thead>
                 <tr>
                   <th id="hora">Hora&nbsp;<i class="bi bi-clock"></i></th>
+                  <th *ngIf="sala !== 'upper' && sala !== 'lower'">Sala</th>
                   <th>Resumen&nbsp;<i class="bi bi-blockquote-left"></i></th>
                   <th>Proyecto&nbsp;<i class="bi bi-folder"></i></th>
                   <th id="resto">Duración&nbsp;<i class="bi bi-broadcast"></i></th>
