@@ -1,0 +1,5 @@
+/* Estilo para el enlace activo */
+.sala.active {
+    background-color:  #007bff;
+  }
+  

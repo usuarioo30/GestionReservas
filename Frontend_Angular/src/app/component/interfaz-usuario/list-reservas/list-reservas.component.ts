@@ -16,7 +16,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   reservas: any[] = []; // Lista de reservas filtradas
   showReservas: any[] = []; // Lista completa de reservas
   @Input() sala?: string; // Sala seleccionada (recibida como input)
-  username: string | null = null;
+  email: string | null = null;
 
   constructor(private reservasService: ReservasService,
         private authService: AuthService,
@@ -36,7 +36,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   async ngOnInit(): Promise<void> {
     const token = localStorage.getItem('access_token');
 
-    this.username = this.authService.getEmail();
+    this.email = this.authService.getEmail();
 
     if(!token) {
       this.router.navigate(['/login']);

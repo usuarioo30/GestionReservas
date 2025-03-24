@@ -6,7 +6,6 @@ import { loadGapiInsideDOM, gapi } from 'gapi-script';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
-import { LoginService } from '../../../services/login.service';
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule],
@@ -21,8 +20,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private service: LoginService
-  ) {
+    ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
@@ -45,7 +43,7 @@ export class LoginComponent implements OnInit {
       const { username, password } = this.loginForm.value;
       // Lógica para iniciar sesión con credenciales propias
 
-      const response = await this.service.logIn(username, password);
+      const response = await this.authService.logIn(username, password);
 
       if (response.ok) { //Comprobamos la respuesta de la API
 

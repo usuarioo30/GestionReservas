@@ -1,39 +1,49 @@
 <div class="container-fluid">
-    <div class="row flex-nowrap">
-        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
-            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-                <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-black text-decoration-none">
-                    <span class="fs-5 d-none d-sm-inline">Apeiroo Rooms</span>
-                </a>
-                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                    <li class="nav-item">
-                        <a [routerLink]="['/reservas']" [queryParams]="{ sala: 'upper' }" routerLinkActive="router-link-active" class="nav-link align-middle px-0">
-                            <i class="bi bi-arrow-bar-up"></i> <span class="ms-1 d-none d-sm-inline">Sala de arriba</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a [routerLink]="['/reservas']" [queryParams]="{ sala: 'lower' }" routerLinkActive="router-link-active" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                            <i class="bi bi-arrow-bar-down"></i> <span class="ms-1 d-none d-sm-inline">Sala de abajo</span> </a>
-                    </li>
-                </ul>
-                <hr>
-                <div class="dropdown pb-4">
-                    <a href="#" class="d-flex align-items-center text-black text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">
-                        <span class="d-none d-sm-inline mx-1">{{username}}</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#" (click)="onLogout()">Cerrar sesión</a></li>
-                    </ul>
-                </div>
-            </div>
+  <div class="row flex-nowrap">
+    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
+      <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+        <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-black text-decoration-none">
+          <span class="fs-5 d-none d-sm-inline">Apeiroo Rooms</span>
+        </a>
+        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+          <li class="nav-item">
+            <a 
+              [routerLink]="['/reservas']" 
+              [queryParams]="{ sala: 'upper' }" 
+              routerLinkActive="active" 
+              class="nav-link align-middle text-black sala"
+              [class.active]="sala === 'upper'">
+              <i class="bi bi-arrow-bar-up"></i> 
+              <span class="ms-2 d-none d-sm-inline">Sala de arriba</span>
+            </a>
+          </li>
+          <li>
+            <a 
+              [routerLink]="['/reservas']" 
+              [queryParams]="{ sala: 'lower' }" 
+              routerLinkActive="active" 
+              class="nav-link align-middle text-black"
+              [class.active]="sala === 'lower'">
+              <i class="bi bi-arrow-bar-down"></i> 
+              <span class="ms-2 d-none d-sm-inline">Sala de abajo</span>
+            </a>
+          </li>
+        </ul>
+        <hr>
+        <div class="dropdown pb-4">
+          <a href="#" class="d-flex align-items-center text-black text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">
+            <span class="d-none d-sm-inline mx-1">{{email}}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#" (click)="onLogout()">Cerrar sesión</a></li>
+          </ul>
         </div>
-        <div class="col py-3">
-          <h2 class="my-4">Reservas activas</h2>
+      </div>
+    </div>
 
+    <div class="col py-3">
           <div *ngIf="reservas.length === 0">
             <p>No hay reservas activas</p>
           </div>
@@ -77,8 +87,11 @@
             Crear reserva
           </button>
         </div>
+
     </div>
   </div>
+
+
 
   <!-- Modal para crear reserva -->
   <div class="modal fade" id="crearReservaModal" tabindex="-1" aria-labelledby="crearReservaModalLabel" aria-hidden="true">
@@ -94,7 +107,7 @@
           <form [formGroup]="reservation" (ngSubmit)="submitReservation()">
             <div class="mb-3">
               <label for="sala" class="form-label">Email:</label>
-              <input type="email" class="form-control" id="sala" placeholder="Introduzca su correo">
+              <input type="email" class="form-control bg-light" id="sala" placeholder="Introduzca su correo" [(ngModel)]="email" formControlName="email" readonly="readonly">
 
             </div>
             <div class="mb-3">
