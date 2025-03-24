@@ -147,7 +147,9 @@ export class ListReservasComponent implements OnInit, OnChanges {
       await this.loadReservas();
       this.filterReservas();
 
-      this.reservation.reset();
+      this.reservation.reset({
+        email: this.email
+      });
 
     } else {
       this.reservation.markAllAsTouched();

@@ -53,6 +53,7 @@
               <thead>
                 <tr>
                   <th id="hora">Hora</th>
+                  <th *ngIf="sala !== 'upper' && sala !== 'lower'">Sala</th>
                   <th>Resumen</th>
                   <th>Proyecto</th>
                   <th id="resto">Duración</th>
@@ -66,6 +67,7 @@
                   
                   <!-- Usa el pipe 'date' con el formato 'HH:mm' -->
                   <td id="hora">{{ reserva.fechaHoraInicio | date: 'HH:mm' }}</td>
+                  <td *ngIf="sala !== 'upper' && sala !== 'lower'">{{reserva.sala}}</td>
                   <td>{{ reserva.descripcion }}</td>
                   <!-- Aplica la clase personalizada 'proyecto-btn' -->
                   <td id="proyecto" class="proyecto-btn">{{ reserva.proyectoAsociado }}</td>
