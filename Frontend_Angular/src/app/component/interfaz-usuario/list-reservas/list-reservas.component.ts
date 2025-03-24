@@ -141,8 +141,13 @@ export class ListReservasComponent implements OnInit, OnChanges {
     const reserva = this.reservas.find(res => res.id === id);
 
     if (reserva) {
-      // Redirige al formulario de crear/editar reservas pasando el ID
-      this.router.navigate(['/editarReservaModal', id]);
+      this.reservation.patchValue({
+        email: reserva.email,
+        fechaHoraInicio: reserva.fechaHoraInicio,
+        duracion: reserva.duracion,
+        proyectoAsociado: reserva.proyectoAsociado,
+        descripcion: reserva.descripcion,
+      });
     } else {
       console.error(`No se encontró la reserva con ID ${id}`);
     }
