@@ -2,8 +2,11 @@ import { Component, Input, OnChanges, SimpleChanges, OnInit, inject } from '@ang
 import { ReservasService } from '../../../services/reservas.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 import { Reserva } from '../../../interfaces/reserva';
+
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
@@ -15,8 +18,12 @@ export class ListReservasComponent implements OnInit, OnChanges {
   reservas: any[] = []; // Lista de reservas filtradas
   showReservas: any[] = []; // Lista completa de reservas
   @Input() sala?: string; // Sala seleccionada (recibida como input)
+  username: string | null = null;
 
-  constructor(private reservasService: ReservasService) {}
+  constructor(private reservasService: ReservasService,
+        private authService: AuthService,
+        private router: Router
+  ) {}
 
   private fb: FormBuilder = inject(FormBuilder);
 
@@ -29,6 +36,14 @@ export class ListReservasComponent implements OnInit, OnChanges {
   });
 
   async ngOnInit(): Promise<void> {
+    const token = localStorage.getItem('access_token');
+
+    this.username = this.authService.getEmail();
+
+    if(!token) {
+      this.router.navigate(['/login']);
+    }
+
     // Carga inicial de las reservas
     await this.loadReservas();
     this.filterReservas(); // Filtra las reservas según el valor inicial de sala
@@ -107,5 +122,9 @@ export class ListReservasComponent implements OnInit, OnChanges {
     } else {
       this.reservation.markAllAsTouched();
     }
+  }
+
+  onLogout(): void {
+    this.authService.logout();
   }
 }
