@@ -94,21 +94,21 @@ export class ListReservasComponent implements OnInit, OnChanges {
   async submitReservation() { 
     if (this.reservation.valid) {
       const reserva: Omit<Reserva, "id"> = {
-        sala: '',
+        sala: this.sala === "upper" ? "arriba" : "abajo",
         fechaHoraInicio: this.formatearFecha(this.reservation.value.fechaHoraInicio),
         duracion: this.reservation.value.duracion,
         proyectoAsociado: this.reservation.value.proyectoAsociado,
         descripcion: this.reservation.value.descripcion,
       };
 
-      switch (this.sala) { 
-        case 'upper':
-          reserva.sala = "arriba";
-          break;
-        case 'lower':
-          reserva.sala = "abajo";
-          break;
-      }
+      // switch (this.sala) { 
+      //   case 'upper':
+      //     reserva.sala = "arriba";
+      //     break;
+      //   case 'lower':
+      //     reserva.sala = "abajo";
+      //     break;
+      // }
 
       console.log(reserva);
 
@@ -126,5 +126,27 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
   onLogout(): void {
     this.authService.logout();
+  }
+
+  // Método para eliminar una reserva según el id
+  deleteReserva(id: number): void {
+    const confirmarEliminacion = confirm('¿Estás seguro de que deseas eliminar esta reserva?');
+    if (confirmarEliminacion) {
+      // Filtremos la lista para eliminar el elemento seleccionado
+      this.reservas = this.reservas.filter(reserva => reserva.id !== id);
+      console.log(`Reserva con id ${id} eliminada`);
+    }
+  }
+
+  editReserva(id: number): void {
+    // Encuentra la reserva a editar
+    const reserva = this.reservas.find(res => res.id === id);
+
+    if (reserva) {
+      // Redirige al formulario de crear/editar reservas pasando el ID
+      this.router.navigate(['/editarReservaModal', id]);
+    } else {
+      console.error(`No se encontró la reserva con ID ${id}`);
+    }
   }
 }

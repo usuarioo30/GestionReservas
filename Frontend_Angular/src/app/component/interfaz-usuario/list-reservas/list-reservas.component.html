@@ -61,8 +61,12 @@
                   <td id="date">{{ reserva.fechaHoraInicio | date: 'd MMM' }}</td>
                   <td></td>
                   <td>
-                    <i class="bi bi-pen"></i>&nbsp;&nbsp;
-                    <i class="bi bi-backspace"></i>
+                    <button class="btn btn-primary btn-sm" (click)="editReserva(reserva.id)">
+                      <i class="bi bi-pen"></i>
+                    </button>&nbsp;&nbsp;
+                    <button class="btn btn-danger btn-sm" (click)="deleteReserva(reserva.id)">
+                      <i class="bi bi-trash"></i>
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -134,4 +138,105 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal para editar reserva -->
+  <div class="modal fade" id="editarReservaModal" tabindex="-1" aria-labelledby="editarReservaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <!-- Título dinámico según la sala -->
+          <h5 *ngIf="sala === 'upper'" class="modal-title" id="editarReservaModalLabel">Editar Reserva - Sala Arriba</h5>
+          <h5 *ngIf="sala === 'lower'" class="modal-title" id="editarReservaModalLabel">Editar Reserva - Sala Abajo</h5>
+          <h5 *ngIf="!sala" class="modal-title" id="editarReservaModalLabel">Editar Reserva</h5>
+
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Formulario con data-binding -->
+          <form [formGroup]="reservation" (ngSubmit)="submitReservation()">
+            <!-- Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email:</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder="Introduzca su correo"
+                formControlName="email"
+                [class.is-invalid]="inValidField('email')">
+              <div *ngIf="inValidField('email')" class="text-danger">
+                Proporcione un correo válido.
+              </div>
+            </div>
+
+            <!-- Fecha y Hora -->
+            <div class="mb-3">
+              <label for="fechaHoraInicio" class="form-label">Fecha y Hora:</label>
+              <input
+                type="datetime-local"
+                class="form-control"
+                id="fechaHoraInicio"
+                formControlName="fechaHoraInicio"
+                [class.is-invalid]="inValidField('fechaHoraInicio')">
+              <div *ngIf="inValidField('fechaHoraInicio')" class="text-danger">
+                Proporcione una fecha válida.
+              </div>
+            </div>
+
+            <!-- Duración -->
+            <div class="mb-3">
+              <label for="duracion" class="form-label">Duración (minutos):</label>
+              <input
+                type="number"
+                class="form-control"
+                id="duracion"
+                placeholder="Duración en minutos"
+                formControlName="duracion"
+                [class.is-invalid]="inValidField('duracion')">
+              <div *ngIf="inValidField('duracion')" class="text-danger">
+                Proporcione un valor válido para la duración (mínimo 1).
+              </div>
+            </div>
+
+            <!-- Proyecto Asociado -->
+            <div class="mb-3">
+              <label for="proyectoAsociado" class="form-label">Proyecto Asociado:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="proyectoAsociado"
+                placeholder="Nombre del proyecto"
+                formControlName="proyectoAsociado"
+                [class.is-invalid]="inValidField('proyectoAsociado')">
+              <div *ngIf="inValidField('proyectoAsociado')" class="text-danger">
+                Proporcione un nombre válido (entre 3 y 20 caracteres).
+              </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="mb-3">
+              <label for="descripcion" class="form-label">Descripción:</label>
+              <textarea
+                class="form-control"
+                id="descripcion"
+                rows="3"
+                placeholder="Descripción de la reserva"
+                formControlName="descripcion"
+                [class.is-invalid]="inValidField('descripcion')"></textarea>
+              <div *ngIf="inValidField('descripcion')" class="text-danger">
+                Proporcione una descripción válida (entre 20 y 140 caracteres).
+              </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   
