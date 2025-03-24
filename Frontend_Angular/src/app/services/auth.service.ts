@@ -7,8 +7,26 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class AuthService {
   private apiUrl = 'http://localhost:5000'; // URL del backend
+  private apiUrl1 = "http://127.0.0.1:5000/login";
+
 
   constructor(private router: Router) {}
+
+  //Método de iniciar sesión, es llamado cuando el formulario es válido
+  async logIn(username: string, password: string) {
+
+    //Llamada a la api para iniciar sesión
+    const response = await fetch(`${this.apiUrl1}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({username: username, password: password})
+    });
+
+    return response //Devolvemos la promesa
+
+  }
 
   // Método para obtener el nombre de usuario desde el token
   getEmail(): string | null {
