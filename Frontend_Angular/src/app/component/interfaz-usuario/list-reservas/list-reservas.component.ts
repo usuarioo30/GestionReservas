@@ -3,6 +3,7 @@ import { ReservasService } from '../../../services/reservas.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { Reserva } from '../../../interfaces/reserva';
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
@@ -20,10 +21,11 @@ export class ListReservasComponent implements OnInit, OnChanges {
   private fb: FormBuilder = inject(FormBuilder);
 
   reservation: FormGroup = this.fb.group({ 
-    date: ['', [Validators.required]],
-    duration: ['', [Validators.required, Validators.min(1)]],
-    project: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
-    description: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
+    email: [''],
+    fechaHoraInicio: ['', [Validators.required]],
+    duracion: ['', [Validators.required, Validators.min(1)]],
+    proyectoAsociado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+    descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
   });
 
   async ngOnInit(): Promise<void> {
@@ -70,9 +72,38 @@ export class ListReservasComponent implements OnInit, OnChanges {
     return this.reservation?.controls[field].invalid && this.reservation?.controls[field].touched;
   }
 
-  submitReservation(): void { 
+  private formatearFecha = (fecha: string): string => {
+    return fecha.replace("T", " ") + ":00";
+  };
+
+  async submitReservation() { 
     if (this.reservation.valid) {
-        alert('Reserva realizada con éxito');
+      const reserva: Omit<Reserva, "id"> = {
+        sala: '',
+        fechaHoraInicio: this.formatearFecha(this.reservation.value.fechaHoraInicio),
+        duracion: this.reservation.value.duracion,
+        proyectoAsociado: this.reservation.value.proyectoAsociado,
+        descripcion: this.reservation.value.descripcion,
+      };
+
+      switch (this.sala) { 
+        case 'upper':
+          reserva.sala = "arriba";
+          break;
+        case 'lower':
+          reserva.sala = "abajo";
+          break;
+      }
+
+      console.log(reserva);
+
+      const response = await this.reservasService.addReserva(reserva);
+
+      alert('Reserva realizada con éxito');
+
+      await this.loadReservas();
+      this.filterReservas();
+
     } else {
       this.reservation.markAllAsTouched();
     }

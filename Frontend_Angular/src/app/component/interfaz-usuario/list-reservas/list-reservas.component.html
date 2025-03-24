@@ -90,46 +90,46 @@
           <form [formGroup]="reservation" (ngSubmit)="submitReservation()">
             <div class="mb-3">
               <label for="sala" class="form-label">Email:</label>
-              <input type="email" class="form-control" id="sala" placeholder="Introduzca su correo">
+              <input type="email" class="form-control" id="sala" placeholder="Introduzca su correo" formControlName="email">
 
             </div>
             <div class="mb-3">
               <label for="fechaHoraInicio" class="form-label">Fecha y Hora</label>
-              <input type="datetime-local" class="form-control" id="fechaHoraInicio" formControlName="date">
-              @if (inValidField('date')) {
+              <input type="datetime-local" class="form-control" id="fechaHoraInicio" formControlName="fechaHoraInicio">
+              @if (inValidField('fechaHoraInicio')) {
                 <span class="text-danger">Rellene este campo</span>
 
               }
             </div>
             <div class="mb-3">
               <label for="duracion" class="form-label">Duración (minutos)</label>
-              <input type="number" class="form-control" id="duracion" placeholder="Duración en minutos" formControlName="duration">
-              @if (inValidField('date')) {
+              <input type="number" class="form-control" id="duracion" placeholder="Duración en minutos" formControlName="duracion">
+              @if (inValidField('duracion')) {
                 <span class="text-danger">Rellene este campo</span>
 
               }
             </div>
             <div class="mb-3">
               <label for="proyectoAsociado" class="form-label">Proyecto Asociado</label>
-              <input type="text" class="form-control" id="proyectoAsociado" placeholder="Nombre del proyecto" formControlName="project">
-              @if (inValidField('date')) {
+              <input type="text" class="form-control" id="proyectoAsociado" placeholder="Nombre del proyecto" formControlName="proyectoAsociado">
+              @if (inValidField('proyectoAsociado')) {
                 <span class="text-danger">Rellene este campo</span>
 
               }
             </div>
             <div class="mb-3">
               <label for="descripcion" class="form-label">Descripción</label>
-              <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción de la reserva" formControlName="description"></textarea>
-              @if (inValidField('date')) {
+              <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción de la reserva" formControlName="descripcion"></textarea>
+              @if (inValidField('descripcion')) {
                 <span class="text-danger">Rellene este campo</span>
 
               }
             </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
           </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Guardar</button>
         </div>
       </div>
     </div>
