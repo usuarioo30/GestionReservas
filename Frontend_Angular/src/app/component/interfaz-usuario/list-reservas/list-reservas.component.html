@@ -99,32 +99,32 @@
             </div>
             <div class="mb-3">
               <label for="fechaHoraInicio" class="form-label">Fecha y Hora</label>
-              <input type="datetime-local" class="form-control" id="fechaHoraInicio" formControlName="date">
-              @if (inValidField('date')) {
+              <input type="datetime-local" class="form-control" id="fechaHoraInicio" formControlName="fechaHoraInicio">
+              @if (inValidField('fechaHoraInicio')) {
                 <span class="text-danger">Rellene este campo</span>
 
               }
             </div>
             <div class="mb-3">
               <label for="duracion" class="form-label">Duración (minutos)</label>
-              <input type="number" class="form-control" id="duracion" placeholder="Duración en minutos" formControlName="duration">
-              @if (inValidField('date')) {
+              <input type="number" class="form-control" id="duracion" placeholder="Duración en minutos" formControlName="duracion">
+              @if (inValidField('duracion')) {
                 <span class="text-danger">Rellene este campo</span>
 
               }
             </div>
             <div class="mb-3">
               <label for="proyectoAsociado" class="form-label">Proyecto Asociado</label>
-              <input type="text" class="form-control" id="proyectoAsociado" placeholder="Nombre del proyecto" formControlName="project">
-              @if (inValidField('date')) {
+              <input type="text" class="form-control" id="proyectoAsociado" placeholder="Nombre del proyecto" formControlName="proyectoAsociado">
+              @if (inValidField('proyectoAsociado')) {
                 <span class="text-danger">Rellene este campo</span>
 
               }
             </div>
             <div class="mb-3">
               <label for="descripcion" class="form-label">Descripción</label>
-              <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción de la reserva" formControlName="description"></textarea>
-              @if (inValidField('date')) {
+              <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción de la reserva" formControlName="descripcion"></textarea>
+              @if (inValidField('descripcion')) {
                 <span class="text-danger">Rellene este campo</span>
 
               }
@@ -167,9 +167,9 @@
                           type="datetime-local"
                           class="form-control"
                           id="fechaHoraInicio"
-                          formControlName="date"
-                          [class.is-invalid]="inValidField('date')">
-                        <div *ngIf="inValidField('date')" class="text-danger">
+                          formControlName="fechaHoraInicio"
+                          [class.is-invalid]="inValidField('fechaHoraInicio')">
+                        <div *ngIf="inValidField('fechaHoraInicio')" class="text-danger">
                           Proporcione una fecha válida.
                         </div>
                       </div>
@@ -182,9 +182,9 @@
                           class="form-control"
                           id="duracion"
                           placeholder="Duración en minutos"
-                          formControlName="duration"
-                          [class.is-invalid]="inValidField('duration')">
-                        <div *ngIf="inValidField('duration')" class="text-danger">
+                          formControlName="duracion"
+                          [class.is-invalid]="inValidField('duracion')">
+                        <div *ngIf="inValidField('duracion')" class="text-danger">
                           Proporcione un valor válido para la duración (mínimo 1).
                         </div>
                       </div>
@@ -197,9 +197,9 @@
                           class="form-control"
                           id="proyectoAsociado"
                           placeholder="Nombre del proyecto"
-                          formControlName="project"
-                          [class.is-invalid]="inValidField('project')">
-                        <div *ngIf="inValidField('project')" class="text-danger">
+                          formControlName="proyectoAsociado"
+                          [class.is-invalid]="inValidField('proyectoAsociado')">
+                        <div *ngIf="inValidField('proyectoAsociado')" class="text-danger">
                           Proporcione un nombre válido (entre 3 y 20 caracteres).
                         </div>
                       </div>
@@ -212,9 +212,9 @@
                           id="descripcion"
                           rows="3"
                           placeholder="Descripción de la reserva"
-                          formControlName="description"
-                          [class.is-invalid]="inValidField('description')"></textarea>
-                        <div *ngIf="inValidField('description')" class="text-danger">
+                          formControlName="descripcion"
+                          [class.is-invalid]="inValidField('descripcion')"></textarea>
+                        <div *ngIf="inValidField('descripcion')" class="text-danger">
                           Proporcione una descripción válida (entre 20 y 140 caracteres).
                         </div>
                       </div>

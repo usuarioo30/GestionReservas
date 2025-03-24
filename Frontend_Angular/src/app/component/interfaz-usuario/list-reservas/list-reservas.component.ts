@@ -27,10 +27,10 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
   reservation: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]], // Campo email agregado
-    date: ['', [Validators.required]],
-    duration: ['', [Validators.required, Validators.min(1)]],
-    project: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
-    description: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
+    fechaHoraInicio: ['', [Validators.required]],
+    duracion: ['', [Validators.required, Validators.min(1)]],
+    proyectoAsociado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+    descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
   });
 
   async ngOnInit(): Promise<void> {
