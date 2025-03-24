@@ -26,7 +26,15 @@ export class ListReservasComponent implements OnInit, OnChanges {
   private fb: FormBuilder = inject(FormBuilder);
 
   reservation: FormGroup = this.fb.group({
-    email: ['', [Validators.required, Validators.email]], // Campo email agregado
+    email: [''], // Campo email agregado
+    fechaHoraInicio: ['', [Validators.required]],
+    duracion: ['', [Validators.required, Validators.min(1)]],
+    proyectoAsociado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+    descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
+  });
+
+  editReservation: FormGroup = this.fb.group({
+    email: [''], // Campo email agregado
     fechaHoraInicio: ['', [Validators.required]],
     duracion: ['', [Validators.required, Validators.min(1)]],
     proyectoAsociado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
@@ -141,8 +149,8 @@ export class ListReservasComponent implements OnInit, OnChanges {
     const reserva = this.reservas.find(res => res.id === id);
 
     if (reserva) {
-      this.reservation.patchValue({
-        email: reserva.email,
+      this.editReservation.patchValue({
+        email: this.email,
         fechaHoraInicio: reserva.fechaHoraInicio,
         duracion: reserva.duracion,
         proyectoAsociado: reserva.proyectoAsociado,

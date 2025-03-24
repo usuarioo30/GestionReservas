@@ -142,6 +142,10 @@
 
               }
             </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
           </form>
         </div>
       </div>
@@ -164,17 +168,11 @@
         </div>
         <div class="modal-body">
           <!-- Formulario con data-binding -->
-          <form [formGroup]="reservation" (ngSubmit)="submitReservation()">
+          <form [formGroup]="editReservation" (ngSubmit)="submitReservation()">
             <!-- Email -->
             <div class="mb-3">
               <label for="email" class="form-label">Email:</label>
-              <input
-                type="email"
-                class="form-control"
-                id="email"
-                placeholder="Introduzca su correo"
-                formControlName="email"
-                [class.is-invalid]="inValidField('email')">
+              <input type="email" class="form-control bg-light" id="sala" placeholder="Introduzca su correo" formControlName="email" readonly="readonly">
               <div *ngIf="inValidField('email')" class="text-danger">
                 Proporcione un correo válido.
               </div>
