@@ -15,9 +15,9 @@ import { Showreserva } from '../../../interfaces/showreserva';
   styleUrls: ['./list-reservas.component.css']
 })
 export class ListReservasComponent implements OnInit, OnChanges {
-  reservas: Showreserva[] = []; // Lista de reservas filtradas
-  showReservas: Showreserva[] = []; // Lista completa de reservas
-  @Input() sala?: string; // Sala seleccionada (recibida como input)
+  reservas: Showreserva[] = [];
+  showReservas: Showreserva[] = [];
+  @Input() sala?: string;
   email: string | null = null;
   id!: number | undefined;
   constructor(private reservasService: ReservasService,
@@ -40,7 +40,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   private fb: FormBuilder = inject(FormBuilder);
 
   reservation: FormGroup = this.fb.group({
-    email: [''], // Campo email agregado
+    email: [''],
     fechaHoraInicio: ['', [Validators.required]],
     duracion: ['', [Validators.required, Validators.min(1)]],
     proyectoAsociado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
@@ -50,7 +50,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
   editReservation: FormGroup = this.fb.group({
     id: [''],
-    email: [''], // Campo email agregado
+    email: [''],
     fechaHoraInicio: ['', [Validators.required]],
     duracion: ['', [Validators.required, Validators.min(1)]],
     proyectoAsociado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
@@ -67,15 +67,14 @@ export class ListReservasComponent implements OnInit, OnChanges {
       this.router.navigate(['/login']);
     }
 
-    // Carga inicial de las reservas
     await this.loadReservas();
-    this.filterReservas(); // Filtra las reservas según el valor inicial de sala
+    this.filterReservas();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     // Detecta cambios en el valor de @Input() sala
     if (changes['sala'] && !changes['sala'].isFirstChange()) {
-      this.filterReservas(); // Filtra las reservas cuando cambia el valor de sala
+      this.filterReservas();
     }
   }
 
@@ -86,11 +85,11 @@ export class ListReservasComponent implements OnInit, OnChanges {
       this.showReservas = await Promise.all(
         reservas.map(async reserva => {
           let response = await this.authService.getUser(reserva.idUsuario);
-          reserva.owner = response.username; // Asigna el nombre del usuario al campo 'owner'
+          reserva.owner = response.username
+          // reserva.email = response.email;
           return reserva;
         })
       );
-      // Llama al servicio para obtener las reservas
     } catch (error) {
       console.error('Error al cargar las reservas:', error);
     }
@@ -98,7 +97,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
   filterReservas(): void {
     if (!this.sala) {
-      this.reservas = this.showReservas; // Si no hay sala, muestra todas las reservas
+      this.reservas = this.showReservas;
       return;
     }
 
@@ -110,7 +109,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
         this.reservas = this.showReservas.filter(reserva => reserva.sala === 'abajo');
         break;
       default:
-        this.reservas = this.showReservas; // Si el valor no es válido, muestra todas las reservas
+        this.reservas = this.showReservas;
         break;
     }
   }
@@ -138,7 +137,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
         idUsuario: this.id
       };
 
-      console.log(reserva); //Esto es para ver que estamos enviando los datos correctos
+      console.log(reserva);
 
       await this.reservasService.addReserva(reserva);
 
@@ -208,20 +207,16 @@ export class ListReservasComponent implements OnInit, OnChanges {
   deleteReserva(id: number): void {
     const confirmarEliminacion = confirm('¿Estás seguro de que deseas eliminar esta reserva?');
     if (confirmarEliminacion) {
-      // Llamar al servicio para eliminar la reserva en la base de datos
       this.reservasService.deleteReserva(id).subscribe(
         async () => {
-          // Si la eliminación es exitosa, eliminamos la reserva de la lista
           this.reservas = this.reservas.filter(reserva => reserva.id !== id);
           console.log(`Reserva con id ${id} eliminada correctamente`);
   
-          // Opcional: Mostrar un mensaje de éxito
           alert('Reserva eliminada con éxito');
 
-          window.location.reload(); // Recarga la página para actualizar la lista de reservas
+          window.location.reload();
         },
         (error) => {
-          // Si ocurre un error, muestra un mensaje de error
           console.error('Error al eliminar la reserva', error);
           alert('Hubo un error al eliminar la reserva');
         }
