@@ -7,3 +7,19 @@
   width: 300px;
   text-align: center;
 }
+
+#resto {
+  text-align: center;
+}
+
+#hora {
+  color: rgb(121, 117, 117);
+}
+
+#date {
+  color: rgb(121, 117, 117);
+}
+
+.email {
+  color: rgb(121, 117, 117);
+}
