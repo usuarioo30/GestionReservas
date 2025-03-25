@@ -1,11 +1,8 @@
 <div class="container-fluid">
   <!-- Botón dropdown de configuración -->
   <div class="dropdown position-absolute top-0 end-0 p-3">
-    <a href="#"
-       class="text-black text-decoration-none dropdown-toggle"
-       id="dropdownTheme"
-       data-bs-toggle="dropdown"
-       aria-expanded="false">
+    <a href="#" class="text-black text-decoration-none dropdown-toggle" id="dropdownTheme" data-bs-toggle="dropdown"
+      aria-expanded="false">
       <i class="bi bi-gear fs-5"></i>
     </a>
     <ul class="dropdown-menu dropdown-menu-dark shadow">
@@ -71,12 +68,15 @@
         </ul>
         <hr>
         <div class="dropdown pb-4">
-          <a href="#" class="d-flex align-items-center text-black text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+          <a href="#" class="d-flex align-items-center text-black text-decoration-none dropdown-toggle"
+            id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
             <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">
             <span class="d-none d-sm-inline mx-1">{{email}}</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-            <li><hr class="dropdown-divider"></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
             <li><a *ngIf="role === 'admin'" class="dropdown-item" [routerLink]="['/createuser']">Crear usuario</a></li>
             <li><a class="dropdown-item" href="#" (click)="onLogout()">Cerrar sesión</a></li>
           </ul>
@@ -147,7 +147,8 @@
   </div>
 
   <!-- Modal para crear reserva -->
-  <div class="modal fade" id="crearReservaModal" tabindex="-1" aria-labelledby="crearReservaModalLabel" aria-hidden="true">
+  <div class="modal fade" id="crearReservaModal" tabindex="-1" aria-labelledby="crearReservaModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -160,37 +161,43 @@
           <form [formGroup]="reservation" (ngSubmit)="submitReservation()">
             <div class="mb-3">
               <label for="sala" class="form-label">Email:</label>
-              <input type="email" class="form-control bg-light" id="sala" placeholder="Introduzca su correo" [(ngModel)]="email" formControlName="email" readonly="readonly">
+              <input type="email" class="form-control bg-light" id="sala" placeholder="Introduzca su correo"
+                [(ngModel)]="email" formControlName="email" readonly="readonly">
 
             </div>
             <div class="mb-3">
               <label for="fechaHoraInicio" class="form-label">Fecha y Hora</label>
-              <input type="datetime-local" class="form-control" id="fechaHoraInicio" formControlName="fechaHoraInicio">
+              <input type="datetime-local" class="form-control" id="fechaHoraInicio" formControlName="fechaHoraInicio"
+              [min]="minDateTime"
+              (change)="onDateTimeChange($event)">
               @if (inValidField('fechaHoraInicio')) {
-                <span class="text-danger">Rellene este campo</span>
+              <span class="text-danger">Rellene este campo</span>
 
               }
             </div>
             <div class="mb-3">
               <label for="duracion" class="form-label">Duración (minutos)</label>
-              <input type="number" class="form-control" id="duracion" placeholder="Duración en minutos" formControlName="duracion">
+              <input type="number" class="form-control" id="duracion" placeholder="Duración en minutos"
+                formControlName="duracion">
               @if (inValidField('duracion')) {
-                <span class="text-danger">Rellene este campo</span>
+              <span class="text-danger">Rellene este campo</span>
 
               }
             </div>
             <div class="mb-3">
               <label for="proyectoAsociado" class="form-label">Proyecto Asociado</label>
-              <input type="text" class="form-control" id="proyectoAsociado" placeholder="Nombre del proyecto" formControlName="proyectoAsociado">
+              <input type="text" class="form-control" id="proyectoAsociado" placeholder="Nombre del proyecto"
+                formControlName="proyectoAsociado">
               @if (inValidField('proyectoAsociado')) {
-                <span class="text-danger">Rellene este campo</span>
+              <span class="text-danger">Rellene este campo</span>
               }
             </div>
             <div class="mb-3">
               <label for="descripcion" class="form-label">Descripción</label>
-              <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción de la reserva" formControlName="descripcion"></textarea>
+              <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción de la reserva"
+                formControlName="descripcion"></textarea>
               @if (inValidField('descripcion')) {
-                <span class="text-danger">Rellene este campo</span>
+              <span class="text-danger">Rellene este campo</span>
 
               }
             </div>
@@ -207,11 +214,13 @@
 
 
   <!-- Modal para editar reserva -->
-  <div class="modal fade" id="editarReservaModal" tabindex="-1" aria-labelledby="editarReservaModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editarReservaModal" tabindex="-1" aria-labelledby="editarReservaModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 *ngIf="sala === 'upper'" class="modal-title" id="editarReservaModalLabel">Editar Reserva - Sala Arriba</h5>
+          <h5 *ngIf="sala === 'upper'" class="modal-title" id="editarReservaModalLabel">Editar Reserva - Sala Arriba
+          </h5>
           <h5 *ngIf="sala === 'lower'" class="modal-title" id="editarReservaModalLabel">Editar Reserva - Sala Abajo</h5>
           <h5 *ngIf="!sala" class="modal-title" id="editarReservaModalLabel">Editar Reserva</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -221,14 +230,8 @@
             <!-- Email -->
             <div class="mb-3">
               <label for="email" class="form-label">Email:</label>
-              <input
-                type="email"
-                class="form-control bg-light"
-                id="email"
-                placeholder="Correo del creador"
-                formControlName="email"
-                [disabled]="role === 'admin'"
-                readonly="readonly">
+              <input type="email" class="form-control bg-light" id="email" placeholder="Correo del creador"
+                formControlName="email" [disabled]="role === 'admin'" readonly="readonly">
               <div *ngIf="inValidFieldEdit('email')" class="text-danger">
                 Proporcione un correo válido.
               </div>
@@ -237,12 +240,9 @@
             <!-- Fecha y Hora -->
             <div class="mb-3">
               <label for="fechaHoraInicio" class="form-label">Fecha y Hora:</label>
-              <input
-                type="datetime-local"
-                class="form-control"
-                id="fechaHoraInicio"
-                formControlName="fechaHoraInicio"
-                [class.is-invalid]="inValidFieldEdit('fechaHoraInicio')">
+              <input type="datetime-local" class="form-control" id="fechaHoraInicio" formControlName="fechaHoraInicio"
+                [class.is-invalid]="inValidFieldEdit('fechaHoraInicio')" [min]="minDateTime"
+                (change)="onDateTimeChange($event)">
               <div *ngIf="inValidFieldEdit('fechaHoraInicio')" class="text-danger">
                 Proporcione una fecha válida.
               </div>
@@ -251,13 +251,8 @@
             <!-- Duración -->
             <div class="mb-3">
               <label for="duracion" class="form-label">Duración (minutos):</label>
-              <input
-                type="number"
-                class="form-control"
-                id="duracion"
-                placeholder="Duración en minutos"
-                formControlName="duracion"
-                [class.is-invalid]="inValidFieldEdit('duracion')">
+              <input type="number" class="form-control" id="duracion" placeholder="Duración en minutos"
+                formControlName="duracion" [class.is-invalid]="inValidFieldEdit('duracion')">
               <div *ngIf="inValidFieldEdit('duracion')" class="text-danger">
                 Proporcione un valor válido para la duración (mínimo 1).
               </div>
@@ -266,13 +261,8 @@
             <!-- Proyecto Asociado -->
             <div class="mb-3">
               <label for="proyectoAsociado" class="form-label">Proyecto Asociado:</label>
-              <input
-                type="text"
-                class="form-control"
-                id="proyectoAsociado"
-                placeholder="Nombre del proyecto"
-                formControlName="proyectoAsociado"
-                [class.is-invalid]="inValidFieldEdit('proyectoAsociado')">
+              <input type="text" class="form-control" id="proyectoAsociado" placeholder="Nombre del proyecto"
+                formControlName="proyectoAsociado" [class.is-invalid]="inValidFieldEdit('proyectoAsociado')">
               <div *ngIf="inValidFieldEdit('proyectoAsociado')" class="text-danger">
                 Proporcione un nombre válido (entre 3 y 20 caracteres).
               </div>
@@ -281,13 +271,8 @@
             <!-- Descripción -->
             <div class="mb-3">
               <label for="descripcion" class="form-label">Descripción:</label>
-              <textarea
-                class="form-control"
-                id="descripcion"
-                rows="3"
-                placeholder="Descripción de la reserva"
-                formControlName="descripcion"
-                [class.is-invalid]="inValidFieldEdit('descripcion')"></textarea>
+              <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción de la reserva"
+                formControlName="descripcion" [class.is-invalid]="inValidFieldEdit('descripcion')"></textarea>
               <div *ngIf="inValidFieldEdit('descripcion')" class="text-danger">
                 Proporcione una descripción válida (entre 20 y 140 caracteres).
               </div>

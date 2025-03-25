@@ -24,6 +24,9 @@ export class ListReservasComponent implements OnInit, OnChanges {
   email: string | null = null;
   id!: number | undefined;
   role: string | null = null;
+  minDateTime: string = '';
+  dateActual: string = '';
+
   constructor(private reservasService: ReservasService,
         private authService: AuthService,
         private router: Router,
@@ -69,6 +72,11 @@ export class ListReservasComponent implements OnInit, OnChanges {
   async ngOnInit(): Promise<void> {
     const token = localStorage.getItem('access_token');
 
+    this.updateMinDateTime();
+
+    const now = new Date();
+    this.minDateTime = now.toISOString().slice(0, 16);
+
     this.email = this.authService.getEmail();
     if (this.email) {
       await this.waitFetch(this.email);
@@ -91,6 +99,35 @@ export class ListReservasComponent implements OnInit, OnChanges {
     // Carga inicial de las reservas
     await this.loadReservas();
     this.filterReservas(this.nombreProyecto); // Filtra las reservas según el valor inicial de sala
+  }
+
+  // Método para actualizar la fecha y hora mínima
+  updateMinDateTime(): void {
+    const now = new Date();
+    const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 16); // Formato 'YYYY-MM-DDTHH:mm'
+    this.minDateTime = localDateTime;
+    this.dateActual = localDateTime.slice(0, 10); // Formato 'YYYY-MM-DD'
+  }
+
+  // Método para verificar si la fecha seleccionada es hoy
+  isToday(selectedDate: string): boolean {
+    return selectedDate === this.dateActual;
+  }
+
+  // Método para manejar cambios en la fecha seleccionada
+  onDateTimeChange(event: any): void {
+    const selectedDateTime = event.target.value;
+    const selectedDate = selectedDateTime.slice(0, 10); // Extraer solo la fecha (YYYY-MM-DD)
+
+    if (this.isToday(selectedDate)) {
+      // Si es hoy, actualizar minDateTime con la hora actual
+      this.updateMinDateTime();
+    } else {
+      // Si no es hoy, permitir cualquier hora
+      this.minDateTime = `${selectedDate}T00:00`;
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
