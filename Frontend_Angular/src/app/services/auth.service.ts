@@ -60,20 +60,16 @@ export class AuthService {
 
   }
 
-  async loginWithGoogle(idToken: string): Promise<any> {
-    const response = await fetch(`${this.apiUrl}/login/google`, {
+  async loginWithGoogle(response: any) {
+    const fetchResponse = await fetch(`${this.apiUrl}/api/google-login`, { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id_token: idToken }),
+      body: JSON.stringify({ email: response.email })
     });
 
-    if (!response.ok) {
-      throw new Error('Error al iniciar sesión con Google');
-    }
-
-    return response.json(); // Devuelve el token JWT
+    return fetchResponse.json();
   }
 
   async registerUser(user: Omit<Usuario, "id">): Promise<Usuario> {
@@ -101,4 +97,19 @@ export class AuthService {
     // Redirigir al usuario al login (o página inicial)
     this.router.navigate(['/login']);
   }
+
+  /**
+   * 
+   * @param token El token JWT
+   * @returns el payload del token decodificado
+   */
+  decodeJwtResponse(token: string) {
+    let base64Url = token.split('.')[1];
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
 }

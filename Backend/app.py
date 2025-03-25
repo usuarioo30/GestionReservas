@@ -85,37 +85,37 @@ def login():
         return jsonify({"message": "Credenciales incorrectas"}), 401
 
 # Ruta para el inicio de sesión con Google
-@app.route('/login/google', methods=['POST'])
-def google_login():
-    # El flujo de OAuth 2.0 se crea y autentica a través de Google
-    data = request.get_json()
-    token_id = data.get('id_token')  # id_token que Google devuelve
+# @app.route('/login/google', methods=['POST'])
+# def google_login():
+#     # El flujo de OAuth 2.0 se crea y autentica a través de Google
+#     data = request.get_json()
+#     token_id = data.get('id_token')  # id_token que Google devuelve
 
-    try:
-        # Verifica el token con Google
-        credentials = google.auth.credentials.Credentials.from_authorized_user_info(info=token_id)
-        request_info = google.auth.transport.requests.Request()
+#     try:
+#         # Verifica el token con Google
+#         credentials = google.auth.credentials.Credentials.from_authorized_user_info(info=token_id)
+#         request_info = google.auth.transport.requests.Request()
 
-        id_info = google.oauth2.id_token.verify_oauth2_token(token_id, request_info)
-        if id_info['iss'] != 'accounts.google.com' and id_info['iss'] != 'https://accounts.google.com':
-            raise ValueError('Token de autenticación inválido.')
+#         id_info = google.oauth2.id_token.verify_oauth2_token(token_id, request_info)
+#         if id_info['iss'] != 'accounts.google.com' and id_info['iss'] != 'https://accounts.google.com':
+#             raise ValueError('Token de autenticación inválido.')
 
-        # Verificar que el correo sea del dominio de la empresa
-        if not id_info['email'].endswith('@apeiroo.com'):
-            return jsonify({'message': 'No autorizado'}), 403
+#         # Verificar que el correo sea del dominio de la empresa
+#         if not id_info['email'].endswith('@apeiroo.com'):
+#             return jsonify({'message': 'No autorizado'}), 403
 
-        # Crear el token JWT
-        usuario = Usuario.query.filter_by(email=id_info['email']).first()
-        if not usuario:
-            usuario = Usuario(email=id_info['email'], username=id_info['username'], password=None)
-            db.session.add(usuario)
-            db.session.commit()
+#         # Crear el token JWT
+#         usuario = Usuario.query.filter_by(email=id_info['email']).first()
+#         if not usuario:
+#             usuario = Usuario(email=id_info['email'], username=id_info['username'], password=None)
+#             db.session.add(usuario)
+#             db.session.commit()
 
-        access_token = create_access_token(identity=usuario.id, expires_delta=timedelta(hours=1))
-        return jsonify(access_token=access_token), 200
+#         access_token = create_access_token(identity=usuario.id, expires_delta=timedelta(hours=1))
+#         return jsonify(access_token=access_token), 200
 
-    except Exception as e:
-        return jsonify({'message': 'Autenticación fallida', 'error': str(e)}), 401
+#     except Exception as e:
+#         return jsonify({'message': 'Autenticación fallida', 'error': str(e)}), 401
 
 # Ruta protegida que requiere JWT para acceder
 @app.route('/dashboard', methods=['GET'])
@@ -298,6 +298,24 @@ def crear_usuario():
 
     except Exception as e:
         return jsonify({"message": "Error al crear el usuario", "error": str(e)}), 500
+
+# Iniciar sesión con google
+@app.route("/api/google-login", methods=["POST"])
+def google_login():
+    data = request.json
+    if "email" not in data:
+        return jsonify({"error": "Email is required"}), 400
+
+    user = AdiscoveryUser.query.filter_by(Email=data["email"]).first()
+
+    if not user:
+        return jsonify({"exists": False, "error": "User not found"}), 404
+
+    return jsonify({
+        "exists": True,
+        "message": f"Welcome {user.FirstName}!",
+        "role": user.Role
+    }), 200
 
 # Ejecutar la aplicación Flask
 if __name__ == '__main__':
