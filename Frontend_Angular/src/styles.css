@@ -218,3 +218,14 @@ body.dark-theme .alert-info {
 .dark-theme .btn-close {
   opacity: 1;
 }
+
+/* Estilo para el enlace activo */
+.sala.active {
+  background-color: #007bff;
+}
+
+/* Estilo para el botón activo en modo oscuro */
+.active-dark {
+  background-color: #6c757d !important; /* gris medio */
+  color: #fff !important;
+}

@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges, OnInit, inject, Renderer2 } from '@angular/core';
 import { ReservasService } from '../../../services/reservas.service';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, NgModel, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { Reserva } from '../../../interfaces/reserva';
@@ -9,7 +9,7 @@ import { jwtDecode } from 'jwt-decode';
 import { Showreserva } from '../../../interfaces/showreserva';
 
 @Component({
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, FormsModule],
   selector: 'app-list-reservas',
   templateUrl: './list-reservas.component.html',
   styleUrls: ['./list-reservas.component.css']
@@ -19,6 +19,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   reservas: Showreserva[] = [];
   showReservas: Showreserva[] = [];
   isDarkTheme = false;
+  nombreProyecto: string = '';
   @Input() sala?: string;
   email: string | null = null;
   id!: number | undefined;
@@ -89,13 +90,13 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
     // Carga inicial de las reservas
     await this.loadReservas();
-    this.filterReservas(); // Filtra las reservas según el valor inicial de sala
+    this.filterReservas(this.nombreProyecto); // Filtra las reservas según el valor inicial de sala
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     // Detecta cambios en el valor de @Input() sala
     if (changes['sala'] && !changes['sala'].isFirstChange()) {
-      this.filterReservas(); // Filtra las reservas cuando cambia el valor de sala
+      this.filterReservas(this.nombreProyecto); // Filtra las reservas cuando cambia el valor de sala
     }
   }
 
@@ -135,22 +136,36 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
-  filterReservas(): void {
-    if (!this.sala) {
-      this.reservas = this.showReservas; // Si no hay sala, muestra todas las reservas
-      return;
-    }
+  filterReservas(nombreproyecto: string): void {
+
 
     switch (this.sala) {
       case 'upper':
+
+        if (nombreproyecto) {
+          this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()));
+          break;
+        }
         this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba');
         break;
       case 'lower':
+        if (nombreproyecto) {
+          this.reservas = this.showReservas.filter(reserva => reserva.sala === 'abajo' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()));
+          console.log(this.reservas);
+          break;
+        }
         this.reservas = this.showReservas.filter(reserva => reserva.sala === 'abajo');
         break;
       default:
-        this.reservas = this.showReservas; // Si el valor no es válido, muestra todas las reservas
-        break;
+        if (nombreproyecto) {
+          this.reservas = this.showReservas.filter(reserva => reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()));
+          console.log("Probamos".toLowerCase().trim().includes(nombreproyecto.toLowerCase().trim()));
+          break;
+        } else {
+          this.reservas = this.showReservas; // Si el valor no es válido, muestra todas las reservas
+          break;
+
+        }
     }
   }
 
@@ -184,7 +199,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
       alert('Reserva realizada con éxito');
 
       await this.loadReservas();
-      this.filterReservas();
+      this.filterReservas(this.nombreProyecto);
 
       this.reservation.reset({
         email: this.email
@@ -249,7 +264,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
       alert('Reserva editada con éxito');
       await this.loadReservas(); // Recargar las reservas
-      this.filterReservas(); // Aplicar el filtro de reservas
+      this.filterReservas(this.nombreProyecto); // Aplicar el filtro de reservas
     } else {
       console.error('El formulario de edición no es válido');
       this.editReservation.markAllAsTouched(); // Marcar todos los campos como tocados para mostrar errores
