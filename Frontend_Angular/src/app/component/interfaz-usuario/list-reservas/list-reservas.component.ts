@@ -94,7 +94,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
         reservas.map(async reserva => {
           let response = await this.authService.getUser(reserva.idUsuario);
           reserva.owner = response.username
-          // reserva.email = response.email;
+          reserva.email = response.email;
           return reserva;
         })
       );

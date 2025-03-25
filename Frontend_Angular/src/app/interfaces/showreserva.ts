@@ -6,5 +6,6 @@ export interface Showreserva {
     proyectoAsociado: string;
     descripcion: string;
     idUsuario: number;
+    email: string;
     owner: string;
 }
