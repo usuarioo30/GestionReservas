@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { retry } from 'rxjs';
 import { Usuario } from '../interfaces/usuario';
+import e from 'express';
 
 @Injectable({
   providedIn: 'root',
@@ -76,6 +77,7 @@ export class AuthService {
   }
 
   async registerUser(user: Omit<Usuario, "id">): Promise<Usuario> {
+    console.log("He entrado aquí con", user);
     const response = await fetch(`${this.apiUrl}/register`, {
       method: 'POST',
       headers: {

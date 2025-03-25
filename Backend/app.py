@@ -7,11 +7,12 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS  # Importa Flask-CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_sqlalchemy import SQLAlchemy
-
+from sqlalchemy.exc import IntegrityError
+from werkzeug.security import generate_password_hash
 
 # Configuración de la base de datos y otros parámetros
 class Config:
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://dam:dam@localhost/gestionreservas'
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:Usuario1234@localhost/gestionreservas'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'miClave'  # Clave secreta para JWT
     JWT_SECRET_KEY = 'mi_secreto_jwt'  # Clave secreta para JWT
@@ -260,6 +261,7 @@ def obtener_usuario_por_id(id):
 
 # Crear un nuevo usuario
 @app.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST'])
 def crear_usuario():    
     try:
         data = request.get_json()
@@ -268,12 +270,17 @@ def crear_usuario():
         username = data.get('username')
         roles = data.get('roles')
 
+        # Validar que todos los campos estén presentes
         if not all([email, password, username, roles]):
             return jsonify({"message": "Todos los campos son obligatorios"}), 400
 
+        # Encriptar la contraseña
+        password_hash = generate_password_hash(password)
+
+        # Crear el nuevo usuario
         nuevo_usuario = Usuario(
             email=email,
-            password=password,
+            password=password_hash,
             username=username,
             roles=roles
         )
@@ -283,6 +290,11 @@ def crear_usuario():
 
         return jsonify({"message": "Usuario creado con éxito"}), 201
 
+    except IntegrityError as e:
+        db.session.rollback()  # Revertir la transacción en caso de error
+        if "Duplicate entry" in str(e.orig):
+            return jsonify({"message": "El correo ya está registrado"}), 400
+        return jsonify({"message": "Error de integridad en la base de datos", "error": str(e)}), 400
 
     except Exception as e:
         return jsonify({"message": "Error al crear el usuario", "error": str(e)}), 500

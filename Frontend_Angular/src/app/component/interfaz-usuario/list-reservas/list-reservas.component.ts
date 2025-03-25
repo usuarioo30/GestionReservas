@@ -23,6 +23,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   @Input() sala?: string;
   email: string | null = null;
   id!: number | undefined;
+  role: string | null = null;
   constructor(private reservasService: ReservasService,
         private authService: AuthService,
         private router: Router,
@@ -66,7 +67,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     const token = localStorage.getItem('access_token');
 
     this.email = this.authService.getEmail();
-
+    this.role = await this.getRole(this.id!);
     if(!token) {
       this.router.navigate(['/login']);
     }
@@ -92,6 +93,13 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
+  async getRole(id: number) {
+    const response = await this.authService.getUser(id);
+
+    return response.roles;
+  }
+
+
   async loadReservas(): Promise<void> {
     try {
       let reservas = await this.reservasService.getReservas();
@@ -100,6 +108,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
         reservas.map(async reserva => {
           let response = await this.authService.getUser(reserva.idUsuario);
           reserva.owner = response.username; // Asigna el nombre del usuario al campo 'owner'
+          reserva.email = response.email;
           return reserva;
         })
       );

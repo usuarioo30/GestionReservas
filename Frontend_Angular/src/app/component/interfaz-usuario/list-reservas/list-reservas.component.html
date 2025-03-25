@@ -54,6 +54,7 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
             <li><hr class="dropdown-divider"></li>
+            <li><a *ngIf="role === 'admin'" class="dropdown-item" [routerLink]="['/createuser']">Crear usuario</a></li>
             <li><a class="dropdown-item" href="#" (click)="onLogout()">Cerrar sesión</a></li>
           </ul>
         </div>
@@ -70,6 +71,7 @@
               <thead>
                 <tr>
                   <th id="hora">Hora&nbsp;<i class="bi bi-clock"></i></th>
+                  <th *ngIf="sala !== 'upper' && sala != 'lower'">Sala</th>
                   <th>Resumen&nbsp;<i class="bi bi-blockquote-left"></i></th>
                   <th>Proyecto&nbsp;<i class="bi bi-folder"></i></th>
                   <th id="resto">Duración&nbsp;<i class="bi bi-broadcast"></i></th>
@@ -83,17 +85,22 @@
 
                   <!-- Usa el pipe 'date' con el formato 'HH:mm' -->
                   <td id="hora">{{ reserva.fechaHoraInicio | date: 'HH:mm' }}</td>
+                  <td *ngIf="sala !== 'upper' && sala != 'lower'">{{reserva.sala}}</td>
                   <td>{{ reserva.descripcion }}</td>
                   <!-- Aplica la clase personalizada 'proyecto-btn' -->
                   <td id="proyecto" class="proyecto-btn">{{ reserva.proyectoAsociado }}</td>
                   <td id="resto">{{ reserva.duracion }}m</td>
                   <td id="date">{{ reserva.fechaHoraInicio | date: 'd MMM' }}</td>
-                  <td>{{reserva.owner}}</td>
+                  <td>  
+                    {{reserva.owner}}<br>
+                    <span class="email">{{reserva.email}} </span>
+                  </td>
                   <td>
-                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
+                    <button *ngIf="reserva.email === email" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)"> 
                       <i class="bi bi-pen"></i>
                     </button>&nbsp;&nbsp;
-                    <button class="btn btn-danger btn-sm" (click)="deleteReserva(reserva.id)">
+                    
+                    <button *ngIf="reserva.email === email" class="btn btn-danger btn-sm" (click)="deleteReserva(reserva.id)">
                       <i class="bi bi-trash"></i>
                     </button>
                   </td>
