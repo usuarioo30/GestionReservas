@@ -37,7 +37,7 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" [routerLink]="['/createuser']">Crear usuario</a></li>
+            <li><a *ngIf="role === 'admin'" class="dropdown-item" [routerLink]="['/createuser']">Crear usuario</a></li>
             <li><a class="dropdown-item" href="#" (click)="onLogout()">Cerrar sesión</a></li>
           </ul>
         </div>

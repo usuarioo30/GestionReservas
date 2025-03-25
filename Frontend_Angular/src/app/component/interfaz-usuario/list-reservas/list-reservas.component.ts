@@ -19,6 +19,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   showReservas: Showreserva[] = [];
   @Input() sala?: string;
   email: string | null = null;
+  role: string | null = null;
   id!: number | undefined;
   constructor(private reservasService: ReservasService,
         private authService: AuthService,
@@ -27,7 +28,8 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
     let token = localStorage.getItem('access_token');
     if(token) { 
-      let userId = jwtDecode(token)?.sub;
+      let decodedToken = jwtDecode(token);
+      let userId = decodedToken?.sub;
       if (userId) {
         this.id =  Number.parseInt(userId);
         console.log(this.id);
@@ -62,7 +64,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     const token = localStorage.getItem('access_token');
 
     this.email = this.authService.getEmail();
-
+    this.role = await this.getRole(this.id!);
     if(!token) {
       this.router.navigate(['/login']);
     }
@@ -76,6 +78,12 @@ export class ListReservasComponent implements OnInit, OnChanges {
     if (changes['sala'] && !changes['sala'].isFirstChange()) {
       this.filterReservas();
     }
+  }
+
+  async getRole(id: number) {
+    const response = await this.authService.getUser(id);
+
+    return response.roles;
   }
 
   async loadReservas(): Promise<void> {

@@ -75,6 +75,10 @@
                 <option value="admin">Administrador</option>
                 <option value="user">Usuario</option>
             </select>
+            @if (isInvalid('roles')) {
+                <span class="text-danger">Elija un rol</span>
+
+            }
         </div>
         
         <div class="d-flex justify-content-between gap-2">
