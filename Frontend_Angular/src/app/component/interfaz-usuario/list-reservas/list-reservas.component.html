@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <!-- Botón dropdown configuración (nuevo) -->
+  <!-- Botón dropdown configuración -->
   <div class="dropdown position-absolute top-0 end-0 p-3">
     <a href="#"
        class="text-black text-decoration-none dropdown-toggle"
@@ -16,6 +16,7 @@
       </li>
     </ul>
   </div>
+
   <div class="row flex-nowrap">
     <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
       <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
@@ -66,55 +67,49 @@
       <div class="alert alert-primary custom-alert" *ngIf="reservas.length === 0" role="alert">
         <b>No hay reservas activas.</b>
       </div>
-          <div class="table-responsive" *ngIf="reservas.length > 0">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th id="hora">Hora&nbsp;<i class="bi bi-clock"></i></th>
-                  <th *ngIf="sala !== 'upper' && sala != 'lower'">Sala</th>
-                  <th>Resumen&nbsp;<i class="bi bi-blockquote-left"></i></th>
-                  <th>Proyecto&nbsp;<i class="bi bi-folder"></i></th>
-                  <th id="resto">Duración&nbsp;<i class="bi bi-broadcast"></i></th>
-                  <th>Date&nbsp;<i class="bi bi-calendar"></i></th>
-                  <th>Owner&nbsp;<i class="bi bi-person"></i></th>
-                  <th>Actions&nbsp;<i class="bi bi-play"></i></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let reserva of reservas">
+      <!-- Botón para abrir el modal -->
+      <button class="btn btn-primary boton" data-bs-toggle="modal" data-bs-target="#crearReservaModal" *ngIf="sala === 'upper' || sala === 'lower'">
+        Crear reserva
+      </button>
+      <div class="table-responsive" *ngIf="reservas.length > 0">
+        <table class="table">
+          <thead>
+            <tr>
+              <th id="hora">Hora&nbsp;<i class="bi bi-clock"></i></th>
+              <th *ngIf="sala !== 'upper' && sala != 'lower'">Sala</th>
+              <th>Resumen&nbsp;<i class="bi bi-blockquote-left"></i></th>
+              <th>Proyecto&nbsp;<i class="bi bi-folder"></i></th>
+              <th id="resto">Duración&nbsp;<i class="bi bi-broadcast"></i></th>
+              <th>Date&nbsp;<i class="bi bi-calendar"></i></th>
+              <th>Owner&nbsp;<i class="bi bi-person"></i></th>
+              <th>Actions&nbsp;<i class="bi bi-play"></i></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let reserva of reservas">
+              <td id="hora">{{ reserva.fechaHoraInicio | date: 'HH:mm' }}</td>
+              <td *ngIf="sala !== 'upper' && sala != 'lower'">{{reserva.sala}}</td>
+              <td>{{ reserva.descripcion }}</td>
+              <td id="proyecto" class="proyecto-btn">{{ reserva.proyectoAsociado }}</td>
+              <td id="resto">{{ reserva.duracion }}m</td>
+              <td id="date">{{ reserva.fechaHoraInicio | date: 'd MMM' }}</td>
+              <td>
+                {{reserva.owner}}<br>
+                <span class="email">{{reserva.email}} </span>
+              </td>
+              <td>
+                <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
+                  <i class="bi bi-pen"></i>
+                </button>&nbsp;&nbsp;
 
-                  <!-- Usa el pipe 'date' con el formato 'HH:mm' -->
-                  <td id="hora">{{ reserva.fechaHoraInicio | date: 'HH:mm' }}</td>
-                  <td *ngIf="sala !== 'upper' && sala != 'lower'">{{reserva.sala}}</td>
-                  <td>{{ reserva.descripcion }}</td>
-                  <!-- Aplica la clase personalizada 'proyecto-btn' -->
-                  <td id="proyecto" class="proyecto-btn">{{ reserva.proyectoAsociado }}</td>
-                  <td id="resto">{{ reserva.duracion }}m</td>
-                  <td id="date">{{ reserva.fechaHoraInicio | date: 'd MMM' }}</td>
-                  <td>
-                    {{reserva.owner}}<br>
-                    <span class="email">{{reserva.email}} </span>
-                  </td>
-                  <td>
-                    <button *ngIf="reserva.email === email" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
-                      <i class="bi bi-pen"></i>
-                    </button>&nbsp;&nbsp;
-
-                    <button *ngIf="reserva.email === email" class="btn btn-danger btn-sm" (click)="deleteReserva(reserva.id)">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Botón para abrir el modal -->
-          <button class="btn btn-primary boton" data-bs-toggle="modal" data-bs-target="#crearReservaModal" *ngIf="sala === 'upper' || sala === 'lower'">
-            Crear reserva
-          </button>
-        </div>
-
+                <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-danger btn-sm" (click)="deleteReserva(reserva.id)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -183,20 +178,24 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <!-- Título dinámico según la sala -->
           <h5 *ngIf="sala === 'upper'" class="modal-title" id="editarReservaModalLabel">Editar Reserva - Sala Arriba</h5>
           <h5 *ngIf="sala === 'lower'" class="modal-title" id="editarReservaModalLabel">Editar Reserva - Sala Abajo</h5>
           <h5 *ngIf="!sala" class="modal-title" id="editarReservaModalLabel">Editar Reserva</h5>
-
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <!-- Formulario con data-binding -->
           <form [formGroup]="editReservation" (ngSubmit)="editReservaSubmit()">
             <!-- Email -->
             <div class="mb-3">
               <label for="email" class="form-label">Email:</label>
-              <input type="email" class="form-control bg-light" id="sala" placeholder="Introduzca su correo" formControlName="email" readonly="readonly">
+              <input
+                type="email"
+                class="form-control bg-light"
+                id="email"
+                placeholder="Correo del creador"
+                formControlName="email"
+                [disabled]="role === 'admin'"
+                readonly="readonly">
               <div *ngIf="inValidFieldEdit('email')" class="text-danger">
                 Proporcione un correo válido.
               </div>
@@ -272,3 +271,4 @@
     </div>
   </div>
   <!-- Fin modal para editar reserva -->
+</div>

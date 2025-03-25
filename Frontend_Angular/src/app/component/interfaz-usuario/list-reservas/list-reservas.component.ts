@@ -1,4 +1,3 @@
-
 import { Component, Input, OnChanges, SimpleChanges, OnInit, inject, Renderer2 } from '@angular/core';
 import { ReservasService } from '../../../services/reservas.service';
 import { CommonModule } from '@angular/common';
@@ -191,7 +190,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
       // Asigna los valores de la reserva a los campos del formulario
       this.editReservation.controls['id'].setValue(reserva.id);
-      this.editReservation.controls['email'].setValue(this.email);
+      this.editReservation.controls['email'].setValue(reserva.email); // Cargar el correo original
       this.editReservation.controls['fechaHoraInicio'].setValue(reserva.fechaHoraInicio);
       this.editReservation.controls['duracion'].setValue(reserva.duracion);
       this.editReservation.controls['proyectoAsociado'].setValue(reserva.proyectoAsociado);
@@ -206,6 +205,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
   async editReservaSubmit() {
     if (this.editReservation.valid) {
+      // Crear el objeto de reserva con los datos del formulario
       const reserva: Reserva = {
         id: this.editReservation.value.id,
         sala: this.sala === 'upper' ? 'arriba' : 'abajo',
@@ -213,19 +213,30 @@ export class ListReservasComponent implements OnInit, OnChanges {
         duracion: this.editReservation.value.duracion,
         proyectoAsociado: this.editReservation.value.proyectoAsociado,
         descripcion: this.editReservation.value.descripcion,
-        idUsuario: this.editReservation.value.idUsuario
+        idUsuario: this.editReservation.value.idUsuario,
       };
 
-      console.log(reserva);
+      // Si el usuario tiene rol de administrador, mantener el correo original
+      if (this.role === 'admin') {
+        const originalReserva = this.reservas.find(res => res.id === reserva.id);
+        if (originalReserva) {
+          reserva.idUsuario = originalReserva.idUsuario; // Mantener el ID del usuario original
+        }
+      }
 
+      console.log('Reserva editada:', reserva);
+
+      // Llamar al servicio para actualizar la reserva
       await this.reservasService.editReserva(reserva);
 
       alert('Reserva editada con éxito');
-      await this.loadReservas();
-      this.filterReservas();
+      await this.loadReservas(); // Recargar las reservas
+      this.filterReservas(); // Aplicar el filtro de reservas
+    } else {
+      console.error('El formulario de edición no es válido');
+      this.editReservation.markAllAsTouched(); // Marcar todos los campos como tocados para mostrar errores
     }
   }
-
 
   deleteReserva(id: number): void {
     const confirmarEliminacion = confirm('¿Estás seguro de que deseas eliminar esta reserva?');
