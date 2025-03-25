@@ -1,17 +1,17 @@
-import os
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta, datetime
-from google_auth_oauthlib.flow import Flow
-import google.auth.transport.requests
+
 import google.auth
-from sqlalchemy import cast, Integer
+import google.auth.transport.requests
+from flask import Flask, request, jsonify
 from flask_cors import CORS  # Importa Flask-CORS
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_sqlalchemy import SQLAlchemy
+
 
 # Configuración de la base de datos y otros parámetros
 class Config:
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:Usuario1234@localhost/gestionreservas'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://dam:dam@localhost/gestionreservas'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'miClave'  # Clave secreta para JWT
     JWT_SECRET_KEY = 'mi_secreto_jwt'  # Clave secreta para JWT
@@ -22,7 +22,7 @@ jwt = JWTManager()
 
 # Definir el modelo de Usuario
 class Usuario(db.Model):
-    tablename = 'usuario'
+    __tablename__ = 'usuario'
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -30,11 +30,11 @@ class Usuario(db.Model):
     username = db.Column(db.String(120), nullable=False)
     roles = db.Column(db.String(255), nullable=False)
 
-    def repr(self):
+    def __repr__(self):
         return f'<Usuario {self.username}>'
 
 class Reserva(db.Model):
-    tablename = 'reserva'
+    __tablename__ = 'reserva'
 
     id = db.Column(db.Integer, primary_key=True)
     sala = db.Column(db.String(120), nullable=False)
@@ -44,7 +44,7 @@ class Reserva(db.Model):
     descripcion = db.Column(db.String(255), nullable=False)
     idUsuario = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
 
-    def repr(self):
+    def __repr__(self):
         return f'<Reserva {self.sala}>'
 
 # Función para crear la aplicación
