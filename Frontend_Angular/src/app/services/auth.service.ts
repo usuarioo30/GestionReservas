@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
-import { retry } from 'rxjs';
 import { Usuario } from '../interfaces/usuario';
-import e from 'express';
 
 @Injectable({
   providedIn: 'root',
@@ -38,7 +36,7 @@ export class AuthService {
       try {
         // Decodificar el token JWT
         const decoded: any = jwtDecode(token);
-        
+
         // Retornar el nombre de usuario desde el payload del token
         return decoded.email || null;
       } catch (error) {
@@ -61,7 +59,7 @@ export class AuthService {
   }
 
   async loginWithGoogle(response: any) {
-    const fetchResponse = await fetch(`${this.apiUrl}/api/google-login`, { 
+    const fetchResponse = await fetch(`${this.apiUrl}/api/google-login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -93,13 +91,13 @@ export class AuthService {
   logout(): void {
     // Eliminar el token del localStorage
     localStorage.removeItem('access_token');
-    
+
     // Redirigir al usuario al login (o página inicial)
     this.router.navigate(['/login']);
   }
 
   /**
-   * 
+   *
    * @param token El token JWT
    * @returns el payload del token decodificado
    */

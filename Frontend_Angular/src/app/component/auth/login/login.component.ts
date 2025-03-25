@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import {Component, OnInit, Renderer2} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -16,6 +16,7 @@ import { RouterOutlet } from '@angular/router';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   isDarkTheme = false;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -36,6 +37,7 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/reservas']);
     }
 
+    // Lógica para restaurar el tema guardado previamente (oscuro | claro)
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       this.isDarkTheme = true;
@@ -138,6 +140,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  // Método para alternar el tema
   toggleTheme(): void {
     this.isDarkTheme = !this.isDarkTheme;
 

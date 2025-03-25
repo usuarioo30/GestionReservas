@@ -91,15 +91,15 @@
                   <td id="proyecto" class="proyecto-btn">{{ reserva.proyectoAsociado }}</td>
                   <td id="resto">{{ reserva.duracion }}m</td>
                   <td id="date">{{ reserva.fechaHoraInicio | date: 'd MMM' }}</td>
-                  <td>  
+                  <td>
                     {{reserva.owner}}<br>
                     <span class="email">{{reserva.email}} </span>
                   </td>
                   <td>
-                    <button *ngIf="reserva.email === email" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)"> 
+                    <button *ngIf="reserva.email === email" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
                       <i class="bi bi-pen"></i>
                     </button>&nbsp;&nbsp;
-                    
+
                     <button *ngIf="reserva.email === email" class="btn btn-danger btn-sm" (click)="deleteReserva(reserva.id)">
                       <i class="bi bi-trash"></i>
                     </button>
@@ -117,8 +117,6 @@
 
     </div>
   </div>
-
-
 
   <!-- Modal para crear reserva -->
   <div class="modal fade" id="crearReservaModal" tabindex="-1" aria-labelledby="crearReservaModalLabel" aria-hidden="true">
@@ -274,5 +272,3 @@
     </div>
   </div>
   <!-- Fin modal para editar reserva -->
-
-
