@@ -6,7 +6,7 @@
       <form [formGroup]="newuser" (ngSubmit)="submitedForm()">
 
         <div class="mb-3">
-            <label for="email" class="form-label">Usuario</label>
+            <label for="email" class="form-label">Correo electrónico</label>
             <input
               id="email"
               formControlName="email"
@@ -15,7 +15,7 @@
               placeholder="Ingresa tu correo electrónico"
             />
             @if (isInvalid('email')) {
-                <span class="text-danger">Rellene este campo</span>
+                <span class="text-danger">Introduzca un correo corporativo</span>
 
             }
         </div>

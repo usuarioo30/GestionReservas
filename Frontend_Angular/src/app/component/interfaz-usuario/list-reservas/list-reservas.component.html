@@ -1,4 +1,21 @@
 <div class="container-fluid">
+  <!-- Botón dropdown configuración (nuevo) -->
+  <div class="dropdown position-absolute top-0 end-0 p-3">
+    <a href="#"
+       class="text-black text-decoration-none dropdown-toggle"
+       id="dropdownTheme"
+       data-bs-toggle="dropdown"
+       aria-expanded="false">
+      <i class="bi bi-gear fs-5"></i>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-dark shadow">
+      <li>
+        <a class="dropdown-item" href="#" (click)="toggleTheme()">
+          {{ isDarkTheme ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro' }}
+        </a>
+      </li>
+    </ul>
+  </div>
   <div class="row flex-nowrap">
     <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
       <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">

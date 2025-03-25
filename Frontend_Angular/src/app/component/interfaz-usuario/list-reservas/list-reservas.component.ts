@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, OnInit, inject } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, OnInit, inject, Renderer2 } from '@angular/core';
 import { ReservasService } from '../../../services/reservas.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -17,13 +17,15 @@ import { Showreserva } from '../../../interfaces/showreserva';
 export class ListReservasComponent implements OnInit, OnChanges {
   reservas: Showreserva[] = [];
   showReservas: Showreserva[] = [];
+  isDarkTheme = false;
   @Input() sala?: string;
   email: string | null = null;
   role: string | null = null;
   id!: number | undefined;
   constructor(private reservasService: ReservasService,
         private authService: AuthService,
-        private router: Router
+        private router: Router,
+        private renderer: Renderer2
   ) {
 
     let token = localStorage.getItem('access_token');
@@ -67,6 +69,12 @@ export class ListReservasComponent implements OnInit, OnChanges {
     this.role = await this.getRole(this.id!);
     if(!token) {
       this.router.navigate(['/login']);
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      this.isDarkTheme = true;
+      this.renderer.addClass(document.body, 'dark-theme');
     }
 
     await this.loadReservas();
@@ -230,6 +238,18 @@ export class ListReservasComponent implements OnInit, OnChanges {
         }
       );
 
+    }
+  }
+
+  toggleTheme(): void {
+    this.isDarkTheme = !this.isDarkTheme;
+
+    localStorage.setItem('theme', this.isDarkTheme ? 'dark' : 'light');
+
+    if (this.isDarkTheme) {
+      this.renderer.addClass(document.body, 'dark-theme');
+    } else {
+      this.renderer.removeClass(document.body, 'dark-theme');
     }
   }
 }

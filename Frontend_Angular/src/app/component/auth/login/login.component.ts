@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -15,11 +15,12 @@ import { RouterOutlet } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-
+  isDarkTheme = false;
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private renderer: Renderer2
     ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -33,6 +34,12 @@ export class LoginComponent implements OnInit {
 
     if(token) {
       this.router.navigate(['/reservas']);
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      this.isDarkTheme = true;
+      this.renderer.addClass(document.body, 'dark-theme');
     }
 
     this.initializeGoogleAuth();
@@ -87,5 +94,17 @@ export class LoginComponent implements OnInit {
         });
       });
     });
+  }
+
+  toggleTheme(): void {
+    this.isDarkTheme = !this.isDarkTheme;
+
+    localStorage.setItem('theme', this.isDarkTheme ? 'dark' : 'light');
+
+    if (this.isDarkTheme) {
+      this.renderer.addClass(document.body, 'dark-theme');
+    } else {
+      this.renderer.removeClass(document.body, 'dark-theme');
+    }
   }
 }

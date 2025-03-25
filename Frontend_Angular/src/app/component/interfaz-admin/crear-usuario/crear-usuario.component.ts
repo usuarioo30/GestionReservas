@@ -16,7 +16,7 @@ export class CrearUsuarioComponent {
   private auth: AuthService = inject(AuthService);
 
   newuser: FormGroup = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@apeiroo\.com$/)]],
     username: ['', [Validators.required]],
     password: ['', [Validators.required]],
     confirmpassword: ['', [Validators.required]],
