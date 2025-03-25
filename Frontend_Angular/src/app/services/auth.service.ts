@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { retry } from 'rxjs';
+import { Usuario } from '../interfaces/usuario';
 
 @Injectable({
   providedIn: 'root',
@@ -72,6 +73,23 @@ export class AuthService {
     }
 
     return response.json(); // Devuelve el token JWT
+  }
+
+  async registerUser(user: Omit<Usuario, "id">): Promise<Usuario> {
+    const response = await fetch(`${this.apiUrl}/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al registrar el usuario');
+    }
+
+    return await response.json();
+
   }
 
   logout(): void {

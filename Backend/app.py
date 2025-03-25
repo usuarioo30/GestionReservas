@@ -258,8 +258,34 @@ def obtener_usuario_por_id(id):
     except Exception as e:
         return jsonify({"message": "Error al obtener el usuario", "error": str(e)}), 500
 
-    
-    
+# Crear un nuevo usuario
+@app.route('/register', methods=['POST'])
+def crear_usuario():    
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+        username = data.get('username')
+        roles = data.get('roles')
+
+        if not all([email, password, username, roles]):
+            return jsonify({"message": "Todos los campos son obligatorios"}), 400
+
+        nuevo_usuario = Usuario(
+            email=email,
+            password=password,
+            username=username,
+            roles=roles
+        )
+
+        db.session.add(nuevo_usuario)
+        db.session.commit()
+
+        return jsonify({"message": "Usuario creado con éxito"}), 201
+
+
+    except Exception as e:
+        return jsonify({"message": "Error al crear el usuario", "error": str(e)}), 500
 
 # Ejecutar la aplicación Flask
 if __name__ == '__main__':
