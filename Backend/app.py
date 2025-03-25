@@ -58,7 +58,7 @@ def create_app():
     jwt.init_app(app)
 
     # Habilita CORS para todas las rutas
-    CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
+    CORS(app, resources={r"/*": {"origins": "http://localhost"}})
 
     return app
 
@@ -259,6 +259,28 @@ def obtener_usuario_por_id(id):
     except Exception as e:
         return jsonify({"message": "Error al obtener el usuario", "error": str(e)}), 500
 
+@app.route('/usuarios/email/<string:email>', methods=['GET'])
+def obtener_usuario_por_email(email):
+    try:
+        # Buscar el usuario por su email
+        usuario = Usuario.query.filter_by(email=email).first()
+
+        if not usuario:
+            return jsonify({"message": "Usuario no encontrado"}), 404
+
+        # Serializar los datos del usuario
+        usuario_serializado = {
+            "id": usuario.id,
+            "email": usuario.email,
+            "username": usuario.username,
+            "roles": usuario.roles
+        }
+
+        return jsonify(usuario_serializado), 200
+
+    except Exception as e:
+        return jsonify({"message": "Error al obtener el usuario", "error": str(e)}), 500
+
 # Crear un nuevo usuario
 @app.route('/register', methods=['POST'])
 @app.route('/register', methods=['POST'])
@@ -306,15 +328,15 @@ def google_login():
     if "email" not in data:
         return jsonify({"error": "Email is required"}), 400
 
-    user = AdiscoveryUser.query.filter_by(Email=data["email"]).first()
+    user = Usuario.query.filter_by(email=data["email"]).first()
 
     if not user:
         return jsonify({"exists": False, "error": "User not found"}), 404
 
     return jsonify({
         "exists": True,
-        "message": f"Welcome {user.FirstName}!",
-        "role": user.Role
+        "message": f"Welcome {user.username}!",
+        "role": user.roles
     }), 200
 
 # Ejecutar la aplicación Flask

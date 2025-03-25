@@ -59,12 +59,17 @@ export class LoginComponent implements OnInit {
 
     this.authService.loginWithGoogle(response.credential)
       .then(res => {
-        console.log('Inicio de sesión con Google exitoso:', res);
+        //console.log('Inicio de sesión con Google exitoso:', res);
+        alert('Inicio de sesión con Google exitoso');
+        localStorage.setItem("access_token", JSON.stringify(response.credential));
+        this.router.navigate(['/reservas']);
         // Redirige al usuario o realiza alguna acción
+        
       })
       .catch(err => {
         console.error('Error al iniciar sesión con Google:', err);
       });
+    
   }
 
 

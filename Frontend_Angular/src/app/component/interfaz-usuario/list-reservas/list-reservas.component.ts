@@ -32,11 +32,14 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
     let token = localStorage.getItem('access_token');
     if(token) {
-      let userId = jwtDecode(token)?.sub;
-      if (userId) {
-        this.id =  Number.parseInt(userId);
-        console.log(this.id);
-      }
+      const decodedToken: any = jwtDecode(token);
+      console.log(decodedToken); //getUserByMail
+      this.waitFetch(decodedToken.email);
+      
+      // if (userId) {
+      //   this.id =  Number.parseInt(userId);
+      //   console.log(this.id);
+      // }
 
     }
 
@@ -67,7 +70,11 @@ export class ListReservasComponent implements OnInit, OnChanges {
     const token = localStorage.getItem('access_token');
 
     this.email = this.authService.getEmail();
-    this.role = await this.getRole(this.id!);
+    if (this.email) {
+      await this.waitFetch(this.email);
+      this.role = await this.getRole(this.id!);
+
+    }
     if(!token) {
       this.router.navigate(['/login']);
     }
@@ -99,6 +106,17 @@ export class ListReservasComponent implements OnInit, OnChanges {
     return response.roles;
   }
 
+  
+  async waitFetch(email: string): Promise<any> {
+    try {
+      const user = await this.authService.getUserByMail(email);
+      console.log(user); // Devuelve el resultado resuelto
+      this.id = user.id;
+    } catch (error) {
+      console.error('Error al obtener el usuario por email:', error);
+      throw error; // Lanza el error para manejarlo en el lugar donde se llama
+    }
+  }
 
   async loadReservas(): Promise<void> {
     try {

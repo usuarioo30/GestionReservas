@@ -49,6 +49,19 @@ export class AuthService {
     return null;
   }
 
+  async getUserByMail(email: string) {
+    const response = await fetch(`${this.apiUrl}/usuarios/email/${email}`)
+
+    if (!response.ok) {
+      throw new Error('Error al obtener el usuario');
+    }
+
+    const json = await response.json();
+
+    return await json;
+
+  }
+
   async getUser(id: number) {
     const response = await fetch(`${this.apiUrl}/usuarios/${id}`)
 
@@ -61,12 +74,14 @@ export class AuthService {
   }
 
   async loginWithGoogle(response: any) {
+    const decodedToken = this.decodeJwtResponse(response);
+    console.log("Decoded token", decodedToken);
     const fetchResponse = await fetch(`${this.apiUrl}/api/google-login`, { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email: response.email })
+      body: JSON.stringify({ email: decodedToken.email })
     });
 
     return fetchResponse.json();
