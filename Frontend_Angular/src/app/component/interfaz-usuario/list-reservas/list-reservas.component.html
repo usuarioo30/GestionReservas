@@ -1,4 +1,21 @@
 <div class="container-fluid">
+  <!-- Botón dropdown configuración (nuevo) -->
+  <div class="dropdown position-absolute top-0 end-0 p-3">
+    <a href="#"
+       class="text-black text-decoration-none dropdown-toggle"
+       id="dropdownTheme"
+       data-bs-toggle="dropdown"
+       aria-expanded="false">
+      <i class="bi bi-gear fs-5"></i>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-dark shadow">
+      <li>
+        <a class="dropdown-item" href="#" (click)="toggleTheme()">
+          {{ isDarkTheme ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro' }}
+        </a>
+      </li>
+    </ul>
+  </div>
   <div class="row flex-nowrap">
     <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
       <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
@@ -7,24 +24,24 @@
         </a>
         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
           <li class="nav-item">
-            <a 
-              [routerLink]="['/reservas']" 
-              [queryParams]="{ sala: 'upper' }" 
-              routerLinkActive="active" 
+            <a
+              [routerLink]="['/reservas']"
+              [queryParams]="{ sala: 'upper' }"
+              routerLinkActive="active"
               class="nav-link align-middle text-black sala"
               [class.active]="sala === 'upper'">
-              <i class="bi bi-arrow-bar-up"></i> 
+              <i class="bi bi-arrow-bar-up"></i>
               <span class="ms-2 d-none d-sm-inline">Sala de arriba</span>
             </a>
           </li>
           <li>
-            <a 
-              [routerLink]="['/reservas']" 
-              [queryParams]="{ sala: 'lower' }" 
-              routerLinkActive="active" 
+            <a
+              [routerLink]="['/reservas']"
+              [queryParams]="{ sala: 'lower' }"
+              routerLinkActive="active"
               class="nav-link align-middle text-black"
               [class.active]="sala === 'lower'">
-              <i class="bi bi-arrow-bar-down"></i> 
+              <i class="bi bi-arrow-bar-down"></i>
               <span class="ms-2 d-none d-sm-inline">Sala de abajo</span>
             </a>
           </li>
@@ -37,7 +54,6 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
             <li><hr class="dropdown-divider"></li>
-            <li><a *ngIf="role === 'admin'" class="dropdown-item" [routerLink]="['/createuser']">Crear usuario</a></li>
             <li><a class="dropdown-item" href="#" (click)="onLogout()">Cerrar sesión</a></li>
           </ul>
         </div>
@@ -54,7 +70,6 @@
               <thead>
                 <tr>
                   <th id="hora">Hora&nbsp;<i class="bi bi-clock"></i></th>
-                  <th *ngIf="sala !== 'upper' && sala !== 'lower'">Sala</th>
                   <th>Resumen&nbsp;<i class="bi bi-blockquote-left"></i></th>
                   <th>Proyecto&nbsp;<i class="bi bi-folder"></i></th>
                   <th id="resto">Duración&nbsp;<i class="bi bi-broadcast"></i></th>
@@ -65,24 +80,20 @@
               </thead>
               <tbody>
                 <tr *ngFor="let reserva of reservas">
-                  
+
                   <!-- Usa el pipe 'date' con el formato 'HH:mm' -->
                   <td id="hora">{{ reserva.fechaHoraInicio | date: 'HH:mm' }}</td>
-                  <td *ngIf="sala !== 'upper' && sala !== 'lower'">{{reserva.sala}}</td>
                   <td>{{ reserva.descripcion }}</td>
                   <!-- Aplica la clase personalizada 'proyecto-btn' -->
                   <td id="proyecto" class="proyecto-btn">{{ reserva.proyectoAsociado }}</td>
                   <td id="resto">{{ reserva.duracion }}m</td>
                   <td id="date">{{ reserva.fechaHoraInicio | date: 'd MMM' }}</td>
+                  <td>{{reserva.owner}}</td>
                   <td>
-                    {{reserva.owner}}<br>
-                    <span class="email">{{reserva.email}} </span>
-                  </td> 
-                  <td>
-                    <button *ngIf="reserva.email === email" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)"> 
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
                       <i class="bi bi-pen"></i>
                     </button>&nbsp;&nbsp;
-                    <button *ngIf="reserva.email === email" class="btn btn-danger btn-sm" (click)="deleteReserva(reserva.id)">
+                    <button class="btn btn-danger btn-sm" (click)="deleteReserva(reserva.id)">
                       <i class="bi bi-trash"></i>
                     </button>
                   </td>
@@ -140,7 +151,6 @@
               <input type="text" class="form-control" id="proyectoAsociado" placeholder="Nombre del proyecto" formControlName="proyectoAsociado">
               @if (inValidField('proyectoAsociado')) {
                 <span class="text-danger">Rellene este campo</span>
-
               }
             </div>
             <div class="mb-3">
@@ -258,4 +268,4 @@
   </div>
   <!-- Fin modal para editar reserva -->
 
-  
+
