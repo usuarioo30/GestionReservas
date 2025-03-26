@@ -229,3 +229,14 @@ body.dark-theme .alert-info {
   background-color: #6c757d !important; /* gris medio */
   color: #fff !important;
 }
+
+/* Estilo para el enlace activo */
+.sala.active {
+  background-color: #007bff;
+}
+
+/* Estilo para el botón activo en modo oscuro */
+.active-dark {
+  background-color: #6c757d !important; /* gris medio */
+  color: #fff !important;
+}
