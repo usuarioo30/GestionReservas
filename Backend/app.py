@@ -31,20 +31,26 @@ class Usuario(db.Model):
     username = db.Column(db.String(120), nullable=False)
     roles = db.Column(db.String(255), nullable=False)
 
+    reservas = db.relationship('Reserva', backref='usuario', cascade='all, delete-orphan')
+
     def __repr__(self):
         return f'<Usuario {self.username}>'
 
 
-#Entidad Proyecto en la base de datos
+# Entidad Proyecto en la base de datos
 class Proyecto(db.Model):
     __tablename__ = 'proyecto'
 
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(120), unique=True, nullable=False)
 
+    reservas = db.relationship('Reserva', backref='proyecto', cascade='all, delete-orphan')
+
     def __repr__(self):
         return f'<Proyecto {self.nombre}>'
 
+
+# Modelo Reserva con claves foráneas que tienen borrado en cascada
 class Reserva(db.Model):
     __tablename__ = 'reserva'
 
@@ -52,9 +58,9 @@ class Reserva(db.Model):
     sala = db.Column(db.String(120), nullable=False)
     fechaHoraInicio = db.Column(db.DateTime, nullable=False)
     duracion = db.Column(db.Integer, nullable=False)
-    proyectoAsociado = db.Column(db.Integer, db.ForeignKey('proyecto.id'), nullable=False)
+    proyectoAsociado = db.Column(db.Integer, db.ForeignKey('proyecto.id', ondelete='CASCADE'), nullable=False)
     descripcion = db.Column(db.String(255), nullable=False)
-    idUsuario = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    idUsuario = db.Column(db.Integer, db.ForeignKey('usuario.id', ondelete='CASCADE'), nullable=False)
 
     def __repr__(self):
         return f'<Reserva {self.sala}>'
@@ -278,6 +284,25 @@ def obtener_usuario_por_email(email):
     except Exception as e:
         return jsonify({"message": "Error al obtener el usuario", "error": str(e)}), 500
 
+
+# Ruta para eliminar usuarios
+@app.route('/usuarios/<int:id>', methods=['DELETE'])
+def eliminarUsuario(id):
+    try:
+        # Buscar la reserva por su ID
+        usuario = Usuario.query.get(id)
+
+        if usuario:
+            # Eliminar la reserva
+            db.session.delete(usuario)
+            db.session.commit()
+            return jsonify({"message": "Usuario eliminado con éxito"}), 200
+        else:
+            return jsonify({"message": "El usuario no existe"}), 404
+
+    except Exception as e:
+        return jsonify({"message": "Ocurrió un error al eliminar el usuario", "error": str(e)}), 500
+
 # Crear un nuevo usuario
 @app.route('/register', methods=['POST'])
 @app.route('/register', methods=['POST'])
@@ -366,20 +391,20 @@ def editarProyecto(id):
         return jsonify({"message": "Error al editar el proyecto", "error": str(e)}), 500
 
 
-# @app.route('/proyectos', methods=['GET'])
-# def obtener_proyectos():
-#     try:
-#         proyectos = Proyecto.query.all()
-#         proyectos_serializados = [
-#             {
-#                 "id": proyecto.id,
-#                 "nombre": proyecto.nombre,
-#             }
-#             for proyecto in proyectos
-#         ]
-#         return jsonify(proyectos_serializados), 200
-#     except Exception as e:
-#         return jsonify({"message": "Error al obtener los proyectos", "error": str(e)}), 500
+@app.route('/proyectos', methods=['GET'])
+def obtener_proyectos():
+     try:
+         proyectos = Proyecto.query.all()
+         proyectos_serializados = [
+             {
+                 "id": proyecto.id,
+                 "nombre": proyecto.nombre,
+             }
+             for proyecto in proyectos
+         ]
+         return jsonify(proyectos_serializados), 200
+     except Exception as e:
+         return jsonify({"message": "Error al obtener los proyectos", "error": str(e)}), 500
 
 # Obtener un proyecto por su ID
 @app.route('/proyectos/<int:id>', methods=['GET'])

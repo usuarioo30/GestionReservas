@@ -62,7 +62,7 @@ export class AuthService {
 
   }
 
-  async getUsers() {
+  async getUsers(): Promise<Usuario[]> {
     try {
           return await firstValueFrom(this.http.get<Usuario[]>(`${this.apiUrl}/usuarios`));
           //firstValueFrom() convierte un Observable en una Promise
@@ -131,6 +131,22 @@ export class AuthService {
 
     return await response.json();
 
+  }
+
+  deleteUser(id: number): boolean {
+    this.http.delete(`${this.apiUrl}/usuarios/${id}`)
+    .subscribe({
+      next: () => {
+        alert('Proyecto eliminado con éxito');
+        
+      },
+      error: (error: any) => { // Declarar explícitamente el tipo del parámetro error
+        console.error('Error al eliminar el proyecto:', error);
+        alert('Hubo un error al eliminar el proyecto');
+      }
+    });
+
+    return true;
   }
 
   async registerProject(project: Omit<Proyecto, "id">): Promise<Proyecto> {

@@ -4,6 +4,8 @@ import { ListReservasComponent } from './component/interfaz-usuario/list-reserva
 import { CrearUsuarioComponent } from './component/interfaz-admin/crear-usuario/crear-usuario.component';
 import { CrearProyectoComponent } from './component/interfaz-admin/crear-proyecto/crear-proyecto.component';
 import { ListProyectosComponent } from './component/interfaz-admin/list-proyectos/list-proyectos.component';
+import { ListUsuariosComponent } from './component/interfaz-admin/list-usuarios/list-usuarios.component';
+
 
 export const appRoutes: Routes = [
   // Reservas
@@ -18,6 +20,7 @@ export const appRoutes: Routes = [
 
   // Admin
   {path: 'createuser', component: CrearUsuarioComponent},
+  {path: 'listusers', component: ListUsuariosComponent},
 
   { path: '**', redirectTo: '/login' }, // Redirige a login si la ruta no existe
 ];
