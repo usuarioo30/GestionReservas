@@ -25,7 +25,7 @@
             <td>{{ u.username }}</td>
             <td>{{ u.roles }}</td>
             <td>
-              <button *ngIf="u.email !== usuario.email" class="btn btn-danger btn-sm">
+              <button *ngIf="u.email !== usuario.email" class="btn btn-danger btn-sm" (click)="eliminarUsuario(u.id)">
                 Eliminar
               </button>
             </td>

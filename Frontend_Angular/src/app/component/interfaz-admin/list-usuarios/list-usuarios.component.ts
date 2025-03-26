@@ -54,8 +54,9 @@ export class ListUsuariosComponent {
 
 
   // Eliminar un usuario
-  eliminarUsuario(id: number) {
-    this.authService.deleteUser(id);
+  async eliminarUsuario(id: number) {
+    this.authService.deleteUser(id) ? this.usuarios = await this.authService.getUsers() : console.log("Ha ocurrido un error");
+
   }
 
 
