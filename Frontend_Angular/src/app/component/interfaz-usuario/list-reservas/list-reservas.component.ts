@@ -204,7 +204,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     switch (this.sala) {
       case 'upper':
 
-        if (nombreproyecto) {
+        if (nombreproyecto && !nombreusuario) {
           this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()));
           break;
         }
@@ -217,7 +217,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
         this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba');
         break;
       case 'lower':
-        if (nombreproyecto) {
+        if (nombreproyecto && !nombreusuario) {
           this.reservas = this.showReservas.filter(reserva => reserva.sala === 'abajo' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()));
           console.log(this.reservas);
           break;
@@ -231,7 +231,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
         this.reservas = this.showReservas.filter(reserva => reserva.sala === 'abajo');
         break;
       default:
-        if (nombreproyecto) {
+        if (nombreproyecto && !nombreusuario) {
           this.reservas = this.showReservas.filter(reserva => reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()));
           console.log("Probamos".toLowerCase().trim().includes(nombreproyecto.toLowerCase().trim()));
           break;

@@ -98,7 +98,7 @@
           <div class="flex-grow-1">
             <label for="proyecto" class="form-label">Filtrar por nombre de proyecto</label>
             <div class="input-group">
-              <select class="form-control" name="proyecto" id="proyecto" [(ngModel)]="nombreProyecto" (change)="filterReservas(nombreProyecto)">
+              <select class="form-control" name="proyecto" id="proyecto" [(ngModel)]="nombreProyecto" (change)="filterReservas(nombreProyecto, nombreUsuario)">
                 <option value="">Sin filtro</option>
                 <option *ngFor="let p of proyectos" value="{{p.nombre}}">{{p.nombre}}</option>
               </select>
