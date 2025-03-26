@@ -24,10 +24,28 @@
   color: rgb(121, 117, 117);
 }
 
+/* Menú dropdown responsivo */
+@media (max-width: 576px) {
+  .responsive-dropdown {
+    min-width: 0 !important; /* permite ancho flexible */
+    width: 100% !important;  /* ocupa todo ancho disponible */
+    overflow-x: hidden;
+  }
+
+  .responsive-dropdown .dropdown-item {
+    white-space: normal !important; /* permite salto de línea */
+    word-wrap: break-word !important; /* ajusta palabras largas */
+    padding: 10px !important; /* mejora espacio táctil en móviles */
+  }
+
+  .responsive-dropdown .dropdown-divider {
+    margin: 0.5rem 0 !important; /* margen consistente y reducido */
+  }
+}
+
 .boton {
   margin-bottom: 10px;
 }
-
 .proyecto {
   margin-top: 10px;
 }

@@ -39,7 +39,7 @@ export class ReservasService {
   }
 
   async addReserva(reserva: Omit<Reserva, "id">): Promise<void> {
-    console.log(localStorage.getItem('access_token'));
+    //console.log(localStorage.getItem('access_token')); Esto se hizo en su momento para comprobar que el token se guardaba correctamente
     try {
       const response = await fetch(`${this.apiUrl}registrarReserva`, { 
         method: 'POST',

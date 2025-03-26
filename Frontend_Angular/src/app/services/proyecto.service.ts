@@ -3,17 +3,19 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Proyecto } from '../interfaces/proyecto';
 import { Reserva } from '../interfaces/reserva';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProyectoService {
   private apiUrl = 'http://localhost:5000'; // URL base del backend
+  private baseUrl = 'http://localhost:5000/';
 
   constructor(private http: HttpClient) {}
 
   // Obtener todos los proyectos
-  getProyectos(): Observable<Proyecto[]> {
+  getProyectos1(): Observable<Proyecto[]> {
     return this.http.get<Proyecto[]>(`${this.apiUrl}/proyectos`);
   }
 
@@ -29,5 +31,15 @@ export class ProyectoService {
 
   addProyecto(proyecto: Omit<Proyecto, 'id'>): Observable<any> {
     return this.http.post(`${this.apiUrl}/registrarProyecto`, proyecto);
+  }
+
+  async getProyectos(): Promise<Proyecto[]> {
+    try {
+      return await firstValueFrom(this.http.get<Proyecto[]>(`${this.baseUrl}proyectos`));
+      //firstValueFrom() convierte un Observable en una Promise
+    } catch (error) {
+      console.error('Error al obtener los proyectos:', error);
+      return [];
+    }
   }
 }

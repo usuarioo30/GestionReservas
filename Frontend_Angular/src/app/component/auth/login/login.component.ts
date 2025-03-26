@@ -5,7 +5,6 @@ import { AuthService } from '../../../services/auth.service';
 import { loadGapiInsideDOM, gapi } from 'gapi-script';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { RouterOutlet } from '@angular/router';
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule],
@@ -66,12 +65,12 @@ export class LoginComponent implements OnInit {
         localStorage.setItem("access_token", JSON.stringify(response.credential));
         this.router.navigate(['/reservas']);
         // Redirige al usuario o realiza alguna acción
-        
+
       })
       .catch(err => {
         console.error('Error al iniciar sesión con Google:', err);
       });
-    
+
   }
 
 

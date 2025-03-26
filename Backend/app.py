@@ -12,7 +12,7 @@ from werkzeug.security import generate_password_hash
 
 # Configuración de la base de datos y otros parámetros
 class Config:
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:Usuario1234@localhost/gestionreservas'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://dam:dam@localhost/gestionreservas'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'miClave'  # Clave secreta para JWT
     JWT_SECRET_KEY = 'mi_secreto_jwt'  # Clave secreta para JWT
@@ -224,6 +224,23 @@ def obtener_reservas():
     except Exception as e:
         return jsonify({"message": "Error al obtener las reservas", "error": str(e)}), 500
 
+@app.route('/usuarios', methods=['GET'])
+def obtener_usuarios():
+    try:
+        usuarios = Usuario.query.all()
+        usuarios_serializados = [
+            {
+                "id": usuario.id,
+                "email": usuario.email,
+                "username": usuario.username,
+                "roles": usuario.roles
+            }
+            for usuario in usuarios
+        ]
+        return jsonify(usuarios_serializados), 200
+    except Exception as e:
+        return jsonify({"message": "Error al obtener los usuarios", "error": str(e)}), 500
+
 # Obtener un usuario por su ID
 @app.route('/usuarios/<int:id>', methods=['GET'])
 def obtener_usuario_por_id(id):
@@ -301,6 +318,21 @@ def crear_usuario():
     except Exception as e:
         return jsonify({"message": "Error al crear el usuario", "error": str(e)}), 500
 
+# Obtener todos los proyectos
+@app.route('/proyectos', methods=['GET'])
+def obtener_proyectos():
+    try:
+        proyectos = Proyecto.query.all()
+        proyectos_serializados = [
+            {
+                "id": proyecto.id,
+                "nombre": proyecto.nombre
+            }
+            for proyecto in proyectos
+        ]
+        return jsonify(proyectos_serializados), 200
+    except Exception as e:
+        return jsonify({"message": "Error al obtener los proyectos", "error": str(e)}), 500
 
 # Crear un nuevo proyecto
 @app.route('/registrarProyecto', methods=['POST'])

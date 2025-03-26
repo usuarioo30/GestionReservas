@@ -7,9 +7,16 @@ import { AuthService } from '../../../services/auth.service';
 import { Reserva } from '../../../interfaces/reserva';
 import { jwtDecode } from 'jwt-decode';
 import { Showreserva } from '../../../interfaces/showreserva';
+import { ProyectoService } from '../../../services/proyecto.service';
+import { Proyecto } from '../../../interfaces/proyecto';
+import { Usuario } from '../../../interfaces/usuario';
+import Swal from 'sweetalert2';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+
 
 @Component({
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, FormsModule,
+    SweetAlert2Module],
   selector: 'app-list-reservas',
   templateUrl: './list-reservas.component.html',
   styleUrls: ['./list-reservas.component.css']
@@ -20,17 +27,19 @@ export class ListReservasComponent implements OnInit, OnChanges {
   showReservas: Showreserva[] = [];
   isDarkTheme = false;
   nombreProyecto: string = '';
+  nombreUsuario: string = '';
   @Input() sala?: string;
   email: string | null = null;
   id!: number | undefined;
   role: string | null = null;
   minDateTime: string = '';
   dateActual: string = '';
-
+  proyectos!: Proyecto[];
+  usuarios!: Usuario[];
   constructor(private reservasService: ReservasService,
-        private authService: AuthService,
-        private router: Router,
-        private renderer: Renderer2
+              private authService: AuthService,
+              private router: Router,
+              private renderer: Renderer2
   ) {
 
     let token = localStorage.getItem('access_token');
@@ -38,7 +47,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
       const decodedToken: any = jwtDecode(token);
       console.log(decodedToken); //getUserByMail
       this.waitFetch(decodedToken.email);
-      
+
       // if (userId) {
       //   this.id =  Number.parseInt(userId);
       //   console.log(this.id);
@@ -49,12 +58,13 @@ export class ListReservasComponent implements OnInit, OnChanges {
   }
 
   private fb: FormBuilder = inject(FormBuilder);
+  private proyectoService = inject(ProyectoService);
 
   reservation: FormGroup = this.fb.group({
     email: [''], // Campo email agregado
     fechaHoraInicio: ['', [Validators.required]],
     duracion: ['', [Validators.required, Validators.min(1)]],
-    proyectoAsociado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+    proyectoAsociado: ['', [Validators.required,Validators.nullValidator]],
     descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
     idUsario: [this.id]
   });
@@ -64,16 +74,18 @@ export class ListReservasComponent implements OnInit, OnChanges {
     email: [''], // Campo email agregado
     fechaHoraInicio: ['', [Validators.required]],
     duracion: ['', [Validators.required, Validators.min(1)]],
-    proyectoAsociado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+    proyectoAsociado: ['', [Validators.required,Validators.nullValidator]],
     descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
     idUsario: [this.id]
   });
 
   async ngOnInit(): Promise<void> {
+
     const token = localStorage.getItem('access_token');
 
     this.updateMinDateTime();
-
+    this.proyectos = await this.proyectoService.getProyectos();
+    this.usuarios = await this.authService.getUsers();
     const now = new Date();
     this.minDateTime = now.toISOString().slice(0, 16);
 
@@ -110,25 +122,36 @@ export class ListReservasComponent implements OnInit, OnChanges {
     this.minDateTime = localDateTime;
     this.dateActual = localDateTime.slice(0, 10); // Formato 'YYYY-MM-DD'
   }
-
+  
   // Método para verificar si la fecha seleccionada es hoy
   isToday(selectedDate: string): boolean {
     return selectedDate === this.dateActual;
   }
-
+  
   // Método para manejar cambios en la fecha seleccionada
   onDateTimeChange(event: any): void {
     const selectedDateTime = event.target.value;
     const selectedDate = selectedDateTime.slice(0, 10); // Extraer solo la fecha (YYYY-MM-DD)
-
-    if (this.isToday(selectedDate)) {
-      // Si es hoy, actualizar minDateTime con la hora actual
-      this.updateMinDateTime();
+  
+    // Crear objetos de fecha a partir de la fecha seleccionada y la fecha actual
+    const minDateTimeToDate = new Date(this.minDateTime);
+    const selectedDateTimeToDate = new Date(selectedDateTime);
+  
+    // Comprobar si la fecha seleccionada es anterior a la actual
+    if (selectedDateTimeToDate < minDateTimeToDate) {
+      alert('La fecha y hora seleccionada no puede ser anterior a la fecha y hora actual');
+      event.target.value = this.minDateTime; // Restablecer al valor mínimo permitido
     } else {
-      // Si no es hoy, permitir cualquier hora
-      this.minDateTime = `${selectedDate}T00:00`;
+      // Si es hoy, actualizar minDateTime con la hora actual
+      if (this.isToday(selectedDate)) {
+        this.updateMinDateTime();
+      } else {
+        // Si no es hoy, solo actualizamos la fecha sin la hora
+        this.minDateTime = `${selectedDate}T00:00`;
+      }
     }
   }
+  
 
   ngOnChanges(changes: SimpleChanges): void {
     // Detecta cambios en el valor de @Input() sala
@@ -143,7 +166,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     return response.roles;
   }
 
-  
+
   async waitFetch(email: string): Promise<any> {
     try {
       const user = await this.authService.getUserByMail(email);
@@ -175,7 +198,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
-  filterReservas(nombreproyecto: string): void {
+  filterReservas(nombreproyecto: string, nombreusuario?: string): void {
 
 
     switch (this.sala) {
@@ -185,6 +208,12 @@ export class ListReservasComponent implements OnInit, OnChanges {
           this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()));
           break;
         }
+
+        if (nombreusuario) {
+          this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()) && reserva.owner.toLowerCase().includes(nombreusuario.toLowerCase().trim()));
+          break;
+        }
+
         this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba');
         break;
       case 'lower':
@@ -193,6 +222,12 @@ export class ListReservasComponent implements OnInit, OnChanges {
           console.log(this.reservas);
           break;
         }
+
+        if (nombreusuario) {
+          this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()) && reserva.owner.toLowerCase().includes(nombreusuario.toLowerCase().trim()));
+          break;
+        }
+
         this.reservas = this.showReservas.filter(reserva => reserva.sala === 'abajo');
         break;
       default:
@@ -200,7 +235,14 @@ export class ListReservasComponent implements OnInit, OnChanges {
           this.reservas = this.showReservas.filter(reserva => reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()));
           console.log("Probamos".toLowerCase().trim().includes(nombreproyecto.toLowerCase().trim()));
           break;
-        } else {
+        }
+
+        else if (nombreusuario) {
+          this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()) && reserva.owner.toLowerCase().includes(nombreusuario.toLowerCase().trim()));
+          break;
+        }
+
+        else {
           this.reservas = this.showReservas; // Si el valor no es válido, muestra todas las reservas
           break;
 
@@ -231,11 +273,9 @@ export class ListReservasComponent implements OnInit, OnChanges {
         idUsuario: this.id
       };
 
-      console.log(reserva); //Esto es para ver que estamos enviando los datos correctos
-
       await this.reservasService.addReserva(reserva);
 
-      alert('Reserva realizada con éxito');
+      Swal.fire('Éxito', 'Reserva realizada con éxito', 'success');
 
       await this.loadReservas();
       this.filterReservas(this.nombreProyecto);
@@ -271,13 +311,13 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
 
     } else {
-      console.error(`No se encontró la reserva con ID ${id}`);
+      Swal.fire('Error', `No se encontró la reserva con ID
+      ${id}`, 'error');
     }
   }
 
   async editReservaSubmit() {
     if (this.editReservation.valid) {
-      // Crear el objeto de reserva con los datos del formulario
       const reserva: Reserva = {
         id: this.editReservation.value.id,
         sala: this.sala === 'upper' ? 'arriba' : 'abajo',
@@ -288,51 +328,39 @@ export class ListReservasComponent implements OnInit, OnChanges {
         idUsuario: this.editReservation.value.idUsuario,
       };
 
-      // Si el usuario tiene rol de administrador, mantener el correo original
-      if (this.role === 'admin') {
-        const originalReserva = this.reservas.find(res => res.id === reserva.id);
-        if (originalReserva) {
-          reserva.idUsuario = originalReserva.idUsuario; // Mantener el ID del usuario original
-        }
-      }
-
-      console.log('Reserva editada:', reserva);
-
-      // Llamar al servicio para actualizar la reserva
       await this.reservasService.editReserva(reserva);
-
-      alert('Reserva editada con éxito');
-      await this.loadReservas(); // Recargar las reservas
-      this.filterReservas(this.nombreProyecto); // Aplicar el filtro de reservas
+      Swal.fire('Éxito', 'Reserva editada con éxito', 'success');
+      await this.loadReservas();
+      this.filterReservas(this.nombreProyecto);
     } else {
-      console.error('El formulario de edición no es válido');
-      this.editReservation.markAllAsTouched(); // Marcar todos los campos como tocados para mostrar errores
+      Swal.fire('Error', 'El formulario de edición no es válido', 'error');
+      this.editReservation.markAllAsTouched();
     }
   }
 
   deleteReserva(id: number): void {
-    const confirmarEliminacion = confirm('¿Estás seguro de que deseas eliminar esta reserva?');
-    if (confirmarEliminacion) {
-      // Llamar al servicio para eliminar la reserva en la base de datos
-      this.reservasService.deleteReserva(id).subscribe(
-        async () => {
-          // Si la eliminación es exitosa, eliminamos la reserva de la lista
-          this.reservas = this.reservas.filter(reserva => reserva.id !== id);
-          console.log(`Reserva con id ${id} eliminada correctamente`);
-
-          // Opcional: Mostrar un mensaje de éxito
-          alert('Reserva eliminada con éxito');
-
-          window.location.reload(); // Recarga la página para actualizar la lista de reservas
-        },
-        (error) => {
-          // Si ocurre un error, muestra un mensaje de error
-          console.error('Error al eliminar la reserva', error);
-          alert('Hubo un error al eliminar la reserva');
-        }
-      );
-
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esto!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.reservasService.deleteReserva(id).subscribe(
+          async () => {
+            this.reservas = this.reservas.filter(reserva => reserva.id !== id);
+            await Swal.fire('Eliminado', 'Reserva eliminada con éxito', 'success');
+            await this.loadReservas();
+            this.filterReservas(this.nombreProyecto);
+          },
+          () => {
+            Swal.fire('Error', 'Error al eliminar la reserva', 'error');
+          }
+        );
+      }
+    });
   }
 
   // Método para alternar el tema
