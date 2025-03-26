@@ -53,3 +53,9 @@
 .campos {
   margin-right: 50px;
 }
+
+.icono-grande {
+  font-size: 2rem; /* Cambia este valor al que desees */
+  /*justify-content: center;*/ /* centra horizontalmente */
+  align-items: center;     /* centra verticalmente */
+}
