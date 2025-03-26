@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { Usuario } from '../interfaces/usuario';
+import { Proyecto } from '../interfaces/proyecto';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class AuthService {
   private apiUrl1 = "http://127.0.0.1:5000/login";
 
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   //Método de iniciar sesión, es llamado cuando el formulario es válido
   async logIn(username: string, password: string) {
@@ -22,7 +23,7 @@ export class AuthService {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({username: username, password: password})
+      body: JSON.stringify({ username: username, password: password })
     });
 
     return response //Devolvemos la promesa
@@ -71,10 +72,28 @@ export class AuthService {
 
   }
 
+  getRole(): string | null {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        // Decodificar el token
+        const decodedToken: any = jwtDecode(token);
+        console.log('Decoded Token:', decodedToken); // Ver en consola el contenido del token
+
+        // Verifica que el rol esté presente en el token
+        return decodedToken?.rol || null; // Usar 'rol' en lugar de 'role'
+      } catch (error) {
+        console.error('Error al decodificar el token:', error);
+        return null;
+      }
+    }
+    return null;
+  }
+
   async loginWithGoogle(response: any) {
     const decodedToken = this.decodeJwtResponse(response);
     console.log("Decoded token", decodedToken);
-    const fetchResponse = await fetch(`${this.apiUrl}/api/google-login`, { 
+    const fetchResponse = await fetch(`${this.apiUrl}/api/google-login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -103,6 +122,24 @@ export class AuthService {
 
   }
 
+  async registerProject(project: Omit<Proyecto, "id">): Promise<Proyecto> {
+    console.log("He entrado aquí con", project);
+    const response = await fetch(`${this.apiUrl}/registrarProyecto`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(project),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al registrar el proyecto');
+    }
+
+    return await response.json();
+
+  }
+
   logout(): void {
     // Eliminar el token del localStorage
     localStorage.removeItem('access_token');
@@ -119,10 +156,15 @@ export class AuthService {
   decodeJwtResponse(token: string) {
     let base64Url = token.split('.')[1];
     let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    let jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
 
     return JSON.parse(jsonPayload);
-}
+  }
+
+  // Método para decodificar el token JWT
+  decodeToken(token: string): any {
+    return jwtDecode(token);
+  }
 }

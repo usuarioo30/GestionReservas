@@ -65,6 +65,19 @@
               <span class="d-sm-none">Abajo</span>
             </a>
           </li>
+          <li *ngIf="role === 'admin'">
+            <a [routerLink]="['/proyectos']"
+               routerLinkActive="active"
+               class="nav-link align-middle proyecto"
+               [ngClass]="{
+                 'active-dark': isDarkTheme,
+                 'text-light': isDarkTheme,
+                 'text-black': !isDarkTheme
+               }">
+              <i class="bi bi-file-code"></i>
+              <span class="ms-2 d-none d-sm-inline">Proyectos</span>
+            </a>
+          </li>
         </ul>
         <hr>
         <div class="dropdown pb-4">

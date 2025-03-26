@@ -1,0 +1,108 @@
+<div class="container">
+  <h1>Lista de Proyectos</h1>
+  <div *ngIf="!tieneAcceso" class="alert alert-danger">
+    No tienes permisos para acceder a esta página.
+  </div>
+  <div *ngIf="proyectos.length === 0 && tieneAcceso" class="alert alert-warning">
+    No hay proyectos disponibles.
+  </div>
+  <button *ngIf="tieneAcceso" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#crearProyectoModal">
+    Crear Proyecto
+  </button>
+  <div *ngIf="proyectos.length > 0 && tieneAcceso" class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let proyecto of proyectos">
+          <td>{{ proyecto.id }}</td>
+          <td>{{ proyecto.nombre }}</td>
+          <td>
+            <button
+              class="btn btn-primary btn-sm me-1"
+              data-bs-toggle="modal"
+              data-bs-target="#editarProyectoModal"
+              (click)="abrirModalEditar(proyecto)"
+            >
+              Editar
+            </button>
+            <button class="btn btn-danger btn-sm" (click)="eliminarProyecto(proyecto.id)">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <button class="btn btn-secondary mb-3" (click)="volverAReservas()">Volver a Reservas</button>
+
+  <!-- Modal para crear proyecto -->
+  <div class="modal fade" id="crearProyectoModal" tabindex="-1" aria-labelledby="crearProyectoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="crearProyectoModalLabel">Crear Proyecto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="crearProyectoForm" (ngSubmit)="crearProyecto()">
+            <div class="mb-3">
+              <label for="nombreProyecto" class="form-label">Nombre del Proyecto</label>
+              <input
+                type="text"
+                id="nombreProyecto"
+                class="form-control"
+                formControlName="nombre"
+                placeholder="Ingrese el nombre del proyecto"
+              />
+              <div *ngIf="crearProyectoForm.get('nombre')?.invalid && crearProyectoForm.get('nombre')?.touched" class="text-danger">
+                El nombre es obligatorio y debe tener entre 3 y 50 caracteres.
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Crear</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Fin modal para crear proyecto -->
+
+  <!-- Modal para editar proyecto -->
+  <div class="modal fade" id="editarProyectoModal" tabindex="-1" aria-labelledby="editarProyectoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editarProyectoModalLabel">Editar Proyecto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="nombreProyecto" class="form-label">Nombre del Proyecto</label>
+              <input
+                type="text"
+                id="nombreProyecto"
+                class="form-control"
+                [(ngModel)]="proyectoSeleccionado.nombre"
+                name="nombreProyecto"
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="guardarCambios()">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
