@@ -44,7 +44,7 @@ export class ListProyectosComponent implements OnInit {
 
   // Cargar todos los proyectos
   cargarProyectos(): void {
-    this.proyectoService.getProyectos().subscribe(
+    this.proyectoService.getProyectos1().subscribe(
       (proyectos) => {
         this.proyectos = proyectos;
       },
