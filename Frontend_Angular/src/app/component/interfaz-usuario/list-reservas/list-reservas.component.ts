@@ -162,8 +162,10 @@ export class ListReservasComponent implements OnInit, OnChanges {
       this.showReservas = await Promise.all(
         reservas.map(async reserva => {
           let response = await this.authService.getUser(reserva.idUsuario);
+          let nombreProyecto = await this.reservasService.getNombreProyecto(reserva.proyectoAsociado);
           reserva.owner = response.username; // Asigna el nombre del usuario al campo 'owner'
           reserva.email = response.email;
+          reserva.proyectoAsociado = nombreProyecto.nombre;
           return reserva;
         })
       );

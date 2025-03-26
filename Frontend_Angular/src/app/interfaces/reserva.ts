@@ -3,7 +3,7 @@ export interface Reserva {
     sala: string;
     fechaHoraInicio: string;
     duracion: number;
-    proyectoAsociado: string;
+    proyectoAsociado: number;
     descripcion: string;
     idUsuario: number;
 }

@@ -34,6 +34,17 @@ class Usuario(db.Model):
     def __repr__(self):
         return f'<Usuario {self.username}>'
 
+
+#Entidad Proyecto en la base de datos
+class Proyecto(db.Model):
+    __tablename__ = 'proyecto'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(120), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'<Proyecto {self.nombre}>'
+
 class Reserva(db.Model):
     __tablename__ = 'reserva'
 
@@ -41,12 +52,13 @@ class Reserva(db.Model):
     sala = db.Column(db.String(120), nullable=False)
     fechaHoraInicio = db.Column(db.DateTime, nullable=False)
     duracion = db.Column(db.Integer, nullable=False)
-    proyectoAsociado = db.Column(db.String(120), nullable=False)
+    proyectoAsociado = db.Column(db.Integer, db.ForeignKey('proyecto.id'), nullable=False)
     descripcion = db.Column(db.String(255), nullable=False)
     idUsuario = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
 
     def __repr__(self):
         return f'<Reserva {self.sala}>'
+
 
 # Función para crear la aplicación
 def create_app():
@@ -305,6 +317,20 @@ def crear_usuario():
 
     except Exception as e:
         return jsonify({"message": "Error al crear el usuario", "error": str(e)}), 500
+
+
+# Obtener un proyecto por su ID
+@app.route('/proyectos/<int:id>', methods=['GET'])
+def obtener_proyecto_por_id(id):
+    try:
+        proyecto = Proyecto.query.get(id)
+        proyecto_serializado = {
+            "id": proyecto.id,
+            "nombre": proyecto.nombre
+        }
+        return jsonify(proyecto_serializado), 200
+    except Exception as e:
+        return jsonify({"message": "Error al obtener el proyecto", "error": str(e)}), 500
 
 
 # Iniciar sesión con google

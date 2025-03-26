@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Reserva } from '../interfaces/reserva';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Proyecto } from '../interfaces/proyecto';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,19 @@ export class ReservasService {
       return await response.json(); // Devuelve los datos en formato JSON
     } catch (error) {
       console.error('Error al obtener las reservas:', error);
+      throw error;
+    }
+  }
+
+  async getNombreProyecto(id: number): Promise<Proyecto> { 
+    try {
+      const response = await fetch(`${this.apiUrl}proyectos/${id}`); 
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+      return await response.json(); 
+    } catch (error) {
+      console.error('Error al obtener el nombre del proyecto:', error);
       throw error;
     }
   }
