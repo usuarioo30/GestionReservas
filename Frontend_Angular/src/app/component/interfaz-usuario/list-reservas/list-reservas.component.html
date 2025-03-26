@@ -102,10 +102,9 @@
 
       <div class="d-flex justify-content-between align-items-center mb-3">
         <!-- Botón para abrir el modal -->
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearReservaModal" *ngIf="sala === 'upper' || sala === 'lower'">
-          Crear reserva
-        </button>
-
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearReservaModal" *ngIf="sala === 'upper' || sala === 'lower'">
+        Crear reserva
+      </button>
         <div class="d-flex align-items-center gap-3">
           <!-- Campo de búsqueda por proyecto -->
           <div class="flex-grow-1">
@@ -119,7 +118,7 @@
           </div>
 
           <!-- Campo de búsqueda por usuario -->
-          <div class="flex-grow-1">
+          <div class="flex-grow-1 campos">
             <label for="usuario" class="form-label">Filtrar por Usuario</label>
             <div class="input-group">
               <select class="form-control" name="usuario" id="usuario" [(ngModel)]="nombreUsuario" (change)="filterReservas(nombreProyecto, nombreUsuario)">
@@ -129,7 +128,6 @@
             </div>
           </div>
         </div>
-
       </div>
       <div class="alert alert-primary custom-alert" *ngIf="reservas.length === 0" role="alert">
         <b>No hay reservas activas.</b>
@@ -161,10 +159,10 @@
               <small class="email">{{reserva.email}}</small>
             </td>
             <td>
-              <button *ngIf="reserva.email === email" class="btn btn-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
+              <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
                 <i class="bi bi-pen"></i>
               </button>
-              <button *ngIf="reserva.email === email" class="btn btn-danger btn-sm" (click)="deleteReserva(reserva.id)">
+              <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-danger btn-sm" (click)="deleteReserva(reserva.id)">
                 <i class="bi bi-trash"></i>
               </button>
             </td>

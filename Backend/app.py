@@ -318,22 +318,6 @@ def crear_usuario():
     except Exception as e:
         return jsonify({"message": "Error al crear el usuario", "error": str(e)}), 500
 
-# Obtener todos los proyectos
-@app.route('/proyectos', methods=['GET'])
-def obtener_proyectos():
-    try:
-        proyectos = Proyecto.query.all()
-        proyectos_serializados = [
-            {
-                "id": proyecto.id,
-                "nombre": proyecto.nombre
-            }
-            for proyecto in proyectos
-        ]
-        return jsonify(proyectos_serializados), 200
-    except Exception as e:
-        return jsonify({"message": "Error al obtener los proyectos", "error": str(e)}), 500
-
 # Crear un nuevo proyecto
 @app.route('/registrarProyecto', methods=['POST'])
 def crear_proyecto():    
