@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { Usuario } from '../../../interfaces/usuario';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-crear-usuario',
@@ -23,18 +24,18 @@ export class CrearUsuarioComponent {
     roles: ['', [Validators.required]]
   });
 
-  isInvalid(controlName: string) { 
+  isInvalid(controlName: string) {
     return this.newuser?.controls[controlName].invalid && this.newuser?.controls[controlName].touched;
   }
 
   equalsPasswords() {
-    return this.newuser?.value.password === this.newuser?.value.confirmpassword;  
+    return this.newuser?.value.password === this.newuser?.value.confirmpassword;
   }
 
   async submitedForm() {
 
     if (!this.newuser.invalid) {
-      
+
       const user: Omit<Usuario, "id"> = {
         email: this.newuser.value.email,
         username: this.newuser.value.username,
@@ -44,7 +45,7 @@ export class CrearUsuarioComponent {
 
       await this.auth.registerUser(user);
 
-      alert("Usuario creado con éxito");
+      Swal.fire("Usuario creado con éxito");
       this.newuser.reset();
       this.router.navigate(['/reservas']);
     } else {

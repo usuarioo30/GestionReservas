@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { Proyecto } from '../../../interfaces/proyecto';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-crear-proyecto',
@@ -19,21 +20,21 @@ export class CrearProyectoComponent {
     nombre: ['', [Validators.required]],
   });
 
-  isInvalid(controlName: string) { 
+  isInvalid(controlName: string) {
     return this.newproject?.controls[controlName].invalid && this.newproject?.controls[controlName].touched;
   }
 
   async submitedForm() {
 
     if (!this.newproject.invalid) {
-      
+
       const project: Omit<Proyecto, "id"> = {
         nombre: this.newproject.value.nombre,
       }
 
       await this.auth.registerProject(project);
 
-      alert("Proyecto creado con éxito");
+      Swal.fire("Proyecto creado con éxito");
       this.newproject.reset();
       this.router.navigate(['/reservas']);
     } else {

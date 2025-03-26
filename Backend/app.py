@@ -1,8 +1,5 @@
-from flask import Flask, request, jsonify
-from datetime import timedelta, datetime
+from datetime import datetime
 
-import google.auth
-import google.auth.transport.requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
@@ -10,9 +7,10 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash
 
+
 # Configuración de la base de datos y otros parámetros
 class Config:
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:Usuario1234@localhost/gestionreservas'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://dam:dam@localhost/gestionreservas'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'miClave'  # Clave secreta para JWT
     JWT_SECRET_KEY = 'mi_secreto_jwt'  # Clave secreta para JWT
@@ -91,7 +89,7 @@ def login():
 
     # Buscar el usuario en la base de datos
     usuario = Usuario.query.filter_by(username=username).first()
-    
+
     if usuario and usuario.password == password:
         access_token = create_access_token( identity=usuario.id,  # El ID del usuario como identidad
             additional_claims={  # Aquí agregamos más información
@@ -256,7 +254,7 @@ def obtener_usuario_por_id(id):
             "id": usuario.id,
             "email": usuario.email,
             "username": usuario.username,
-            "roles": usuario.roles 
+            "roles": usuario.roles
         }
         return jsonify(usuario_serializado), 200
     except Exception as e:
@@ -306,7 +304,7 @@ def eliminarUsuario(id):
 # Crear un nuevo usuario
 @app.route('/register', methods=['POST'])
 @app.route('/register', methods=['POST'])
-def crear_usuario():    
+def crear_usuario():
     try:
         data = request.get_json()
         email = data.get('email')
@@ -345,7 +343,7 @@ def crear_usuario():
 
 # Crear un nuevo proyecto
 @app.route('/registrarProyecto', methods=['POST'])
-def crear_proyecto():    
+def crear_proyecto():
     try:
         data = request.get_json()
         nombre = data.get('nombre')

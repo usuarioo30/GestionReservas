@@ -5,6 +5,7 @@ import { AuthService } from '../../../services/auth.service';
 import { loadGapiInsideDOM, gapi } from 'gapi-script';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule],
@@ -61,7 +62,7 @@ export class LoginComponent implements OnInit {
     this.authService.loginWithGoogle(response.credential)
       .then(res => {
         //console.log('Inicio de sesión con Google exitoso:', res);
-        alert('Inicio de sesión con Google exitoso');
+        Swal.fire('Éxito', 'Inicio de sesión con Google exitoso', "success");
         localStorage.setItem("access_token", JSON.stringify(response.credential));
         this.router.navigate(['/reservas']);
         // Redirige al usuario o realiza alguna acción
@@ -87,51 +88,18 @@ export class LoginComponent implements OnInit {
 
         localStorage.setItem("access_token", JSON.stringify(token.access_token)); // Almacenar token
 
-        alert("Sesión iniciada con éxito. Redirigiendo en 2 seg..."); //Si la respuesta es correcta, mostramos un mensaje de éxito
+        Swal.fire('Éxito', "Sesión iniciada con éxito. Redirigiendo en 2 seg...", "success"); //Si la respuesta es correcta, mostramos un mensaje de éxito
 
         setTimeout(() => {
           this.router.navigate(['/reservas']); // Redirige a la nueva ruta
         }, 2000);
 
       } else {
-        alert("Credenciales incorrectas"); //Si la respuesta es incorrecta, mostramos un mensaje de error
+        Swal.fire("Credenciales incorrectas"); //Si la respuesta es incorrecta, mostramos un mensaje de error
       }
 
 
     }
-  }
-
-  async loginWithGoogle(response: any) {
-    // const authInstance = gapi.auth2.getAuthInstance();
-    // const googleUser = await authInstance.signIn();
-    // const idToken = googleUser.getAuthResponse().id_token;
-
-    // try {
-    //   const response = await this.authService.loginWithGoogle(idToken);
-    //   localStorage.setItem('access_token', response.access_token); // Guarda el token JWT
-    //   this.router.navigate(['/dashboard']); // Redirige al dashboard
-    // } catch (error) {
-    //   alert('Error al iniciar sesión con Google');
-    // }
-
-    const responsePayload = this.authService.decodeJwtResponse(response.credential);
-
-    const data = await this.authService.loginWithGoogle(responsePayload);
-
-    if (data.exists) {
-      // Guardar sesión si el usuario existe
-      document.cookie = `auth=loggedIn; path=/; max-age=3600`;
-      localStorage.setItem('userEmail', responsePayload.email);
-      localStorage.setItem('userRole', data.role);
-      alert(`success ${data.message}`);
-
-      setTimeout(() => {
-          window.location.href = "../leaks.html";
-      }, 500);
-  } else {
-    alert("error. El correo no esta registrado. Contacta con soporte.");
-  }
-
   }
 
   private initializeGoogleAuth(): void {
