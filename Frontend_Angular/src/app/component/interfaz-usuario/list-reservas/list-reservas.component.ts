@@ -7,6 +7,9 @@ import { AuthService } from '../../../services/auth.service';
 import { Reserva } from '../../../interfaces/reserva';
 import { jwtDecode } from 'jwt-decode';
 import { Showreserva } from '../../../interfaces/showreserva';
+import { ProyectoService } from '../../../services/proyecto.service';
+import { Proyecto } from '../../../interfaces/proyecto';
+import { Usuario } from '../../../interfaces/usuario';
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule, RouterLink, FormsModule],
@@ -20,13 +23,15 @@ export class ListReservasComponent implements OnInit, OnChanges {
   showReservas: Showreserva[] = [];
   isDarkTheme = false;
   nombreProyecto: string = '';
+  nombreUsuario: string = '';
   @Input() sala?: string;
   email: string | null = null;
   id!: number | undefined;
   role: string | null = null;
   minDateTime: string = '';
   dateActual: string = '';
-
+  proyectos!: Proyecto[];
+  usuarios!: Usuario[];
   constructor(private reservasService: ReservasService,
         private authService: AuthService,
         private router: Router,
@@ -49,12 +54,13 @@ export class ListReservasComponent implements OnInit, OnChanges {
   }
 
   private fb: FormBuilder = inject(FormBuilder);
+  private proyectoService = inject(ProyectoService);
 
   reservation: FormGroup = this.fb.group({
     email: [''], // Campo email agregado
     fechaHoraInicio: ['', [Validators.required]],
     duracion: ['', [Validators.required, Validators.min(1)]],
-    proyectoAsociado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+    proyectoAsociado: ['', [Validators.required,Validators.nullValidator]],
     descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
     idUsario: [this.id]
   });
@@ -64,7 +70,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     email: [''], // Campo email agregado
     fechaHoraInicio: ['', [Validators.required]],
     duracion: ['', [Validators.required, Validators.min(1)]],
-    proyectoAsociado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+    proyectoAsociado: ['', [Validators.required,Validators.nullValidator]],
     descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
     idUsario: [this.id]
   });
@@ -73,7 +79,8 @@ export class ListReservasComponent implements OnInit, OnChanges {
     const token = localStorage.getItem('access_token');
 
     this.updateMinDateTime();
-
+    this.proyectos = await this.proyectoService.getProyectos();
+    this.usuarios = await this.authService.getUsers();
     const now = new Date();
     this.minDateTime = now.toISOString().slice(0, 16);
 
@@ -175,7 +182,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
-  filterReservas(nombreproyecto: string): void {
+  filterReservas(nombreproyecto: string, nombreusuario?: string): void {
 
 
     switch (this.sala) {
@@ -185,6 +192,12 @@ export class ListReservasComponent implements OnInit, OnChanges {
           this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()));
           break;
         }
+
+        if (nombreusuario) {
+          this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()) && reserva.owner.toLowerCase().includes(nombreusuario.toLowerCase().trim()));
+          break;
+        }
+
         this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba');
         break;
       case 'lower':
@@ -193,6 +206,12 @@ export class ListReservasComponent implements OnInit, OnChanges {
           console.log(this.reservas);
           break;
         }
+
+        if (nombreusuario) {
+          this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()) && reserva.owner.toLowerCase().includes(nombreusuario.toLowerCase().trim()));
+          break;
+        }
+
         this.reservas = this.showReservas.filter(reserva => reserva.sala === 'abajo');
         break;
       default:
@@ -200,7 +219,14 @@ export class ListReservasComponent implements OnInit, OnChanges {
           this.reservas = this.showReservas.filter(reserva => reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()));
           console.log("Probamos".toLowerCase().trim().includes(nombreproyecto.toLowerCase().trim()));
           break;
-        } else {
+        } 
+        
+        else if (nombreusuario) {
+          this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()) && reserva.owner.toLowerCase().includes(nombreusuario.toLowerCase().trim()));
+          break;
+        }
+        
+        else {
           this.reservas = this.showReservas; // Si el valor no es válido, muestra todas las reservas
           break;
 

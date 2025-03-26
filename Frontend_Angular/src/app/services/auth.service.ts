@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { Usuario } from '../interfaces/usuario';
+import { firstValueFrom } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +13,7 @@ export class AuthService {
   private apiUrl1 = "http://127.0.0.1:5000/login";
 
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private http: HttpClient) {}
 
   //Método de iniciar sesión, es llamado cuando el formulario es válido
   async logIn(username: string, password: string) {
@@ -58,6 +60,16 @@ export class AuthService {
 
     return await json;
 
+  }
+
+  async getUsers() {
+    try {
+          return await firstValueFrom(this.http.get<Usuario[]>(`${this.apiUrl}/usuarios`));
+          //firstValueFrom() convierte un Observable en una Promise
+        } catch (error) {
+          console.error('Error al obtener los usuarios:', error);
+          return [];
+        }
   }
 
   async getUser(id: number) {

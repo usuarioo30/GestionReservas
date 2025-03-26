@@ -96,24 +96,6 @@ def login():
     else:
         return jsonify({"message": "Credenciales incorrectas"}), 401
 
-# Ruta para el inicio de sesión con Google
-#@app.route("/api/google-login", methods=["POST"])
-#def google_login():
- #   data = request.json
-  #  if "email" not in data:
-   #     return jsonify({"error": "Email is required"}), 400
-
-    #user = AdiscoveryUser.query.filter_by(Email=data["email"]).first()
-
-    #if not user:
-     #   return jsonify({"exists": False, "error": "User not found"}), 404
-
-    #return jsonify({
-     #   "exists": True,
-      #  "message": f"Welcome {user.FirstName}!",
-       # "role": user.Role
-    #}), 200
-
 # Ruta protegida que requiere JWT para acceder
 @app.route('/dashboard', methods=['GET'])
 @jwt_required()
@@ -241,6 +223,23 @@ def obtener_reservas():
     except Exception as e:
         return jsonify({"message": "Error al obtener las reservas", "error": str(e)}), 500
 
+@app.route('/usuarios', methods=['GET'])
+def obtener_usuarios():
+    try:
+        usuarios = Usuario.query.all()
+        usuarios_serializados = [
+            {
+                "id": usuario.id,
+                "email": usuario.email,
+                "username": usuario.username,
+                "roles": usuario.roles
+            }
+            for usuario in usuarios
+        ]
+        return jsonify(usuarios_serializados), 200
+    except Exception as e:
+        return jsonify({"message": "Error al obtener los usuarios", "error": str(e)}), 500
+
 # Obtener un usuario por su ID
 @app.route('/usuarios/<int:id>', methods=['GET'])
 def obtener_usuario_por_id(id):
@@ -318,6 +317,21 @@ def crear_usuario():
     except Exception as e:
         return jsonify({"message": "Error al crear el usuario", "error": str(e)}), 500
 
+# Obtener todos los proyectos
+@app.route('/proyectos', methods=['GET'])
+def obtener_proyectos():
+    try:
+        proyectos = Proyecto.query.all()
+        proyectos_serializados = [
+            {
+                "id": proyecto.id,
+                "nombre": proyecto.nombre
+            }
+            for proyecto in proyectos
+        ]
+        return jsonify(proyectos_serializados), 200
+    except Exception as e:
+        return jsonify({"message": "Error al obtener los proyectos", "error": str(e)}), 500
 
 # Obtener un proyecto por su ID
 @app.route('/proyectos/<int:id>', methods=['GET'])
