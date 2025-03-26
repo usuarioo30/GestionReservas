@@ -10,6 +10,8 @@ import { Showreserva } from '../../../interfaces/showreserva';
 import { ProyectoService } from '../../../services/proyecto.service';
 import { Proyecto } from '../../../interfaces/proyecto';
 import { Usuario } from '../../../interfaces/usuario';
+import Swal from 'sweetalert2';
+
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule, RouterLink, FormsModule],
@@ -76,6 +78,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   });
 
   async ngOnInit(): Promise<void> {
+
     const token = localStorage.getItem('access_token');
 
     this.updateMinDateTime();
@@ -117,25 +120,36 @@ export class ListReservasComponent implements OnInit, OnChanges {
     this.minDateTime = localDateTime;
     this.dateActual = localDateTime.slice(0, 10); // Formato 'YYYY-MM-DD'
   }
-
+  
   // Método para verificar si la fecha seleccionada es hoy
   isToday(selectedDate: string): boolean {
     return selectedDate === this.dateActual;
   }
-
+  
   // Método para manejar cambios en la fecha seleccionada
   onDateTimeChange(event: any): void {
     const selectedDateTime = event.target.value;
     const selectedDate = selectedDateTime.slice(0, 10); // Extraer solo la fecha (YYYY-MM-DD)
-
-    if (this.isToday(selectedDate)) {
-      // Si es hoy, actualizar minDateTime con la hora actual
-      this.updateMinDateTime();
+  
+    // Crear objetos de fecha a partir de la fecha seleccionada y la fecha actual
+    const minDateTimeToDate = new Date(this.minDateTime);
+    const selectedDateTimeToDate = new Date(selectedDateTime);
+  
+    // Comprobar si la fecha seleccionada es anterior a la actual
+    if (selectedDateTimeToDate < minDateTimeToDate) {
+      alert('La fecha y hora seleccionada no puede ser anterior a la fecha y hora actual');
+      event.target.value = this.minDateTime; // Restablecer al valor mínimo permitido
     } else {
-      // Si no es hoy, permitir cualquier hora
-      this.minDateTime = `${selectedDate}T00:00`;
+      // Si es hoy, actualizar minDateTime con la hora actual
+      if (this.isToday(selectedDate)) {
+        this.updateMinDateTime();
+      } else {
+        // Si no es hoy, solo actualizamos la fecha sin la hora
+        this.minDateTime = `${selectedDate}T00:00`;
+      }
     }
   }
+  
 
   ngOnChanges(changes: SimpleChanges): void {
     // Detecta cambios en el valor de @Input() sala
