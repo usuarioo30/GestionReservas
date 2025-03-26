@@ -31,8 +31,8 @@ export class ListProyectosComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    const role = this.authService.getRole(); // Obtener el rol del usuario desde el token
+  async ngOnInit() {
+    const role = await this.authService.getRole(); // Obtener el rol del usuario desde el token
   console.log('User Role:', role); // Verificar el valor del rol en la consola
 
   if (role !== 'admin') {

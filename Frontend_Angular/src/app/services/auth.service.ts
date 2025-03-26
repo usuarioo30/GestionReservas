@@ -49,7 +49,7 @@ export class AuthService {
     return null;
   }
 
-  async getUserByMail(email: string) {
+  async getUserByMail(email: string): Promise<Usuario> {
     const response = await fetch(`${this.apiUrl}/usuarios/email/${email}`)
 
     if (!response.ok) {
@@ -83,7 +83,7 @@ export class AuthService {
 
   }
 
-  getRole(): string | null {
+  async getRole() {
     const token = localStorage.getItem('access_token');
     if (token) {
       try {
@@ -92,7 +92,7 @@ export class AuthService {
         console.log('Decoded Token:', decodedToken); // Ver en consola el contenido del token
 
         // Verifica que el rol esté presente en el token
-        return decodedToken?.rol || null; // Usar 'rol' en lugar de 'role'
+        return decodedToken?.rol || (await this.getUserByMail(decodedToken.email)).roles; // Usar 'rol' en lugar de 'role'
       } catch (error) {
         console.error('Error al decodificar el token:', error);
         return null;

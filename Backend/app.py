@@ -382,20 +382,20 @@ def editarProyecto(id):
         return jsonify({"message": "Error al editar el proyecto", "error": str(e)}), 500
 
 
-@app.route('/proyectos', methods=['GET'])
-def obtener_proyectos():
-    try:
-        proyectos = Proyecto.query.all()
-        proyectos_serializados = [
-            {
-                "id": proyecto.id,
-                "nombre": proyecto.nombre,
-            }
-            for proyecto in proyectos
-        ]
-        return jsonify(proyectos_serializados), 200
-    except Exception as e:
-        return jsonify({"message": "Error al obtener los proyectos", "error": str(e)}), 500
+# @app.route('/proyectos', methods=['GET'])
+# def obtener_proyectos():
+#     try:
+#         proyectos = Proyecto.query.all()
+#         proyectos_serializados = [
+#             {
+#                 "id": proyecto.id,
+#                 "nombre": proyecto.nombre,
+#             }
+#             for proyecto in proyectos
+#         ]
+#         return jsonify(proyectos_serializados), 200
+#     except Exception as e:
+#         return jsonify({"message": "Error al obtener los proyectos", "error": str(e)}), 500
 
 # Obtener un proyecto por su ID
 @app.route('/proyectos/<int:id>', methods=['GET'])
