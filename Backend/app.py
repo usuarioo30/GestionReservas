@@ -83,7 +83,7 @@ def login():
 
     # Buscar el usuario en la base de datos
     usuario = Usuario.query.filter_by(username=username).first()
-    
+
     if usuario and usuario.password == password:
         access_token = create_access_token( identity=usuario.id,  # El ID del usuario como identidad
             additional_claims={  # Aquí agregamos más información
@@ -248,7 +248,7 @@ def obtener_usuario_por_id(id):
             "id": usuario.id,
             "email": usuario.email,
             "username": usuario.username,
-            "roles": usuario.roles 
+            "roles": usuario.roles
         }
         return jsonify(usuario_serializado), 200
     except Exception as e:
@@ -279,7 +279,7 @@ def obtener_usuario_por_email(email):
 # Crear un nuevo usuario
 @app.route('/register', methods=['POST'])
 @app.route('/register', methods=['POST'])
-def crear_usuario():    
+def crear_usuario():
     try:
         data = request.get_json()
         email = data.get('email')
@@ -318,7 +318,7 @@ def crear_usuario():
 
 # Crear un nuevo proyecto
 @app.route('/registrarProyecto', methods=['POST'])
-def crear_proyecto():    
+def crear_proyecto():
     try:
         data = request.get_json()
         nombre = data.get('nombre')
@@ -364,20 +364,20 @@ def editarProyecto(id):
         return jsonify({"message": "Error al editar el proyecto", "error": str(e)}), 500
 
 
-# @app.route('/proyectos', methods=['GET'])
-# def obtener_proyectos():
-#     try:
-#         proyectos = Proyecto.query.all()
-#         proyectos_serializados = [
-#             {
-#                 "id": proyecto.id,
-#                 "nombre": proyecto.nombre,
-#             }
-#             for proyecto in proyectos
-#         ]
-#         return jsonify(proyectos_serializados), 200
-#     except Exception as e:
-#         return jsonify({"message": "Error al obtener los proyectos", "error": str(e)}), 500
+@app.route('/proyectos', methods=['GET'])
+def obtener_proyectos():
+     try:
+         proyectos = Proyecto.query.all()
+         proyectos_serializados = [
+             {
+                 "id": proyecto.id,
+                 "nombre": proyecto.nombre,
+             }
+             for proyecto in proyectos
+         ]
+         return jsonify(proyectos_serializados), 200
+     except Exception as e:
+         return jsonify({"message": "Error al obtener los proyectos", "error": str(e)}), 500
 
 # Obtener un proyecto por su ID
 @app.route('/proyectos/<int:id>', methods=['GET'])

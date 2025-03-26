@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list-proyectos',
@@ -69,7 +70,7 @@ export class ListProyectosComponent implements OnInit {
 
       this.proyectoService.editProyecto(proyectoEditado.id, proyectoEditado).subscribe(
         () => {
-          alert('Proyecto actualizado con éxito');
+          Swal.fire('Éxito', 'Proyecto actualizado con éxito', 'success');
           this.cargarProyectos(); // Recargar la lista de proyectos
           const modal = document.getElementById('editarProyectoModal');
           if (modal) {
@@ -78,7 +79,7 @@ export class ListProyectosComponent implements OnInit {
         },
         (error: any) => {
           console.error('Error al actualizar el proyecto:', error);
-          alert('Hubo un error al actualizar el proyecto');
+          Swal.fire('Error', 'Hubo un error al actualizar el proyecto', 'error');
         }
       );
     }
@@ -93,7 +94,7 @@ export class ListProyectosComponent implements OnInit {
 
       this.proyectoService.addProyecto(nuevoProyecto).subscribe(
         () => {
-          alert('Proyecto creado con éxito');
+          Swal.fire('Éxito', 'Proyecto creado con éxito', 'success');
           this.cargarProyectos(); // Recargar la lista de proyectos
           this.crearProyectoForm.reset(); // Reiniciar el formulario
           const modal = document.getElementById('crearProyectoModal');
@@ -103,7 +104,7 @@ export class ListProyectosComponent implements OnInit {
         },
         (error: any) => {
           console.error('Error al crear el proyecto:', error);
-          alert('Hubo un error al crear el proyecto');
+          Swal.fire('Error', 'Hubo un error al crear el proyecto', 'error');
         }
       );
     } else {
@@ -117,12 +118,12 @@ export class ListProyectosComponent implements OnInit {
     if (confirmar) {
       this.proyectoService.deleteProyecto(id).subscribe(
         () => {
-          alert('Proyecto eliminado con éxito');
+          Swal.fire('Éxito', 'Proyecto eliminado con éxito', 'success');
           this.cargarProyectos(); // Recargar la lista de proyectos
         },
         (error: any) => { // Declarar explícitamente el tipo del parámetro error
           console.error('Error al eliminar el proyecto:', error);
-          alert('Hubo un error al eliminar el proyecto');
+          Swal.fire('Error', 'Hubo un error al eliminar el proyecto', 'error');
         }
       );
     }
