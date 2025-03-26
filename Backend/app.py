@@ -4,7 +4,7 @@ from datetime import timedelta, datetime
 import google.auth
 import google.auth.transport.requests
 from flask import Flask, request, jsonify
-from flask_cors import CORS  # Importa Flask-CORS
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
@@ -91,6 +91,7 @@ def login():
             additional_claims={  # Aquí agregamos más información
                 "nombre": usuario.username,
                 "email": usuario.email,
+                "rol": usuario.roles
             })
         return jsonify(access_token=access_token), 200
     else:
@@ -333,6 +334,69 @@ def obtener_proyectos():
     except Exception as e:
         return jsonify({"message": "Error al obtener los proyectos", "error": str(e)}), 500
 
+# Crear un nuevo proyecto
+@app.route('/registrarProyecto', methods=['POST'])
+def crear_proyecto():    
+    try:
+        data = request.get_json()
+        nombre = data.get('nombre')
+
+        # Validar que todos los campos estén presentes
+        if not all([nombre]):
+            return jsonify({"message": "Todos los campos son obligatorios"}), 400
+
+        # Crear el nuevo usuario
+        nuevo_proyecto = Proyecto(
+            nombre=nombre,
+        )
+
+        db.session.add(nuevo_proyecto)
+        db.session.commit()
+
+        return jsonify({"message": "Proyecto creado con éxito"}), 201
+
+    except IntegrityError as e:
+        db.session.rollback()  # Revertir la transacción en caso de error
+        if "Duplicate entry" in str(e.orig):
+            return jsonify({"message": "El nombre del proyecto ya está registrado"}), 400
+        return jsonify({"message": "Error de integridad en la base de datos", "error": str(e)}), 400
+
+    except Exception as e:
+        return jsonify({"message": "Error al crear el proyecto", "error": str(e)}), 500
+
+# Ruta para editar una reserva
+@app.route('/editarProyecto/<int:id>', methods=['PUT'])
+def editarProyecto(id):
+    try:
+        proyecto = Proyecto.query.get(id)
+        if proyecto:
+            data = request.get_json()
+            nombre = data.get('nombre')
+            if nombre:
+                proyecto.nombre = nombre
+            db.session.commit()
+            return jsonify({"message": "Proyecto actualizado con éxito"}), 200
+        else:
+            return jsonify({"message": "Proyecto no encontrado"}), 404
+    except Exception as e:
+        return jsonify({"message": "Error al editar el proyecto", "error": str(e)}), 500
+
+
+@app.route('/proyectos', methods=['GET'])
+def obtener_proyectos():
+    try:
+        proyectos = Proyecto.query.all()
+        proyectos_serializados = [
+            {
+                "id": proyecto.id,
+                "nombre": proyecto.nombre,
+            }
+            for proyecto in proyectos
+        ]
+        return jsonify(proyectos_serializados), 200
+    except Exception as e:
+        return jsonify({"message": "Error al obtener los proyectos", "error": str(e)}), 500
+
 # Obtener un proyecto por su ID
 @app.route('/proyectos/<int:id>', methods=['GET'])
 def obtener_proyecto_por_id(id):
@@ -364,6 +428,19 @@ def google_login():
         "message": f"Welcome {user.username}!",
         "role": user.roles
     }), 200
+
+@app.route('/eliminarProyecto/<int:id>', methods=['DELETE'])
+def eliminarProyecto(id):
+    try:
+        proyecto = Proyecto.query.get(id)
+        if proyecto:
+            db.session.delete(proyecto)
+            db.session.commit()
+            return jsonify({"message": "Proyecto eliminado con éxito"}), 200
+        else:
+            return jsonify({"message": "Proyecto no encontrado"}), 404
+    except Exception as e:
+        return jsonify({"message": "Error al eliminar el proyecto", "error": str(e)}), 500
 
 
 # Ejecutar la aplicación Flask
