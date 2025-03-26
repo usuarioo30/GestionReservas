@@ -1,8 +1,5 @@
-from flask import Flask, request, jsonify
-from datetime import timedelta, datetime
+from datetime import datetime
 
-import google.auth
-import google.auth.transport.requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
@@ -10,9 +7,10 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash
 
+
 # Configuración de la base de datos y otros parámetros
 class Config:
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:Usuario1234@localhost/gestionreservas'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://dam:dam@localhost/gestionreservas'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'miClave'  # Clave secreta para JWT
     JWT_SECRET_KEY = 'mi_secreto_jwt'  # Clave secreta para JWT
