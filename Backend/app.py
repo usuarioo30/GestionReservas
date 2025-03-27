@@ -341,6 +341,32 @@ def crear_usuario():
     except Exception as e:
         return jsonify({"message": "Error al crear el usuario", "error": str(e)}), 500
 
+# Ruta para editar una reserva
+@app.route('/usuarios/<int:id>', methods=['PATCH'])
+def editarUsuario(id):
+    try:
+        usuario = Usuario.query.get(id)
+        if not usuario:
+            return jsonify({"message": "Usuario no encontrado"}), 404
+
+        data = request.get_json()
+
+        # Actualizar los campos si están en la petición
+        if "password" in data:
+            password_hash = generate_password_hash(data["password"])
+            usuario.password = password_hash 
+        if "username" in data:
+            usuario.username = data["username"]
+        if "roles" in data:
+            usuario.roles = data["roles"]
+
+        db.session.commit()
+        return jsonify({"message": "Usuario actualizado con éxito"}), 200
+
+    except Exception as e:
+        return jsonify({"message": "Error al editar el usuario", "error": str(e)}), 500
+
+
 # Crear un nuevo proyecto
 @app.route('/registrarProyecto', methods=['POST'])
 def crear_proyecto():
@@ -371,7 +397,7 @@ def crear_proyecto():
     except Exception as e:
         return jsonify({"message": "Error al crear el proyecto", "error": str(e)}), 500
 
-# Ruta para editar una reserva
+# Ruta para editar un proyecto
 @app.route('/editarProyecto/<int:id>', methods=['PUT'])
 def editarProyecto(id):
     try:

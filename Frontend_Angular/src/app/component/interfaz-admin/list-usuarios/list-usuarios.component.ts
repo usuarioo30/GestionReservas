@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list-usuarios',
@@ -55,9 +56,36 @@ export class ListUsuariosComponent {
 
   // Eliminar un usuario
   async eliminarUsuario(id: number) {
-    this.authService.deleteUser(id) ? this.usuarios = await this.authService.getUsers() : console.log("Ha ocurrido un error");
 
+    //window.confirm("¿Estás seguro de que deseas eliminar este usuario?"); //Nativo de js para eliminar
+    const confirmacion = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "No podrás revertir esta acción.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar"
+    });
+  
+    if (!confirmacion.isConfirmed) {
+      return; // Si el usuario cancela, no se ejecuta la eliminación
+    }
+
+    try {
+      const eliminado = await this.authService.deleteUser(id);
+      if (eliminado) {
+        // Filtra el usuario eliminado del array
+        this.usuarios = this.usuarios.filter(usuario => usuario.id !== id);
+      } else {
+        console.error("Ha ocurrido un error al eliminar el usuario");
+      }
+    } catch (error) {
+      console.error("Error al eliminar el usuario:", error);
+    }
   }
+  
 
 
   volverAReservas(): void {

@@ -133,16 +133,32 @@ export class AuthService {
 
   }
 
-  deleteUser(id: number): boolean {
+  async editUser(id: number, password?: string, username?: string) {
+    const response = await fetch(`${this.apiUrl}/usuarios/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({id: id, password: password, username: username})
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al editar el usuario');
+    }
+
+    return response.json();
+  }
+
+  deleteUser(id: number) {
     this.http.delete(`${this.apiUrl}/usuarios/${id}`)
     .subscribe({
       next: () => {
-        alert('Proyecto eliminado con éxito');
+        alert('Usuario eliminado con éxito');
         
       },
       error: (error: any) => { // Declarar explícitamente el tipo del parámetro error
-        console.error('Error al eliminar el proyecto:', error);
-        alert('Hubo un error al eliminar el proyecto');
+        console.error('Error al eliminar el usuario:', error);
+        alert('Hubo un error al eliminar el usuario');
       }
     });
 

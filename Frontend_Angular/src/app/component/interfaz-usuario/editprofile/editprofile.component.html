@@ -1,0 +1,29 @@
+<form [formGroup]="editUser" (ngSubmit)="editUserSubmit()">
+    <!--email, username, contraseña y confirmar contraseña-->
+    <div class="mb-3">
+        <label class="form-label" for="">Correo electrónico</label>
+        <input class="form-control" type="email" id="email" formControlName="email" readonly>
+        
+    </div>
+    <div class="mb-3">
+        <label for="">Nombre de usuario</label>
+        <input class="form-control" type="text" formControlName="username" id="username">
+        <span class="text-danger" *ngIf="inValidField('username')">Rellene este campo</span>
+        
+    </div>
+    <div class="mb-3">
+        <label for="">Cambiar Contraseña</label>
+        <input class="form-control" type="password" formControlName="password" id="password">
+    </div>
+    <div class="mb-3">
+        <label for="">Confirmar Contraseña</label>
+        <input class="form-control" type="password" formControlName="confirmPassword" id="confirmPassword">
+        <div *ngIf="editUser.controls['confirmPassword']?.touched && editUser.get('confirmPassword')?.value === '' || editUser.hasError('passNoCoinciden')" class="error">
+            ⚠ Las contraseñas no coinciden.
+        </div>
+          
+    </div>
+
+    <button class="btn btn-primary" type="submit">Confirmar Edición</button>
+
+</form>

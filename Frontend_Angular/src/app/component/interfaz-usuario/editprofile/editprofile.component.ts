@@ -1,0 +1,93 @@
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../../services/auth.service';
+import { Usuario } from '../../../interfaces/usuario';
+import { NgIf } from '@angular/common';
+import Swal from 'sweetalert2';
+
+@Component({
+  selector: 'app-editprofile',
+  imports: [ReactiveFormsModule, NgIf],
+  templateUrl: './editprofile.component.html',
+  styleUrl: './editprofile.component.css'
+})
+export class EditprofileComponent implements OnInit{
+
+  token!: string | null;
+  user!: Usuario
+  private fb: FormBuilder = inject(FormBuilder);
+  private auth: AuthService = inject(AuthService);
+  editUser: FormGroup = this.fb.group({
+    id: ['', []],
+    email: ['', []],
+    username: ['', [Validators.required]],
+    password: ['', []],
+    confirmPassword: ['', []]
+  }, { validators: this.passwordsMatchValidator }); // <-- CORREGIDO
+
+  async ngOnInit(): Promise<void> {
+      this.token = localStorage.getItem("access_token");
+      if (this.token) {
+        const decodedToken = this.auth.decodeToken(this.token);
+        console.log(decodedToken);
+
+        this.user = await this.auth.getUserByMail(decodedToken.email);
+        this.editUser.setValue({
+          id: this.user.id,
+          email: this.user.email,
+          username: this.user.username,
+          password: '', //Angular me obligó a poner estos 2 últimos campos
+          confirmPassword: ''
+        })
+
+      }
+
+  }
+
+  inValidField(field: string): boolean {
+    return this.editUser.controls[field]?.invalid && this.editUser.controls[field]?.touched;
+  }
+
+  // Validación personalizada para verificar que password y confirmPassword coincidan
+  private passwordsMatchValidator(group: FormGroup) {
+    const password = group.get('password')?.value;
+    const confirmPassword = group.get('confirmPassword')?.value;
+
+    return password && confirmPassword && password !== confirmPassword
+      ? { passNoCoinciden: true }  // ✅ Devuelve el error correctamente
+      : null;
+  }
+
+  async editUserSubmit() {
+    if (this.editUser.valid) {
+      
+      const { id, username, password } = this.editUser.value;
+
+      try {
+        
+        if (password) {
+          await this.auth.editUser(id, username, password);
+          await Swal.fire({
+                title: "Resultado",
+                text: "Usuario editado con éxito",
+                icon: "success",
+                showCancelButton: true,
+                confirmButtonColor: "green",
+                confirmButtonText: "Hecho",
+              });
+        } else {
+          await this.auth.editUser(id, username);
+        }
+      } catch (error) {
+        
+      }
+
+
+    } else {
+      
+      this.editUser.markAllAsTouched();
+    }
+  }
+}
+
+
