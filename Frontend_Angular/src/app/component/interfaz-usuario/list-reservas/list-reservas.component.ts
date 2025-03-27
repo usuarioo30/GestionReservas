@@ -37,21 +37,16 @@ export class ListReservasComponent implements OnInit, OnChanges {
   proyectos!: Proyecto[];
   usuarios!: Usuario[];
   constructor(private reservasService: ReservasService,
-              private authService: AuthService,
-              private router: Router,
-              private renderer: Renderer2
+    private authService: AuthService,
+    private router: Router,
+    private renderer: Renderer2
   ) {
 
     let token = localStorage.getItem('access_token');
-    if(token) {
+    if (token) {
       const decodedToken: any = jwtDecode(token);
-      console.log(decodedToken); //getUserByMail
+      console.log(decodedToken);
       this.waitFetch(decodedToken.email);
-
-      // if (userId) {
-      //   this.id =  Number.parseInt(userId);
-      //   console.log(this.id);
-      // }
 
     }
 
@@ -61,20 +56,20 @@ export class ListReservasComponent implements OnInit, OnChanges {
   private proyectoService = inject(ProyectoService);
 
   reservation: FormGroup = this.fb.group({
-    email: [''], // Campo email agregado
+    email: [''],
     fechaHoraInicio: ['', [Validators.required]],
     duracion: ['', [Validators.required, Validators.min(1)]],
-    proyectoAsociado: ['', [Validators.required,Validators.nullValidator]],
+    proyectoAsociado: ['', [Validators.required, Validators.nullValidator]],
     descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
     idUsario: [this.id]
   });
 
   editReservation: FormGroup = this.fb.group({
     id: [''],
-    email: [''], // Campo email agregado
+    email: [''],
     fechaHoraInicio: ['', [Validators.required]],
     duracion: ['', [Validators.required, Validators.min(1)]],
-    proyectoAsociado: ['', [Validators.required,Validators.nullValidator]],
+    proyectoAsociado: ['', [Validators.required, Validators.nullValidator]],
     descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
     idUsario: [this.id]
   });
@@ -95,7 +90,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
       this.role = await this.getRole(this.id!);
 
     }
-    if(!token) {
+    if (!token) {
       this.router.navigate(['/login']);
     }
 
@@ -110,7 +105,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
     // Carga inicial de las reservas
     await this.loadReservas();
-    this.filterReservas(this.nombreProyecto); // Filtra las reservas según el valor inicial de sala
+    this.filterReservas(this.nombreProyecto);
   }
 
   // Método para actualizar la fecha y hora mínima
@@ -122,25 +117,25 @@ export class ListReservasComponent implements OnInit, OnChanges {
     this.minDateTime = localDateTime;
     this.dateActual = localDateTime.slice(0, 10); // Formato 'YYYY-MM-DD'
   }
-  
+
   // Método para verificar si la fecha seleccionada es hoy
   isToday(selectedDate: string): boolean {
     return selectedDate === this.dateActual;
   }
-  
+
   // Método para manejar cambios en la fecha seleccionada
   onDateTimeChange(event: any): void {
     const selectedDateTime = event.target.value;
     const selectedDate = selectedDateTime.slice(0, 10); // Extraer solo la fecha (YYYY-MM-DD)
-  
+
     // Crear objetos de fecha a partir de la fecha seleccionada y la fecha actual
     const minDateTimeToDate = new Date(this.minDateTime);
     const selectedDateTimeToDate = new Date(selectedDateTime);
-  
+
     // Comprobar si la fecha seleccionada es anterior a la actual
     if (selectedDateTimeToDate < minDateTimeToDate) {
       alert('La fecha y hora seleccionada no puede ser anterior a la fecha y hora actual');
-      event.target.value = this.minDateTime; // Restablecer al valor mínimo permitido
+      event.target.value = this.minDateTime;
     } else {
       // Si es hoy, actualizar minDateTime con la hora actual
       if (this.isToday(selectedDate)) {
@@ -151,7 +146,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
       }
     }
   }
-  
+
 
   ngOnChanges(changes: SimpleChanges): void {
     // Detecta cambios en el valor de @Input() sala
@@ -170,11 +165,11 @@ export class ListReservasComponent implements OnInit, OnChanges {
   async waitFetch(email: string): Promise<any> {
     try {
       const user = await this.authService.getUserByMail(email);
-      console.log(user); // Devuelve el resultado resuelto
+      console.log(user);
       this.id = user.id;
     } catch (error) {
       console.error('Error al obtener el usuario por email:', error);
-      throw error; // Lanza el error para manejarlo en el lugar donde se llama
+      throw error;
     }
   }
 
@@ -186,13 +181,12 @@ export class ListReservasComponent implements OnInit, OnChanges {
         reservas.map(async reserva => {
           let response = await this.authService.getUser(reserva.idUsuario);
           let nombreProyecto = await this.reservasService.getNombreProyecto(reserva.proyectoAsociado);
-          reserva.owner = response.username; // Asigna el nombre del usuario al campo 'owner'
+          reserva.owner = response.username;
           reserva.email = response.email;
           reserva.proyectoAsociado = nombreProyecto.nombre;
           return reserva;
         })
       );
-      // Llama al servicio para obtener las reservas
     } catch (error) {
       console.error('Error al cargar las reservas:', error);
     }
@@ -243,7 +237,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
         }
 
         else {
-          this.reservas = this.showReservas; // Si el valor no es válido, muestra todas las reservas
+          this.reservas = this.showReservas;
           break;
 
         }
@@ -263,6 +257,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   };
 
   async submitReservation() {
+
     if (this.reservation.valid && this.id) {
       const reserva: Omit<Reserva, "id"> = {
         sala: this.sala === "upper" ? "arriba" : "abajo",
@@ -295,14 +290,13 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
   //Método para obtener los datos de la reserva a editar
   editReserva(id: number): void {
-    // Encuentra la reserva a editar
     const reserva = this.reservas.find(res => res.id === id);
 
     if (reserva) {
-
+      
       // Asigna los valores de la reserva a los campos del formulario
       this.editReservation.controls['id'].setValue(reserva.id);
-      this.editReservation.controls['email'].setValue(reserva.email); // Cargar el correo original
+      this.editReservation.controls['email'].setValue(reserva.email);
       this.editReservation.controls['fechaHoraInicio'].setValue(reserva.fechaHoraInicio);
       this.editReservation.controls['duracion'].setValue(reserva.duracion);
       this.editReservation.controls['proyectoAsociado'].setValue(reserva.proyectoAsociado);

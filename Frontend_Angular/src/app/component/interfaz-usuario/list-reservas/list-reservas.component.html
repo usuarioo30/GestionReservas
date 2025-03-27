@@ -100,87 +100,92 @@
     <div class="container py-3">
       <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-8">
-          <h1 class="text-center mb-4">Reservas activas</h1>
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h1 class="text-center mb-4">Reservas activas</h1>
 
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearReservaModal"
-              *ngIf="sala === 'upper' || sala === 'lower'">
-              Crear reserva
-            </button>
-            <div class="d-flex align-items-center gap-3">
-              <!-- Campo de búsqueda por proyecto -->
-              <div class="flex-grow-1">
-                <label for="proyecto" class="form-label">Filtrar por nombre de proyecto</label>
-                <div class="input-group"><i class="bi bi-filter icono-grande"></i>
-                  <select class="form-control" name="proyecto" id="proyecto" [(ngModel)]="nombreProyecto"
-                    (change)="filterReservas(nombreProyecto, nombreUsuario)">
-                    <option value="">Sin filtro</option>
-                    <option *ngFor="let p of proyectos" value="{{p.nombre}}">{{p.nombre}}</option>
-                  </select>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearReservaModal"
+                  *ngIf="sala === 'upper' || sala === 'lower'">
+                  Crear reserva
+                </button>
+                <div class="d-flex align-items-center gap-3">
+                  <!-- Campo de búsqueda por proyecto -->
+                  <div class="flex-grow-1">
+                    <label for="proyecto" class="form-label">Filtrar por nombre de proyecto</label>
+                    <div class="input-group"><i class="bi bi-filter icono-grande"></i>
+                      <select class="form-control" name="proyecto" id="proyecto" [(ngModel)]="nombreProyecto"
+                        (change)="filterReservas(nombreProyecto, nombreUsuario)">
+                        <option value="">Sin filtro</option>
+                        <option *ngFor="let p of proyectos" value="{{p.nombre}}">{{p.nombre}}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Campo de búsqueda por usuario -->
+                  <div class="flex-grow-1 campos">
+                    <label for="usuario" class="form-label">Filtrar por Usuario</label>
+                    <div class="input-group"><i class="bi bi-filter icono-grande"></i>
+                      <select class="form-control" name="usuario" id="usuario" [(ngModel)]="nombreUsuario"
+                        (change)="filterReservas(nombreProyecto, nombreUsuario)">
+                        <option value="">Sin filtro</option>
+                        <option *ngFor="let u of usuarios" value="{{u.username}}">{{u.username}}</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <!-- Campo de búsqueda por usuario -->
-              <div class="flex-grow-1 campos">
-                <label for="usuario" class="form-label">Filtrar por Usuario</label>
-                <div class="input-group"><i class="bi bi-filter icono-grande"></i>
-                  <select class="form-control" name="usuario" id="usuario" [(ngModel)]="nombreUsuario"
-                    (change)="filterReservas(nombreProyecto, nombreUsuario)">
-                    <option value="">Sin filtro</option>
-                    <option *ngFor="let u of usuarios" value="{{u.username}}">{{u.username}}</option>
-                  </select>
-                </div>
+              <div class="alert alert-primary custom-alert" *ngIf="reservas.length === 0" role="alert">
+                <b>No hay reservas activas.</b>
+              </div>
+
+              <div class="table-responsive" *ngIf="reservas.length > 0">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th id="hora">Hora <i class="bi bi-clock"></i></th>
+                      <th *ngIf="sala !== 'upper' && sala != 'lower'">Sala</th>
+                      <th>Resumen <i class="bi bi-blockquote-left"></i></th>
+                      <th>Proyecto <i class="bi bi-folder"></i></th>
+                      <th id="resto">Duración <i class="bi bi-broadcast"></i></th>
+                      <th>Date <i class="bi bi-calendar"></i></th>
+                      <th>Owner <i class="bi bi-person"></i></th>
+                      <th>Actions <i class="bi bi-play"></i></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let reserva of reservas">
+                      <td id="hora">{{ reserva.fechaHoraInicio | date: 'HH:mm' }}</td>
+                      <td *ngIf="sala !== 'upper' && sala != 'lower'">{{ reserva.sala }}</td>
+                      <td>{{ reserva.descripcion }}</td>
+                      <td id="proyecto" class="proyecto-btn">{{ reserva.proyectoAsociado }}</td>
+                      <td id="resto">{{ reserva.duracion }}m</td>
+                      <td id="date">{{ reserva.fechaHoraInicio | date: 'd MMM' }}</td>
+                      <td>
+                        {{reserva.owner}}<br>
+                        <small class="email">{{reserva.email}}</small>
+                      </td>
+                      <td>
+                        <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-primary btn-sm me-1 mb-2"
+                          data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
+                          <i class="bi bi-pen"></i>
+                        </button>
+                        <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-danger btn-sm"
+                          (click)="deleteReserva(reserva.id)">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-          </div>
-
-          <div class="alert alert-primary custom-alert" *ngIf="reservas.length === 0" role="alert">
-            <b>No hay reservas activas.</b>
-          </div>
-
-          <div class="table-responsive" *ngIf="reservas.length > 0">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th id="hora">Hora <i class="bi bi-clock"></i></th>
-                  <th *ngIf="sala !== 'upper' && sala != 'lower'">Sala</th>
-                  <th>Resumen <i class="bi bi-blockquote-left"></i></th>
-                  <th>Proyecto <i class="bi bi-folder"></i></th>
-                  <th id="resto">Duración <i class="bi bi-broadcast"></i></th>
-                  <th>Date <i class="bi bi-calendar"></i></th>
-                  <th>Owner <i class="bi bi-person"></i></th>
-                  <th>Actions <i class="bi bi-play"></i></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let reserva of reservas">
-                  <td id="hora">{{ reserva.fechaHoraInicio | date: 'HH:mm' }}</td>
-                  <td *ngIf="sala !== 'upper' && sala != 'lower'">{{ reserva.sala }}</td>
-                  <td>{{ reserva.descripcion }}</td>
-                  <td id="proyecto" class="proyecto-btn">{{ reserva.proyectoAsociado }}</td>
-                  <td id="resto">{{ reserva.duracion }}m</td>
-                  <td id="date">{{ reserva.fechaHoraInicio | date: 'd MMM' }}</td>
-                  <td>
-                    {{reserva.owner}}<br>
-                    <small class="email">{{reserva.email}}</small>
-                  </td>
-                  <td>
-                    <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-primary btn-sm me-1"
-                      data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
-                      <i class="bi bi-pen"></i>
-                    </button>
-                    <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-danger btn-sm"
-                      (click)="deleteReserva(reserva.id)">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
       </div>
     </div>
+
 
 
     <!-- Modal para crear reserva -->
@@ -303,7 +308,7 @@
                 <label for="proyectoAsociado" class="form-label">Proyecto Asociado:</label>
                 <select class="form-control" name="proyectoAsociado" id="proyectoAsociado"
                   formControlName="proyectoAsociado">
-                  <option *ngFor="let p of proyectos" value="{{p.id}}">{{p.nombre}}</option>
+                  <option *ngFor="let p of proyectos" [value]="p.id">{{p.nombre}}</option>
                 </select>
                 <div *ngIf="inValidFieldEdit('proyectoAsociado')" class="text-danger">
                   Proporcione un nombre válido (entre 3 y 20 caracteres).
