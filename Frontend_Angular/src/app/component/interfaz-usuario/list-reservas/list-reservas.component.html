@@ -84,8 +84,8 @@
         <div class="dropdown pb-4">
           <a href="#" class="d-flex align-items-center text-black text-decoration-none dropdown-toggle"
             id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">
-            <span class="d-none d-sm-inline mx-1">{{email}}</span>
+            
+            <span class="d-none d-sm-inline mx-1">({{role}}) {{email}}</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
             <li>
@@ -173,7 +173,7 @@
                       <td>
                         <div class="d-flex justify-content-start">
                           <button *ngIf="reserva.email === email || role === 'admin'"
-                            class="btn btn-primary btn-sm me-1" data-bs-toggle="modal"
+                            class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
                             data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
                             <i class="bi bi-pen"></i>
                           </button>
