@@ -32,13 +32,15 @@
                   <td>{{ proyecto.id }}</td>
                   <td>{{ proyecto.nombre }}</td>
                   <td>
-                    <button class="btn btn-primary btn-sm me-1" data-bs-toggle="modal"
-                      data-bs-target="#editarProyectoModal" (click)="abrirModalEditar(proyecto)">
-                      <i class="bi bi-pen"></i>
-                    </button>
-                    <button class="btn btn-danger btn-sm" (click)="eliminarProyecto(proyecto.id)">
-                      <i class="bi bi-trash"></i>
-                    </button>
+                    <div class="d-flex justify-content-start">
+                      <button class="btn btn-primary btn-sm me-1" data-bs-toggle="modal"
+                        data-bs-target="#editarProyectoModal" (click)="abrirModalEditar(proyecto)">
+                        <i class="bi bi-pen"></i>
+                      </button>
+                      <button class="btn btn-danger btn-sm" (click)="eliminarProyecto(proyecto.id)">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               </tbody>

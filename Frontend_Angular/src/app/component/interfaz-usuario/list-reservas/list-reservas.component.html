@@ -167,14 +167,17 @@
                         <small class="email">{{reserva.email}}</small>
                       </td>
                       <td>
-                        <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-primary btn-sm me-1 mb-2"
-                          data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
-                          <i class="bi bi-pen"></i>
-                        </button>
-                        <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-danger btn-sm"
-                          (click)="deleteReserva(reserva.id)">
-                          <i class="bi bi-trash"></i>
-                        </button>
+                        <div class="d-flex justify-content-start">
+                          <button *ngIf="reserva.email === email || role === 'admin'"
+                            class="btn btn-primary btn-sm me-1" data-bs-toggle="modal"
+                            data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
+                            <i class="bi bi-pen"></i>
+                          </button>
+                          <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-danger btn-sm"
+                            (click)="deleteReserva(reserva.id)">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   </tbody>
