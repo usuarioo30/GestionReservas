@@ -81,7 +81,7 @@
 #dropdownUser1 {
   background: none !important;
   border: none !important;
-  color: inherit !important; /* Usa el color del texto heredado */
+  color: inherit !important;
 }
 
 #dropdownUser1:focus, 
@@ -89,4 +89,8 @@
   background: none !important;
   box-shadow: none !important;
   color: inherit !important;
+}
+
+.active-light {
+  background-color: #007bff;
 }

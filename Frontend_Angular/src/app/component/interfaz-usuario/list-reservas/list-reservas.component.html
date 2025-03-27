@@ -58,8 +58,9 @@
           <li class="hall" *ngIf="role === 'admin'">
             <a [routerLink]="['/proyectos']" routerLinkActive="active" class="nav-link align-middle proyecto" [ngClass]="{
                  'active-dark': isDarkTheme,
+                 'active-light': !isDarkTheme,
                  'text-light': isDarkTheme,
-                 'text-black': !isDarkTheme
+                 'text-black': !isDarkTheme,
                }">
               <i class="bi bi-file-code"></i>
               <span class="ms-2 d-none d-sm-inline">Proyectos</span>
@@ -69,8 +70,9 @@
           <li class="hall" *ngIf="role === 'admin'">
             <a [routerLink]="['/listusers']" routerLinkActive="active" class="nav-link align-middle proyecto" [ngClass]="{
                  'active-dark': isDarkTheme,
+                 'active-light': !isDarkTheme,
                  'text-light': isDarkTheme,
-                 'text-black': !isDarkTheme
+                 'text-black': !isDarkTheme,
                }">
               <i class="bi bi-person"></i>
               <span class="ms-2 d-none d-sm-inline">Usuarios</span>
@@ -144,14 +146,16 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th id="hora">Hora <i class="bi bi-clock"></i></th>
-                      <th *ngIf="sala !== 'upper' && sala != 'lower'">Sala</th>
-                      <th>Resumen <i class="bi bi-blockquote-left"></i></th>
-                      <th>Proyecto <i class="bi bi-folder"></i></th>
-                      <th id="resto">Duración <i class="bi bi-broadcast"></i></th>
-                      <th>Date <i class="bi bi-calendar"></i></th>
-                      <th>Owner <i class="bi bi-person"></i></th>
-                      <th>Actions <i class="bi bi-play"></i></th>
+                      <th style="white-space: nowrap;">Hora <i class="bi bi-clock"></i></th>
+                      <th *ngIf="sala !== 'upper' && sala != 'lower'" style="white-space: nowrap;">Sala</th>
+                      <th style="white-space: nowrap;">Resumen <i class="bi bi-blockquote-left"></i></th>
+                      <th style="white-space: nowrap;">Proyecto <i class="bi bi-folder"></i></th>
+                      <th style="white-space: nowrap;">Duración <i class="bi bi-broadcast"></i></th>
+                      <th style="white-space: nowrap;">Date <i class="bi bi-calendar"></i></th>
+                      <th style="white-space: nowrap;">Owner <i class="bi bi-person"></i></th>
+                      <th style="white-space: nowrap;">Actions <i class="bi bi-play"></i></th>
+
+
                     </tr>
                   </thead>
                   <tbody>
