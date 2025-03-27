@@ -254,7 +254,7 @@ def obtener_reservas():
 @app.route('/usuarios', methods=['GET'])
 def obtener_usuarios():
     try:
-        usuarios = Usuario.query.all()
+        usuarios = Usuario.query.filter(Usuario.roles == "user").all()
         usuarios_serializados = [
             {
                 "id": usuario.id,
