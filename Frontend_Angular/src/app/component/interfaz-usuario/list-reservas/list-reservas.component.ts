@@ -36,6 +36,8 @@ export class ListReservasComponent implements OnInit, OnChanges {
   dateActual: string = '';
   proyectos!: Proyecto[];
   usuarios!: Usuario[];
+  deployed: boolean = true;
+
   constructor(private reservasService: ReservasService,
     private authService: AuthService,
     private router: Router,
@@ -369,4 +371,9 @@ export class ListReservasComponent implements OnInit, OnChanges {
       this.renderer.removeClass(document.body, 'dark-theme');
     }
   }
+
+  deploySidebar() {
+    this.deployed = !this.deployed;
+  }
+
 }

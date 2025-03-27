@@ -13,22 +13,23 @@
     </ul>
   </div>
 
-  <button class="btn btn-primary my-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar"
-    aria-controls="offcanvasSidebar">
+  
+  <!--Aquí empieza la row-->
+  <button class="btn btn-primary my-3" [ngClass]="{'d-none': deployed}" type="button" (click)="deploySidebar()">
     <i class="bi bi-list"></i> Menú
   </button>
-
   <div class="row">
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel"
-      [ngClass]="{'bg-dark text-light': isDarkTheme, 'bg-light text-dark': !isDarkTheme}">
-      <div class="offcanvas-header">
+
+    <!--Aquí empieza la columna del sidebar-->
+    <div class="col-lg-2 col-md-1 p-2 position-fixed vh-100 sidebar" [ngClass]="{'bg-dark text-light': isDarkTheme, 'bg-light text-dark': !isDarkTheme, 'deployed': deployed}">
+      <div class="">
         <button type="button" class="btn btn-transparent text-decoration-none p-0 text-black" id="botonA"
           [routerLink]="['/reservas']">
-          <h5 class="offcanvas-title" id="offcanvasSidebarLabel">Apeiroo Rooms</h5>
+          <h5 class="mt-2 mb-4" id="">Apeiroo Rooms</h5>
         </button>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <button type="button" class="btn-close position-absolute top-0 end-0 m-2" aria-label="Close" (click)="deploySidebar()"></button>
       </div>
-      <div class="offcanvas-body">
+      <div class="">
         <!-- Menú de navegación -->
         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
           <li class="nav-item hall">
@@ -78,14 +79,12 @@
               <span class="ms-2 d-none d-sm-inline">Usuarios</span>
             </a>
           </li>
-
         </ul>
         <hr>
         <div class="dropdown pb-4">
           <a href="#" class="d-flex align-items-center text-black text-decoration-none dropdown-toggle"
             id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-            
-            <span class="d-none d-sm-inline mx-1">({{role}}) {{email}}</span>
+            <small class="d-none d-sm-inline mx-1">({{role}}) {{email}}</small>
           </a>
           <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
             <li>
@@ -99,101 +98,103 @@
       </div>
     </div>
 
-    <div class="container py-3">
-      <div class="row justify-content-center">
-        <div class="col-12 col-md-10 col-lg-8">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <h1 class="text-center mb-4">Reservas activas</h1>
 
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearReservaModal"
-                  *ngIf="(sala === 'upper' || sala === 'lower') && role !== 'admin'">
-                  Crear reserva
-                </button>
-                <div class="d-flex align-items-center gap-3">
-                  <!-- Campo de búsqueda por proyecto -->
-                  <div class="flex-grow-1">
-                    <label for="proyecto" class="form-label">Filtrar por nombre de proyecto</label>
-                    <div class="input-group"><i class="bi bi-filter icono-grande"></i>
-                      <select class="form-control" name="proyecto" id="proyecto" [(ngModel)]="nombreProyecto"
-                        (change)="filterReservas(nombreProyecto, nombreUsuario)">
-                        <option value="">Sin filtro</option>
-                        <option *ngFor="let p of proyectos" value="{{p.nombre}}">{{p.nombre}}</option>
-                      </select>
+
+    <div class="col">
+      <div class="container py-3">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-10 col-lg-8">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h1 class="text-center mb-4">Reservas activas</h1>
+  
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearReservaModal"
+                    *ngIf="(sala === 'upper' || sala === 'lower') && role !== 'admin'">
+                    Crear reserva
+                  </button>
+                  <div class="d-flex align-items-center gap-3">
+                    <!-- Campo de búsqueda por proyecto -->
+                    <div class="flex-grow-1">
+                      <label for="proyecto" class="form-label">Filtrar por nombre de proyecto</label>
+                      <div class="input-group"><i class="bi bi-filter icono-grande"></i>
+                        <select class="form-control" name="proyecto" id="proyecto" [(ngModel)]="nombreProyecto"
+                          (change)="filterReservas(nombreProyecto, nombreUsuario)">
+                          <option value="">Sin filtro</option>
+                          <option *ngFor="let p of proyectos" value="{{p.nombre}}">{{p.nombre}}</option>
+                        </select>
+                      </div>
                     </div>
-                  </div>
-
-                  <!-- Campo de búsqueda por usuario -->
-                  <div class="flex-grow-1 campos">
-                    <label for="usuario" class="form-label">Filtrar por Usuario</label>
-                    <div class="input-group"><i class="bi bi-filter icono-grande"></i>
-                      <select class="form-control" name="usuario" id="usuario" [(ngModel)]="nombreUsuario"
-                        (change)="filterReservas(nombreProyecto, nombreUsuario)">
-                        <option value="">Sin filtro</option>
-                        <option *ngFor="let u of usuarios" value="{{u.username}}">{{u.username}}</option>
-                      </select>
+  
+                    <!-- Campo de búsqueda por usuario -->
+                    <div class="flex-grow-1 campos">
+                      <label for="usuario" class="form-label">Filtrar por Usuario</label>
+                      <div class="input-group"><i class="bi bi-filter icono-grande"></i>
+                        <select class="form-control" name="usuario" id="usuario" [(ngModel)]="nombreUsuario"
+                          (change)="filterReservas(nombreProyecto, nombreUsuario)">
+                          <option value="">Sin filtro</option>
+                          <option *ngFor="let u of usuarios" value="{{u.username}}">{{u.username}}</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div class="alert alert-primary custom-alert" *ngIf="reservas.length === 0" role="alert">
-                <b>No hay reservas activas.</b>
-              </div>
-
-              <div class="table-responsive" *ngIf="reservas.length > 0">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th style="white-space: nowrap;">Hora <i class="bi bi-clock"></i></th>
-                      <th *ngIf="sala !== 'upper' && sala != 'lower'" style="white-space: nowrap;">Sala</th>
-                      <th style="white-space: nowrap;">Resumen <i class="bi bi-blockquote-left"></i></th>
-                      <th style="white-space: nowrap;">Proyecto <i class="bi bi-folder"></i></th>
-                      <th style="white-space: nowrap;">Duración <i class="bi bi-broadcast"></i></th>
-                      <th style="white-space: nowrap;">Date <i class="bi bi-calendar"></i></th>
-                      <th style="white-space: nowrap;">Owner <i class="bi bi-person"></i></th>
-                      <th style="white-space: nowrap;">Actions <i class="bi bi-play"></i></th>
-
-
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let reserva of reservas">
-                      <td id="hora">{{ reserva.fechaHoraInicio | date: 'HH:mm' }}</td>
-                      <td *ngIf="sala !== 'upper' && sala != 'lower'">{{ reserva.sala }}</td>
-                      <td>{{ reserva.descripcion }}</td>
-                      <td id="proyecto" class="proyecto-btn">{{ reserva.proyectoAsociado }}</td>
-                      <td id="resto">{{ reserva.duracion }}m</td>
-                      <td id="date">{{ reserva.fechaHoraInicio | date: 'd MMM' }}</td>
-                      <td>
-                        {{reserva.owner}}<br>
-                        <small class="email">{{reserva.email}}</small>
-                      </td>
-                      <td>
-                        <div class="d-flex justify-content-start">
-                          <button *ngIf="reserva.email === email || role === 'admin'"
-                            class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
-                            data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
-                            <i class="bi bi-pen"></i>
-                          </button>
-                          <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-danger btn-sm"
-                            (click)="deleteReserva(reserva.id)">
-                            <i class="bi bi-trash"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+  
+                <div class="alert alert-primary custom-alert" *ngIf="reservas.length === 0" role="alert">
+                  <b>No hay reservas activas.</b>
+                </div>
+  
+                <div class="table-responsive" *ngIf="reservas.length > 0">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th style="white-space: nowrap;">Hora <i class="bi bi-clock"></i></th>
+                        <th *ngIf="sala !== 'upper' && sala != 'lower'" style="white-space: nowrap;">Sala</th>
+                        <th style="white-space: nowrap;">Resumen <i class="bi bi-blockquote-left"></i></th>
+                        <th style="white-space: nowrap;">Proyecto <i class="bi bi-folder"></i></th>
+                        <th style="white-space: nowrap;">Duración <i class="bi bi-broadcast"></i></th>
+                        <th style="white-space: nowrap;">Date <i class="bi bi-calendar"></i></th>
+                        <th style="white-space: nowrap;">Owner <i class="bi bi-person"></i></th>
+                        <th style="white-space: nowrap;">Actions <i class="bi bi-play"></i></th>
+  
+  
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let reserva of reservas">
+                        <td id="hora">{{ reserva.fechaHoraInicio | date: 'HH:mm' }}</td>
+                        <td *ngIf="sala !== 'upper' && sala != 'lower'">{{ reserva.sala }}</td>
+                        <td>{{ reserva.descripcion }}</td>
+                        <td id="proyecto" class="proyecto-btn">{{ reserva.proyectoAsociado }}</td>
+                        <td id="resto">{{ reserva.duracion }}m</td>
+                        <td id="date">{{ reserva.fechaHoraInicio | date: 'd MMM' }}</td>
+                        <td>
+                          {{reserva.owner}}<br>
+                          <small class="email">{{reserva.email}}</small>
+                        </td>
+                        <td>
+                          <div class="d-flex justify-content-start">
+                            <button *ngIf="reserva.email === email || role === 'admin'"
+                              class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
+                              data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
+                              <i class="bi bi-pen"></i>
+                            </button>
+                            <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-danger btn-sm"
+                              (click)="deleteReserva(reserva.id)">
+                              <i class="bi bi-trash"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-
 
     <!-- Modal para crear reserva -->
     <div class="modal fade" id="crearReservaModal" tabindex="-1" aria-labelledby="crearReservaModalLabel"
@@ -344,3 +345,4 @@
     </div>
     <!-- Fin modal para editar reserva -->
   </div>
+  <!--Aquí acaba la row-->
