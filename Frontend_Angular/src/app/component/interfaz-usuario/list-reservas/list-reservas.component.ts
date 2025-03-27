@@ -325,7 +325,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
       await this.reservasService.editReserva(reserva);
       Swal.fire('Éxito', 'Reserva editada con éxito', 'success');
       await this.loadReservas();
-      this.filterReservas(this.nombreProyecto);
+      this.filterReservas(this.nombreProyecto, this.nombreUsuario);
     } else {
       Swal.fire('Error', 'El formulario de edición no es válido', 'error');
       this.editReservation.markAllAsTouched();
@@ -347,7 +347,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
             this.reservas = this.reservas.filter(reserva => reserva.id !== id);
             await Swal.fire('Eliminado', 'Reserva eliminada con éxito', 'success');
             await this.loadReservas();
-            this.filterReservas(this.nombreProyecto);
+            this.filterReservas(this.nombreProyecto, this.nombreUsuario);
           },
           () => {
             Swal.fire('Error', 'Error al eliminar la reserva', 'error');

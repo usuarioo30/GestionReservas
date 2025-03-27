@@ -5,7 +5,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 # Configuración de la base de datos y otros parámetros
@@ -90,7 +90,8 @@ def login():
     # Buscar el usuario en la base de datos
     usuario = Usuario.query.filter_by(username=username).first()
 
-    if usuario and usuario.password == password:
+    
+    if usuario and check_password_hash(usuario.password, password) :
         access_token = create_access_token( identity=usuario.id,  # El ID del usuario como identidad
             additional_claims={  # Aquí agregamos más información
                 "nombre": usuario.username,

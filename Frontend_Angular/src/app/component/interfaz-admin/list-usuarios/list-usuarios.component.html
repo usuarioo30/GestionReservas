@@ -13,10 +13,6 @@
             <b>No hay usuarios disponibles.</b>
           </div>
 
-          <button *ngIf="tieneAcceso" class="btn btn-primary mb-3">
-            Crear Usuario
-          </button>
-
           <div *ngIf="usuarios.length > 0 && tieneAcceso" class="table-responsive">
             <table class="table table-striped">
               <thead>

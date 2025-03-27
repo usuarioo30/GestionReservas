@@ -133,7 +133,7 @@ export class AuthService {
 
   }
 
-  async editUser(id: number, password?: string, username?: string) {
+  async editUser(id: number, username?: string, password?: string) {
     const response = await fetch(`${this.apiUrl}/usuarios/${id}`, {
       method: 'PATCH',
       headers: {

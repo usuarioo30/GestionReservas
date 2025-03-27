@@ -4,10 +4,11 @@ import { AuthService } from '../../../services/auth.service';
 import { Usuario } from '../../../interfaces/usuario';
 import { NgIf } from '@angular/common';
 import Swal from 'sweetalert2';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-editprofile',
-  imports: [ReactiveFormsModule, NgIf],
+  imports: [ReactiveFormsModule, NgIf, RouterLink],
   templateUrl: './editprofile.component.html',
   styleUrl: './editprofile.component.css'
 })
@@ -71,12 +72,18 @@ export class EditprofileComponent implements OnInit{
                 title: "Resultado",
                 text: "Usuario editado con éxito",
                 icon: "success",
-                showCancelButton: true,
                 confirmButtonColor: "green",
                 confirmButtonText: "Hecho",
               });
         } else {
           await this.auth.editUser(id, username);
+          await Swal.fire({
+            title: "Resultado",
+            text: "Usuario editado con éxito",
+            icon: "success",
+            confirmButtonColor: "green",
+            confirmButtonText: "Hecho",
+          });
         }
       } catch (error) {
         
