@@ -1,8 +1,7 @@
 <div class="container-fluid">
-  <!-- Botón dropdown de configuración -->
   <div class="dropdown position-absolute top-0 end-0 p-3">
     <a href="#" class="text-black text-decoration-none dropdown-toggle" id="dropdownTheme" data-bs-toggle="dropdown"
-       aria-expanded="false">
+      aria-expanded="false">
       <i class="bi bi-gear fs-5"></i>
     </a>
     <ul class="dropdown-menu dropdown-menu-dark shadow">
@@ -14,18 +13,17 @@
     </ul>
   </div>
 
-  <!-- Botón para desplegar el sidebar (Offcanvas) -->
-  <button class="btn btn-primary my-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+  <button class="btn btn-primary my-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar"
+    aria-controls="offcanvasSidebar">
     <i class="bi bi-list"></i> Menú
   </button>
 
   <div class="row">
-    <!-- Sidebar Offcanvas con clases condicionales para tema -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel"
-         [ngClass]="{'bg-dark text-light': isDarkTheme, 'bg-light text-dark': !isDarkTheme}">
+      [ngClass]="{'bg-dark text-light': isDarkTheme, 'bg-light text-dark': !isDarkTheme}">
       <div class="offcanvas-header">
-        <!-- "Apeiroo Rooms" ahora es un botón que redirige a reservas -->
-        <button type="button" class="btn btn-link text-decoration-none p-0" [routerLink]="['/reservas']">
+        <button type="button" class="btn btn-transparent text-decoration-none p-0 text-black" id="botonA"
+          [routerLink]="['/reservas']">
           <h5 class="offcanvas-title" id="offcanvasSidebarLabel">Apeiroo Rooms</h5>
         </button>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -33,43 +31,32 @@
       <div class="offcanvas-body">
         <!-- Menú de navegación -->
         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-          <li class="nav-item">
-            <a [routerLink]="['/reservas']"
-               [queryParams]="{ sala: 'upper' }"
-               routerLinkActive="active"
-               class="nav-link align-middle"
-               [ngClass]="{
+          <li class="nav-item hall">
+            <a [routerLink]="['/reservas']" [queryParams]="{ sala: 'upper' }" routerLinkActive="active"
+              class="nav-link align-middle" [ngClass]="{
                  'active-dark': isDarkTheme && sala === 'upper',
                  'text-light': isDarkTheme,
                  'text-black': !isDarkTheme
-               }"
-               [class.active]="sala === 'upper'">
+               }" [class.active]="sala === 'upper'">
               <i class="bi bi-arrow-bar-up"></i>
               <span class="ms-2 d-none d-sm-inline">Sala de arriba</span>
               <span class="d-sm-none">Arriba</span>
             </a>
           </li>
-          <li>
-            <a [routerLink]="['/reservas']"
-               [queryParams]="{ sala: 'lower' }"
-               routerLinkActive="active"
-               class="nav-link align-middle"
-               [ngClass]="{
+          <li class="hall">
+            <a [routerLink]="['/reservas']" [queryParams]="{ sala: 'lower' }" routerLinkActive="active"
+              class="nav-link align-middle" [ngClass]="{
                  'active-dark': isDarkTheme && sala === 'lower',
                  'text-light': isDarkTheme,
                  'text-black': !isDarkTheme
-               }"
-               [class.active]="sala === 'lower'">
+               }" [class.active]="sala === 'lower'">
               <i class="bi bi-arrow-bar-down"></i>
               <span class="ms-2 d-none d-sm-inline">Sala de abajo</span>
               <span class="d-sm-none">Abajo</span>
             </a>
           </li>
-          <li *ngIf="role === 'admin'">
-            <a [routerLink]="['/proyectos']"
-               routerLinkActive="active"
-               class="nav-link align-middle proyecto"
-               [ngClass]="{
+          <li class="hall" *ngIf="role === 'admin'">
+            <a [routerLink]="['/proyectos']" routerLinkActive="active" class="nav-link align-middle proyecto" [ngClass]="{
                  'active-dark': isDarkTheme,
                  'text-light': isDarkTheme,
                  'text-black': !isDarkTheme
@@ -79,16 +66,13 @@
             </a>
           </li>
 
-          <li *ngIf="role === 'admin'">
-            <a [routerLink]="['/listusers']"
-               routerLinkActive="active"
-               class="nav-link align-middle proyecto"
-               [ngClass]="{
+          <li class="hall" *ngIf="role === 'admin'">
+            <a [routerLink]="['/listusers']" routerLinkActive="active" class="nav-link align-middle proyecto" [ngClass]="{
                  'active-dark': isDarkTheme,
                  'text-light': isDarkTheme,
                  'text-black': !isDarkTheme
                }">
-              <i class="bi bi-file-code"></i>
+              <i class="bi bi-person"></i>
               <span class="ms-2 d-none d-sm-inline">Usuarios</span>
             </a>
           </li>
@@ -97,7 +81,7 @@
         <hr>
         <div class="dropdown pb-4">
           <a href="#" class="d-flex align-items-center text-black text-decoration-none dropdown-toggle"
-             id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+            id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
             <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">
             <span class="d-none d-sm-inline mx-1">{{email}}</span>
           </a>
@@ -113,226 +97,246 @@
       </div>
     </div>
 
-    <div class="col py-3">
-      <h1>Reservas activas</h1>
+    <div class="container py-3">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h1 class="text-center mb-4">Reservas activas</h1>
 
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <!-- Botón para abrir el modal -->
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearReservaModal" *ngIf="sala === 'upper' || sala === 'lower'">
-        Crear reserva
-      </button>
-        <div class="d-flex align-items-center gap-3">
-          <!-- Campo de búsqueda por proyecto -->
-          <div class="flex-grow-1">
-            <label for="proyecto" class="form-label">Filtrar por nombre de proyecto</label>
-            <div class="input-group"><i class="bi bi-filter icono-grande" ></i>
-              <select class="form-control" name="proyecto" id="proyecto" [(ngModel)]="nombreProyecto" (change)="filterReservas(nombreProyecto, nombreUsuario)">
-                <option value="">Sin filtro</option>
-                <option *ngFor="let p of proyectos" value="{{p.nombre}}">{{p.nombre}}</option>
-              </select>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearReservaModal"
+                  *ngIf="sala === 'upper' || sala === 'lower'">
+                  Crear reserva
+                </button>
+                <div class="d-flex align-items-center gap-3">
+                  <!-- Campo de búsqueda por proyecto -->
+                  <div class="flex-grow-1">
+                    <label for="proyecto" class="form-label">Filtrar por nombre de proyecto</label>
+                    <div class="input-group"><i class="bi bi-filter icono-grande"></i>
+                      <select class="form-control" name="proyecto" id="proyecto" [(ngModel)]="nombreProyecto"
+                        (change)="filterReservas(nombreProyecto, nombreUsuario)">
+                        <option value="">Sin filtro</option>
+                        <option *ngFor="let p of proyectos" value="{{p.nombre}}">{{p.nombre}}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Campo de búsqueda por usuario -->
+                  <div class="flex-grow-1 campos">
+                    <label for="usuario" class="form-label">Filtrar por Usuario</label>
+                    <div class="input-group"><i class="bi bi-filter icono-grande"></i>
+                      <select class="form-control" name="usuario" id="usuario" [(ngModel)]="nombreUsuario"
+                        (change)="filterReservas(nombreProyecto, nombreUsuario)">
+                        <option value="">Sin filtro</option>
+                        <option *ngFor="let u of usuarios" value="{{u.username}}">{{u.username}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="alert alert-primary custom-alert" *ngIf="reservas.length === 0" role="alert">
+                <b>No hay reservas activas.</b>
+              </div>
+
+              <div class="table-responsive" *ngIf="reservas.length > 0">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th id="hora">Hora <i class="bi bi-clock"></i></th>
+                      <th *ngIf="sala !== 'upper' && sala != 'lower'">Sala</th>
+                      <th>Resumen <i class="bi bi-blockquote-left"></i></th>
+                      <th>Proyecto <i class="bi bi-folder"></i></th>
+                      <th id="resto">Duración <i class="bi bi-broadcast"></i></th>
+                      <th>Date <i class="bi bi-calendar"></i></th>
+                      <th>Owner <i class="bi bi-person"></i></th>
+                      <th>Actions <i class="bi bi-play"></i></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let reserva of reservas">
+                      <td id="hora">{{ reserva.fechaHoraInicio | date: 'HH:mm' }}</td>
+                      <td *ngIf="sala !== 'upper' && sala != 'lower'">{{ reserva.sala }}</td>
+                      <td>{{ reserva.descripcion }}</td>
+                      <td id="proyecto" class="proyecto-btn">{{ reserva.proyectoAsociado }}</td>
+                      <td id="resto">{{ reserva.duracion }}m</td>
+                      <td id="date">{{ reserva.fechaHoraInicio | date: 'd MMM' }}</td>
+                      <td>
+                        {{reserva.owner}}<br>
+                        <small class="email">{{reserva.email}}</small>
+                      </td>
+                      <td>
+                        <div class="d-flex justify-content-start">
+                          <button *ngIf="reserva.email === email || role === 'admin'"
+                            class="btn btn-primary btn-sm me-1" data-bs-toggle="modal"
+                            data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
+                            <i class="bi bi-pen"></i>
+                          </button>
+                          <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-danger btn-sm"
+                            (click)="deleteReserva(reserva.id)">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
 
-          <!-- Campo de búsqueda por usuario -->
-          <div class="flex-grow-1 campos">
-            <label for="usuario" class="form-label">Filtrar por Usuario</label>
-            <div class="input-group"><i class="bi bi-filter icono-grande" ></i>
-              <select class="form-control" name="usuario" id="usuario" [(ngModel)]="nombreUsuario" (change)="filterReservas(nombreProyecto, nombreUsuario)">
-                <option value="">Sin filtro</option>
-                <option *ngFor="let u of usuarios" value="{{u.username}}">{{u.username}}</option>
-              </select>
-            </div>
+
+
+    <!-- Modal para crear reserva -->
+    <div class="modal fade" id="crearReservaModal" tabindex="-1" aria-labelledby="crearReservaModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 *ngIf="sala === 'upper'" class="modal-title" id="crearReservaModalLabel">Crear Reserva Sala Arriba</h5>
+            <h5 *ngIf="sala === 'lower'" class="modal-title" id="crearReservaModalLabel">Crear Reserva Sala Abajo</h5>
+
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="reservation" (ngSubmit)="submitReservation()">
+              <div class="mb-3">
+                <label for="sala" class="form-label">Email:</label>
+                <input type="email" class="form-control bg-light" id="sala" placeholder="Introduzca su correo"
+                  [(ngModel)]="email" formControlName="email" readonly="readonly">
+
+              </div>
+              <div class="mb-3">
+                <label for="fechaHoraInicio" class="form-label">Fecha y Hora</label>
+                <input type="datetime-local" class="form-control" id="fechaHoraInicio" formControlName="fechaHoraInicio"
+                  [min]="minDateTime" (change)="onDateTimeChange($event)">
+                @if (inValidField('fechaHoraInicio')) {
+                <span class="text-danger">Rellene este campo</span>
+
+                }
+              </div>
+              <div class="mb-3">
+                <label for="duracion" class="form-label">Duración (minutos)</label>
+                <input type="number" class="form-control" id="duracion" placeholder="Duración en minutos"
+                  formControlName="duracion">
+                @if (inValidField('duracion')) {
+                <span class="text-danger">Rellene este campo</span>
+
+                }
+              </div>
+              <div class="mb-3">
+                <label for="proyectoAsociado" class="form-label">Proyecto Asociado</label>
+                <select class="form-control" name="proyectoAsociado" id="proyectoAsociado"
+                  formControlName="proyectoAsociado">
+                  <option *ngFor="let p of proyectos" value="{{p.id}}">{{p.nombre}}</option>
+                </select>
+
+                @if (inValidField('proyectoAsociado')) {
+                <span class="text-danger">Rellene este campo</span>
+                }
+              </div>
+              <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción de la reserva"
+                  formControlName="descripcion"></textarea>
+                @if (inValidField('descripcion')) {
+                <span class="text-danger">Rellene este campo</span>
+
+                }
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Crear</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-      <div class="alert alert-primary custom-alert" *ngIf="reservas.length === 0" role="alert">
-        <b>No hay reservas activas.</b>
-      </div>
-      <div class="table-responsive" *ngIf="reservas.length > 0">
-        <table class="table">
-          <thead>
-          <tr>
-            <th id="hora">Hora <i class="bi bi-clock"></i></th>
-            <th *ngIf="sala !== 'upper' && sala != 'lower'">Sala</th>
-            <th>Resumen <i class="bi bi-blockquote-left"></i></th>
-            <th>Proyecto <i class="bi bi-folder"></i></th>
-            <th id="resto">Duración <i class="bi bi-broadcast"></i></th>
-            <th>Date <i class="bi bi-calendar"></i></th>
-            <th>Owner <i class="bi bi-person"></i></th>
-            <th>Actions <i class="bi bi-play"></i></th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let reserva of reservas">
-            <td id="hora">{{ reserva.fechaHoraInicio | date: 'HH:mm' }}</td>
-            <td *ngIf="sala !== 'upper' && sala != 'lower'">{{ reserva.sala }}</td>
-            <td>{{ reserva.descripcion }}</td>
-            <td id="proyecto" class="proyecto-btn">{{ reserva.proyectoAsociado }}</td>
-            <td id="resto">{{ reserva.duracion }}m</td>
-            <td id="date">{{ reserva.fechaHoraInicio | date: 'd MMM' }}</td>
-            <td>
-              {{reserva.owner}}<br>
-              <small class="email">{{reserva.email}}</small>
-            </td>
-            <td>
-              <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#editarReservaModal" (click)="editReserva(reserva.id)">
-                <i class="bi bi-pen"></i>
-              </button>
-              <button *ngIf="reserva.email === email || role === 'admin'" class="btn btn-danger btn-sm" (click)="deleteReserva(reserva.id)">
-                <i class="bi bi-trash"></i>
-              </button>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
-  </div>
+    <!-- Fin modal para crear reserva -->
 
-  <!-- Modal para crear reserva -->
-  <div class="modal fade" id="crearReservaModal" tabindex="-1" aria-labelledby="crearReservaModalLabel"
-       aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 *ngIf="sala === 'upper'" class="modal-title" id="crearReservaModalLabel">Crear Reserva Sala Arriba</h5>
-          <h5 *ngIf="sala === 'lower'" class="modal-title" id="crearReservaModalLabel">Crear Reserva Sala Abajo</h5>
 
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="reservation" (ngSubmit)="submitReservation()">
-            <div class="mb-3">
-              <label for="sala" class="form-label">Email:</label>
-              <input type="email" class="form-control bg-light" id="sala" placeholder="Introduzca su correo"
-                     [(ngModel)]="email" formControlName="email" readonly="readonly">
+    <!-- Modal para editar reserva -->
+    <div class="modal fade" id="editarReservaModal" tabindex="-1" aria-labelledby="editarReservaModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 *ngIf="sala === 'upper'" class="modal-title" id="editarReservaModalLabel">Editar Reserva - Sala Arriba
+            </h5>
+            <h5 *ngIf="sala === 'lower'" class="modal-title" id="editarReservaModalLabel">Editar Reserva - Sala Abajo
+            </h5>
+            <h5 *ngIf="!sala" class="modal-title" id="editarReservaModalLabel">Editar Reserva</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="editReservation" (ngSubmit)="editReservaSubmit()">
+              <!-- Email -->
+              <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control bg-light" id="email" placeholder="Correo del creador"
+                  formControlName="email" [disabled]="role === 'admin'" readonly="readonly">
+                <div *ngIf="inValidFieldEdit('email')" class="text-danger">
+                  Proporcione un correo válido.
+                </div>
+              </div>
 
-            </div>
-            <div class="mb-3">
-              <label for="fechaHoraInicio" class="form-label">Fecha y Hora</label>
-              <input type="datetime-local" class="form-control" id="fechaHoraInicio" formControlName="fechaHoraInicio"
-                     [min]="minDateTime"
-                     (change)="onDateTimeChange($event)">
-              @if (inValidField('fechaHoraInicio')) {
-                <span class="text-danger">Rellene este campo</span>
+              <!-- Fecha y Hora -->
+              <div class="mb-3">
+                <label for="fechaHoraInicio" class="form-label">Fecha y Hora:</label>
+                <input type="datetime-local" class="form-control" id="fechaHoraInicio" formControlName="fechaHoraInicio"
+                  [class.is-invalid]="inValidFieldEdit('fechaHoraInicio')" [min]="minDateTime"
+                  (change)="onDateTimeChange($event)">
+                <div *ngIf="inValidFieldEdit('fechaHoraInicio')" class="text-danger">
+                  Proporcione una fecha válida.
+                </div>
+              </div>
 
-              }
-            </div>
-            <div class="mb-3">
-              <label for="duracion" class="form-label">Duración (minutos)</label>
-              <input type="number" class="form-control" id="duracion" placeholder="Duración en minutos"
-                     formControlName="duracion">
-              @if (inValidField('duracion')) {
-                <span class="text-danger">Rellene este campo</span>
+              <!-- Duración -->
+              <div class="mb-3">
+                <label for="duracion" class="form-label">Duración (minutos):</label>
+                <input type="number" class="form-control" id="duracion" placeholder="Duración en minutos"
+                  formControlName="duracion" [class.is-invalid]="inValidFieldEdit('duracion')">
+                <div *ngIf="inValidFieldEdit('duracion')" class="text-danger">
+                  Proporcione un valor válido para la duración (mínimo 1).
+                </div>
+              </div>
 
-              }
-            </div>
-            <div class="mb-3">
-              <label for="proyectoAsociado" class="form-label">Proyecto Asociado</label>
-              <select class="form-control" name="proyectoAsociado" id="proyectoAsociado" formControlName="proyectoAsociado">
-                <option *ngFor="let p of proyectos" value="{{p.id}}">{{p.nombre}}</option>
-              </select>
-              <!--formControlName="proyectoAsociado" class="form-control" id="proyectoAsociado"-->
-              @if (inValidField('proyectoAsociado')) {
-                <span class="text-danger">Rellene este campo</span>
-              }
-            </div>
-            <div class="mb-3">
-              <label for="descripcion" class="form-label">Descripción</label>
-              <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción de la reserva"
-                        formControlName="descripcion"></textarea>
-              @if (inValidField('descripcion')) {
-                <span class="text-danger">Rellene este campo</span>
+              <!-- Proyecto Asociado -->
+              <div class="mb-3">
+                <label for="proyectoAsociado" class="form-label">Proyecto Asociado:</label>
+                <select class="form-control" name="proyectoAsociado" id="proyectoAsociado"
+                  formControlName="proyectoAsociado">
+                  <option *ngFor="let p of proyectos" [value]="p.id">{{p.nombre}}</option>
+                </select>
+                <div *ngIf="inValidFieldEdit('proyectoAsociado')" class="text-danger">
+                  Proporcione un nombre válido (entre 3 y 20 caracteres).
+                </div>
+              </div>
 
-              }
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-primary">Crear</button>
-            </div>
-          </form>
+              <!-- Descripción -->
+              <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción:</label>
+                <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción de la reserva"
+                  formControlName="descripcion" [class.is-invalid]="inValidFieldEdit('descripcion')"></textarea>
+                <div *ngIf="inValidFieldEdit('descripcion')" class="text-danger">
+                  Proporcione una descripción válida (entre 20 y 140 caracteres).
+                </div>
+              </div>
+
+              <!-- Botones -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
+    <!-- Fin modal para editar reserva -->
   </div>
-  <!-- Fin modal para crear reserva -->
-
-
-  <!-- Modal para editar reserva -->
-  <div class="modal fade" id="editarReservaModal" tabindex="-1" aria-labelledby="editarReservaModalLabel"
-       aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 *ngIf="sala === 'upper'" class="modal-title" id="editarReservaModalLabel">Editar Reserva - Sala Arriba
-          </h5>
-          <h5 *ngIf="sala === 'lower'" class="modal-title" id="editarReservaModalLabel">Editar Reserva - Sala Abajo</h5>
-          <h5 *ngIf="!sala" class="modal-title" id="editarReservaModalLabel">Editar Reserva</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="editReservation" (ngSubmit)="editReservaSubmit()">
-            <!-- Email -->
-            <div class="mb-3">
-              <label for="email" class="form-label">Email:</label>
-              <input type="email" class="form-control bg-light" id="email" placeholder="Correo del creador"
-                     formControlName="email" [disabled]="role === 'admin'" readonly="readonly">
-              <div *ngIf="inValidFieldEdit('email')" class="text-danger">
-                Proporcione un correo válido.
-              </div>
-            </div>
-
-            <!-- Fecha y Hora -->
-            <div class="mb-3">
-              <label for="fechaHoraInicio" class="form-label">Fecha y Hora:</label>
-              <input type="datetime-local" class="form-control" id="fechaHoraInicio" formControlName="fechaHoraInicio"
-                     [class.is-invalid]="inValidFieldEdit('fechaHoraInicio')" [min]="minDateTime"
-                     (change)="onDateTimeChange($event)">
-              <div *ngIf="inValidFieldEdit('fechaHoraInicio')" class="text-danger">
-                Proporcione una fecha válida.
-              </div>
-            </div>
-
-            <!-- Duración -->
-            <div class="mb-3">
-              <label for="duracion" class="form-label">Duración (minutos):</label>
-              <input type="number" class="form-control" id="duracion" placeholder="Duración en minutos"
-                     formControlName="duracion" [class.is-invalid]="inValidFieldEdit('duracion')">
-              <div *ngIf="inValidFieldEdit('duracion')" class="text-danger">
-                Proporcione un valor válido para la duración (mínimo 1).
-              </div>
-            </div>
-
-            <!-- Proyecto Asociado -->
-            <div class="mb-3">
-              <label for="proyectoAsociado" class="form-label">Proyecto Asociado:</label>
-              <select class="form-control" name="proyectoAsociado" id="proyectoAsociado" formControlName="proyectoAsociado">
-                <option *ngFor="let p of proyectos" value="{{p.id}}">{{p.nombre}}</option>
-              </select>
-              <div *ngIf="inValidFieldEdit('proyectoAsociado')" class="text-danger">
-                Proporcione un nombre válido (entre 3 y 20 caracteres).
-              </div>
-            </div>
-
-            <!-- Descripción -->
-            <div class="mb-3">
-              <label for="descripcion" class="form-label">Descripción:</label>
-              <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción de la reserva"
-                        formControlName="descripcion" [class.is-invalid]="inValidFieldEdit('descripcion')"></textarea>
-              <div *ngIf="inValidFieldEdit('descripcion')" class="text-danger">
-                Proporcione una descripción válida (entre 20 y 140 caracteres).
-              </div>
-            </div>
-
-            <!-- Botones -->
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Fin modal para editar reserva -->
-</div>

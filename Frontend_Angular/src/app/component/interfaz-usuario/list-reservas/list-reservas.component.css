@@ -3,6 +3,14 @@
   background-color: #007bff;
 }
 
+.hall {
+  transition: font-size 0.3s ease;
+}
+
+.hall:hover {
+  font-size: 20px;
+}
+
 .custom-alert {
   width: 300px;
   text-align: center;
@@ -55,7 +63,30 @@
 }
 
 .icono-grande {
-  font-size: 2rem; /* Cambia este valor al que desees */
-  /*justify-content: center;*/ /* centra horizontalmente */
-  align-items: center;     /* centra verticalmente */
+  font-size: 2rem;
+  align-items: center;
+}
+
+
+.btn-transparent {
+  background: none !important;
+  border: none !important;
+  color: inherit !important;
+}
+
+#botonA.btn {
+  background: none !important;
+}
+
+#dropdownUser1 {
+  background: none !important;
+  border: none !important;
+  color: inherit !important; /* Usa el color del texto heredado */
+}
+
+#dropdownUser1:focus, 
+#dropdownUser1:active {
+  background: none !important;
+  box-shadow: none !important;
+  color: inherit !important;
 }
