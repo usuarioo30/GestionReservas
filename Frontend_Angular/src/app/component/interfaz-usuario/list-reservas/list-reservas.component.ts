@@ -60,7 +60,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     fechaHoraInicio: ['', [Validators.required]],
     duracion: ['', [Validators.required, Validators.min(1)]],
     proyectoAsociado: ['', [Validators.required, Validators.nullValidator]],
-    descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
+    descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(140)]],
     idUsario: [this.id]
   });
 
@@ -70,7 +70,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     fechaHoraInicio: ['', [Validators.required]],
     duracion: ['', [Validators.required, Validators.min(1)]],
     proyectoAsociado: ['', [Validators.required, Validators.nullValidator]],
-    descripcion: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(140)]],
+    descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(140)]],
     idUsario: [this.id]
   });
 
@@ -293,7 +293,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     const reserva = this.reservas.find(res => res.id === id);
 
     if (reserva) {
-      
+
       // Asigna los valores de la reserva a los campos del formulario
       this.editReservation.controls['id'].setValue(reserva.id);
       this.editReservation.controls['email'].setValue(reserva.email);
