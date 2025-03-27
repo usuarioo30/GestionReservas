@@ -80,6 +80,28 @@ def create_app():
 
 app = create_app()
 
+# Función para crear un usuario por defecto si no existe
+def crear_usuario_por_defecto():
+    usuario = Usuario.query.filter_by(username='admin').first()
+
+    if not usuario:
+        hashed_password = generate_password_hash('admin')
+        nuevo_usuario = Usuario(
+            email='admin@apeiroo.com',
+            password=hashed_password,
+            username='admin',
+            roles='admin'
+        )
+
+        db.session.add(nuevo_usuario)
+        db.session.commit()
+        print("Usuario por defecto creado: admin")
+
+# Crear la base de datos y el usuario por defecto
+with app.app_context():
+    db.create_all()  # Crear las tablas en la base de datos
+    crear_usuario_por_defecto()  # Crear el usuario por defecto si no existe
+
 # Ruta para el inicio de sesión con credenciales propias (usuario y contraseña)
 @app.route('/login', methods=['POST'])
 def login():

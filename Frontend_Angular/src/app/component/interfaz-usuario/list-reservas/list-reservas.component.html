@@ -91,9 +91,9 @@
             <li>
               <hr class="dropdown-divider">
             </li>
-            <li><a *ngIf="role === 'admin'" class="dropdown-item" [routerLink]="['/createuser']">Crear usuario</a></li>
-            <li><a class="dropdown-item" [routerLink]="['/profile']">Editar Perfil</a></li>
-            <li><a class="dropdown-item" href="#" (click)="onLogout()">Cerrar sesión</a></li>
+            <li class="hall"><a *ngIf="role === 'admin'" class="dropdown-item" [routerLink]="['/createuser']">Crear usuario</a></li>
+            <li class="hall"><a class="dropdown-item" [routerLink]="['/profile']">Editar Perfil</a></li>
+            <li class="hall"><a class="dropdown-item" href="#" (click)="onLogout()">Cerrar sesión</a></li>
           </ul>
         </div>
       </div>
@@ -108,7 +108,7 @@
 
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearReservaModal"
-                  *ngIf="sala === 'upper' || sala === 'lower'">
+                  *ngIf="(sala === 'upper' || sala === 'lower') && role !== 'admin'">
                   Crear reserva
                 </button>
                 <div class="d-flex align-items-center gap-3">
