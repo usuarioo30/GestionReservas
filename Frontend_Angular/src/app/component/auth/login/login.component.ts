@@ -1,4 +1,4 @@
-import {Component, OnInit, Renderer2} from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private renderer: Renderer2
-    ) {
+  ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
 
     const token = localStorage.getItem('access_token');
 
-    if(token) {
+    if (token) {
       this.router.navigate(['/reservas']);
     }
 
@@ -78,24 +78,23 @@ export class LoginComponent implements OnInit {
   async onSubmit() {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value;
-      // Lógica para iniciar sesión con credenciales propias
 
       const response = await this.authService.logIn(username, password);
 
-      if (response.ok) { //Comprobamos la respuesta de la API
+      if (response.ok) {
 
         const token = await response.json();
 
-        localStorage.setItem("access_token", JSON.stringify(token.access_token)); // Almacenar token
+        localStorage.setItem("access_token", JSON.stringify(token.access_token));
 
-        Swal.fire('Éxito', "Sesión iniciada con éxito. Redirigiendo en 2 seg...", "success"); //Si la respuesta es correcta, mostramos un mensaje de éxito
+        Swal.fire('Éxito', "Sesión iniciada con éxito. Redirigiendo...", "success");
 
         setTimeout(() => {
-          this.router.navigate(['/reservas']); // Redirige a la nueva ruta
+          this.router.navigate(['/reservas']);
         }, 2000);
 
       } else {
-        Swal.fire("Credenciales incorrectas"); //Si la respuesta es incorrecta, mostramos un mensaje de error
+        Swal.fire("Credenciales incorrectas");
       }
 
 
@@ -106,7 +105,7 @@ export class LoginComponent implements OnInit {
     loadGapiInsideDOM().then(() => {
       gapi.load('auth2', () => {
         gapi.auth2.init({
-          client_id: '2.apps.googleusercontent.com', // Reemplaza con tu Client ID
+          client_id: '2.apps.googleusercontent.com',
         });
       });
     });

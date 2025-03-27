@@ -1,11 +1,8 @@
 <div class="container d-flex justify-content-center align-items-center vh-100">
   <!-- Botón dropdown configuración (nuevo) -->
   <div class="dropdown position-absolute top-0 end-0 p-3">
-    <a href="#"
-       class="text-black text-decoration-none dropdown-toggle"
-       id="dropdownTheme"
-       data-bs-toggle="dropdown"
-       aria-expanded="false">
+    <a href="#" class="text-black text-decoration-none dropdown-toggle" id="dropdownTheme" data-bs-toggle="dropdown"
+      aria-expanded="false">
       <i class="bi bi-gear fs-5"></i>
     </a>
     <ul class="dropdown-menu dropdown-menu-dark shadow">
@@ -23,28 +20,15 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="mb-3">
         <label for="username" class="form-label">Usuario</label>
-        <input
-          id="username"
-          formControlName="username"
-          type="text"
-          class="form-control"
-          placeholder="Ingresa tu usuario"
-        />
+        <input id="username" formControlName="username" type="text" class="form-control"
+          placeholder="Ingresa tu usuario" />
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">Contraseña</label>
-        <input
-          id="password"
-          formControlName="password"
-          type="password"
-          class="form-control"
-          placeholder="*****************"
-          />
+        <input id="password" formControlName="password" type="password" class="form-control"
+          placeholder="*****************" />
       </div>
-      <button
-        type="submit"
-        class="btn btn-primary w-100 mb-0"
-        [disabled]="loginForm.invalid">
+      <button type="submit" class="btn btn-primary w-100 mb-0" [disabled]="loginForm.invalid">
         Ingresar
       </button>
       <div class="divider d-flex align-items-center my-4">
@@ -52,16 +36,10 @@
       </div>
     </form>
     <div class="d-flex justify-content-center mb-3">
-      <div id="g_id_onload"
-           data-client_id="408223060040-sd6g3nukat1vaohi16u656pqm55g325f.apps.googleusercontent.com"
-           data-callback="handleCredentialResponse">
+      <div id="g_id_onload" data-client_id="408223060040-sd6g3nukat1vaohi16u656pqm55g325f.apps.googleusercontent.com"
+        data-callback="handleCredentialResponse">
       </div>
       <div class="g_id_signin" data-type="standard"></div>
     </div>
-    <!-- <button id="g_id_onload" class="btn btn-secondary w-100"
-    data-client_id="408223060040-sd6g3nukat1vaohi16u656pqm55g325f.apps.googleusercontent.com"
-    data-callback="loginWithGoogle">
-      <i class="bi bi-google google"></i> Iniciar sesión con Google
-    </button> -->
   </div>
 </div>

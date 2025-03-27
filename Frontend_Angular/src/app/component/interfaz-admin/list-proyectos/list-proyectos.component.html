@@ -1,12 +1,12 @@
-<div class="container">
+<div class="container mt-5">
   <h1>Lista de Proyectos</h1>
   <div *ngIf="!tieneAcceso" class="alert alert-danger">
-    No tienes permisos para acceder a esta página.
+    <b>No tienes permisos para acceder a esta página.</b>
   </div>
-  <div *ngIf="proyectos.length === 0 && tieneAcceso" class="alert alert-warning">
-    No hay proyectos disponibles.
+  <div *ngIf="proyectos.length === 0 && tieneAcceso" class="alert alert-primary custom-alert">
+    <b>No hay proyectos disponibles.</b>
   </div>
-  <button *ngIf="tieneAcceso" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#crearProyectoModal">
+  <button *ngIf="tieneAcceso" class="btn btn-primary mb-3 boton me-3" data-bs-toggle="modal" data-bs-target="#crearProyectoModal">
     Crear Proyecto
   </button>
   <div *ngIf="proyectos.length > 0 && tieneAcceso" class="table-responsive">
