@@ -8,17 +8,19 @@
           <div *ngIf="!tieneAcceso" class="alert alert-danger">
             No tienes permisos para acceder a esta página.
           </div>
-          
+
           <div *ngIf="usuarios.length === 0 && tieneAcceso" class="alert alert-primary custom-alert">
             <b>No hay usuarios disponibles.</b>
           </div>
 
-          <div *ngIf="usuarios.length > 0 && tieneAcceso" class="table-responsive">
+          <div *ngIf="usuarios.length > 0 && tieneAcceso" class="table-responsive"
+            style="max-height: 400px; overflow-y: auto;">
             <table class="table table-striped">
               <thead>
                 <tr>
                   <th>Correo electrónico</th>
-                  <th>Nombre de usuario</th>
+                  <th style="white-space: nowrap; text-align: center;">Nombre de usuario</th>
+                  <!-- Centrado del encabezado -->
                   <th>Rol</th>
                   <th>Acciones</th>
                 </tr>
@@ -26,10 +28,11 @@
               <tbody>
                 <tr *ngFor="let u of usuarios">
                   <td>{{ u.email }}</td>
-                  <td>{{ u.username }}</td>
+                  <td style="text-align: center;">{{ u.username }}</td> <!-- Centrado de la celda -->
                   <td>{{ u.roles }}</td>
                   <td>
-                    <button *ngIf="u.email !== usuario.email" class="btn btn-danger btn-sm" (click)="eliminarUsuario(u.id)">
+                    <button *ngIf="u.email !== usuario.email" class="btn btn-danger btn-sm"
+                      (click)="eliminarUsuario(u.id)">
                       Eliminar
                     </button>
                   </td>
