@@ -104,8 +104,6 @@ export class ListReservasComponent implements OnInit, OnChanges {
       this.renderer.addClass(document.body, 'dark-theme');
     }
 
-
-    // Carga inicial de las reservas
     await this.loadReservas();
     this.filterReservas(this.nombreProyecto);
   }
@@ -119,7 +117,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     const now = new Date();
     const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
       .toISOString()
-      .slice(0, 16); // Formato 'YYYY-MM-DDTHH:mm'
+      .slice(0, 16);
     this.minDateTime = localDateTime;
     this.dateActual = localDateTime.slice(0, 10);
   }
@@ -143,11 +141,9 @@ export class ListReservasComponent implements OnInit, OnChanges {
       alert('La fecha y hora seleccionada no puede ser anterior a la fecha y hora actual');
       event.target.value = this.minDateTime;
     } else {
-      // Si es hoy, actualizar minDateTime con la hora actual
       if (this.isToday(selectedDate)) {
         this.updateMinDateTime();
       } else {
-        // Si no es hoy, solo actualizamos la fecha sin la hora
         this.minDateTime = `${selectedDate}T00:00`;
       }
     }
@@ -294,7 +290,6 @@ export class ListReservasComponent implements OnInit, OnChanges {
     this.authService.logout();
   }
 
-  //Método para obtener los datos de la reserva a editar
   editReserva(id: number): void {
     const reserva = this.reservas.find(res => res.id === id);
 

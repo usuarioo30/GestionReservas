@@ -82,7 +82,6 @@ export class ReservasService {
     }
   }
 
-   // Método para eliminar la reserva
    deleteReserva(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/eliminarReserva/${id}`);
   }

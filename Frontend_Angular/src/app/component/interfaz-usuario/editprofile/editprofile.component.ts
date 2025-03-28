@@ -49,7 +49,6 @@ export class EditprofileComponent implements OnInit{
     return this.editUser.controls[field]?.invalid && this.editUser.controls[field]?.touched;
   }
 
-  // Validación personalizada para verificar que password y confirmPassword coincidan
   private passwordsMatchValidator(group: FormGroup) {
     const password = group.get('password')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;

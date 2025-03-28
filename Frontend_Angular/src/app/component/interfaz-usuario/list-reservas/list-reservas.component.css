@@ -36,24 +36,18 @@
 @media (max-width: 576px) {
   .responsive-dropdown {
     min-width: 0 !important;
-    /* permite ancho flexible */
     width: 100% !important;
-    /* ocupa todo ancho disponible */
     overflow-x: hidden;
   }
 
   .responsive-dropdown .dropdown-item {
     white-space: normal !important;
-    /* permite salto de línea */
     word-wrap: break-word !important;
-    /* ajusta palabras largas */
     padding: 10px !important;
-    /* mejora espacio táctil en móviles */
   }
 
   .responsive-dropdown .dropdown-divider {
     margin: 0.5rem 0 !important;
-    /* margen consistente y reducido */
   }
 }
 
@@ -147,7 +141,6 @@ body {
   position: fixed;
   top: 0;
   left: -250px;
-  /* Oculto por defecto */
   width: 250px;
   height: 100vh;
   background: #222;
@@ -158,12 +151,12 @@ body {
   z-index: 1000;
 }
 
-/* Mostrar el sidebar */
+
 .sidebar.open {
   left: 0;
 }
 
-/* Botón de cierre */
+
 .close-btn {
   position: absolute;
   top: 10px;
@@ -202,14 +195,13 @@ body {
   background: #c6c6c6;
 }
 
-/* Contenido principal */
 .content {
   margin-left: 0;
   padding: 20px;
   transition: 0.3s;
 }
 
-/* Mover contenido cuando el sidebar está abierto */
+
 .content.shift {
   margin-left: 250px;
 }
@@ -218,7 +210,7 @@ body {
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
-    /* Ocupa toda la pantalla en móviles */
+    
     left: -100%;
   }
 
@@ -228,17 +220,16 @@ body {
 
   .content.shift {
     margin-left: 0;
-    /* No mueve el contenido en móviles */
+    
   }
 }
 
-/* Estilo mejorado para el botón de menú */
+
 .toggle-btn {
   position: fixed;
   top: 20px;
   left: 20px;
   background-color: #007bff;
-  /* Color principal, puedes cambiarlo */
   border: none;
   border-radius: 50%;
   width: 50px;
