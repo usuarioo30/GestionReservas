@@ -62,6 +62,20 @@ export class AuthService {
 
   }
 
+  async getUserByUsername(username:string): Promise<any> {
+    const response = await fetch(`${this.apiUrl}/usuarios/username/${username}`);
+    if (response.status === 404) {
+      return true;
+    }
+
+    if (!response.ok) {
+      throw new Error('Error al obtener el usuario');
+    }
+
+    const json = await response.json();
+    return json;
+  }
+
   async getUsers(): Promise<Usuario[]> {
     try {
       return await firstValueFrom(this.http.get<Usuario[]>(`${this.apiUrl}/usuarios`));
@@ -137,7 +151,7 @@ export class AuthService {
       const body = { username, password };
 
       const response = await fetch(`${this.apiUrl}/usuarios/${id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },

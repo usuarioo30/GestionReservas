@@ -113,7 +113,7 @@ def login():
     usuario = Usuario.query.filter_by(username=username).first()
 
     
-    if usuario and check_password_hash(usuario.password, password) :
+    if usuario and check_password_hash(usuario.password, password):
         access_token = create_access_token( identity=usuario.id,  # El ID del usuario como identidad
             additional_claims={  # Aquí agregamos más información
                 "nombre": usuario.username,
@@ -279,6 +279,27 @@ def obtener_usuario_por_id(id):
             "username": usuario.username,
             "roles": usuario.roles
         }
+        return jsonify(usuario_serializado), 200
+    except Exception as e:
+        return jsonify({"message": "Error al obtener el usuario", "error": str(e)}), 500
+
+@app.route('/usuarios/username/<string:username>', methods=['GET'])
+def obtener_usuario_por_username(username):
+    try:
+        # Buscar el usuario por su email
+        usuario = Usuario.query.filter_by(username=username).first()
+
+        if not usuario:
+            return jsonify({"message": "Usuario no encontrado"}), 404
+
+        # Serializar los datos del usuario
+        usuario_serializado = {
+            "id": usuario.id,
+            "email": usuario.email,
+            "username": usuario.username,
+            "roles": usuario.roles
+        }
+
         return jsonify(usuario_serializado), 200
     except Exception as e:
         return jsonify({"message": "Error al obtener el usuario", "error": str(e)}), 500

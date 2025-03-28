@@ -18,6 +18,7 @@ export class EditprofileComponent implements OnInit{
   user!: Usuario
   private fb: FormBuilder = inject(FormBuilder);
   private auth: AuthService = inject(AuthService);
+  validUsername!: any;
   editUser: FormGroup = this.fb.group({
     id: ['', []],
     email: ['', []],
@@ -59,11 +60,16 @@ export class EditprofileComponent implements OnInit{
       : null;
   }
 
+  async checkTakenUser(username: string) {
+    this.validUsername = await this.auth.getUserByUsername(username);
+    return this.validUsername.username? true : false;
+  }
+
   async editUserSubmit() {
-    if (this.editUser.valid) {
+    if (this.editUser.valid && !(await this.checkTakenUser(this.editUser.get('username')?.value))) {
       
       const { id, username, password } = this.editUser.value;
-
+      
       try {
         
         if (password) {
@@ -91,7 +97,7 @@ export class EditprofileComponent implements OnInit{
 
 
     } else {
-      
+      this.validUsername = false;
       this.editUser.markAllAsTouched();
     }
   }

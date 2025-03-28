@@ -12,6 +12,7 @@
             <label for="">Nombre de usuario</label>
             <input class="form-control" type="text" formControlName="username" id="username">
             <span class="text-danger" *ngIf="inValidField('username')">Rellene este campo</span>
+            <span class="text-danger" *ngIf="editUser.get('username')?.touched && !validUsername">El nombre de usuario escogido ya pertenece a otro usuario</span>
             
         </div>
         <div class="mb-3">
