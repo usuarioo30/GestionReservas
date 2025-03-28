@@ -36,6 +36,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   proyectos!: Proyecto[];
   usuarios!: Usuario[];
   deployed: boolean = false;
+  isSidebarOpen: boolean = false;
 
   constructor(private reservasService: ReservasService,
     private authService: AuthService,
@@ -107,6 +108,10 @@ export class ListReservasComponent implements OnInit, OnChanges {
     // Carga inicial de las reservas
     await this.loadReservas();
     this.filterReservas(this.nombreProyecto);
+  }
+
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
   }
 
   // Método para actualizar la fecha y hora mínima

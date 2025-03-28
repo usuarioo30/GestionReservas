@@ -85,7 +85,7 @@
   overflow: hidden;
 }
 
-#dropdownUser1:focus, 
+#dropdownUser1:focus,
 #dropdownUser1:active {
   background: none !important;
   box-shadow: none !important;
@@ -130,7 +130,7 @@
   grid-row: 1 / 3;
   height: 100%;
   width: 20vw;
-  
+
   transition: left 0.3s ease-in-out;
 }
 
@@ -141,4 +141,132 @@
 
 .reservation-table {
   grid-column: 2 / 3;
+}
+
+/* Estilos generales */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Botón de apertura */
+.toggle-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 24px;
+  background: #333;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px; /* Oculto por defecto */
+  width: 250px;
+  height: 100vh;
+  background: #222;
+  color: white;
+  padding-top: 60px;
+  transition: 0.3s;
+  box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+/* Mostrar el sidebar */
+.sidebar.open {
+  left: 0;
+}
+
+/* Botón de cierre */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Lista del sidebar */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 15px;
+  text-align: center;
+}
+
+.sidebar ul li a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+
+.sidebar ul li:hover {
+  background: #444;
+}
+
+/* Contenido principal */
+.content {
+  margin-left: 0;
+  padding: 20px;
+  transition: 0.3s;
+}
+
+/* Mover contenido cuando el sidebar está abierto */
+.content.shift {
+  margin-left: 250px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%; /* Ocupa toda la pantalla en móviles */
+    left: -100%;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .content.shift {
+    margin-left: 0; /* No mueve el contenido en móviles */
+  }
+}
+
+/* Estilo mejorado para el botón de menú */
+.toggle-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: #007bff; /* Color principal, puedes cambiarlo */
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  color: #fff;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  z-index: 1100;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.toggle-btn:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
 }
