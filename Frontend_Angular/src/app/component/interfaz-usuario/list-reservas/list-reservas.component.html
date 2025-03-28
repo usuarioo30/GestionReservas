@@ -14,7 +14,9 @@
   </div>
 
   <!-- Botón para abrir/cerrar el sidebar (visible en todas las resoluciones) -->
-  <button class="toggle-btn" (click)="toggleSidebar()">
+  <button class="toggle-btn" (click)="toggleSidebar()" [ngClass]="{
+    'd-none': isSidebarOpen
+  }">
     <i class="bi bi-list"></i>
   </button>
 
@@ -30,14 +32,21 @@
          }">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <a routerLink="/reservas" class="text-decoration-none">
-          <h5 class="mb-0">Apeiroo Rooms</h5>
+          <h5 class="mb-0" [ngClass]="{
+            'open': isSidebarOpen,
+            'text-light': isDarkTheme,
+            'text-dark': !isDarkTheme
+          }">Apeiroo Rooms</h5>
         </a>
         <!-- Botón para cerrar el sidebar en dispositivos con resoluciones menores o cuando se desee -->
         <button type="button" class="btn-close" aria-label="Close" (click)="toggleSidebar()"></button>
       </div>
 
       <!-- Menú de navegación -->
-      <ul class="nav nav-pills flex-column mb-3">
+      <ul class="nav nav-pills flex-column mb-3" [ngClass]="{
+        'sidebar-dark': isDarkTheme,
+        'sidebar-light': !isDarkTheme
+      }">
         <li class="nav-item">
           <a [routerLink]="['/reservas']" [queryParams]="{ sala: 'upper' }" routerLinkActive="active"
              class="nav-link"

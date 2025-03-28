@@ -82,7 +82,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
 
     this.updateMinDateTime();
     this.proyectos = await this.proyectoService.getProyectos();
-    this.usuarios = await this.authService.getUsers();
+    this.usuarios = (await this.authService.getUsers()).filter(user => user.roles === "user");
     const now = new Date();
     this.minDateTime = now.toISOString().slice(0, 16);
 
