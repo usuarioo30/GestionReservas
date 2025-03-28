@@ -10,9 +10,8 @@ import { firstValueFrom } from 'rxjs';
 })
 export class ProyectoService {
   private apiUrl = 'http://localhost:5000';
-  private baseUrl = 'http://localhost:5000/';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Obtener todos los proyectos
   getProyectos1(): Observable<Proyecto[]> {
@@ -35,7 +34,7 @@ export class ProyectoService {
 
   async getProyectos(): Promise<Proyecto[]> {
     try {
-      return await firstValueFrom(this.http.get<Proyecto[]>(`${this.baseUrl}proyectos`));
+      return await firstValueFrom(this.http.get<Proyecto[]>(`${this.apiUrl}/proyectos`));
     } catch (error) {
       console.error('Error al obtener los proyectos:', error);
       return [];

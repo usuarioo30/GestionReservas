@@ -12,8 +12,8 @@ import { HttpClient } from '@angular/common/http';
 export class AuthService {
   private apiUrl = 'http://localhost:5000';
   private apiUrl1 = "http://127.0.0.1:5000/login";
-  
-  constructor(private router: Router, private http: HttpClient) {}
+
+  constructor(private router: Router, private http: HttpClient) { }
 
   //Método de iniciar sesión, es llamado cuando el formulario es válido
   async logIn(username: string, password: string) {
@@ -64,11 +64,11 @@ export class AuthService {
 
   async getUsers(): Promise<Usuario[]> {
     try {
-          return await firstValueFrom(this.http.get<Usuario[]>(`${this.apiUrl}/usuarios`));
-        } catch (error) {
-          console.error('Error al obtener los usuarios:', error);
-          return [];
-        }
+      return await firstValueFrom(this.http.get<Usuario[]>(`${this.apiUrl}/usuarios`));
+    } catch (error) {
+      console.error('Error al obtener los usuarios:', error);
+      return [];
+    }
   }
 
   async getUser(id: number) {
@@ -115,7 +115,6 @@ export class AuthService {
   }
 
   async registerUser(user: Omit<Usuario, "id">): Promise<Usuario> {
-    console.log("He entrado aquí con", user);
     const response = await fetch(`${this.apiUrl}/register`, {
       method: 'POST',
       headers: {
@@ -125,7 +124,8 @@ export class AuthService {
     });
 
     if (!response.ok) {
-      throw new Error('Error al registrar el usuario');
+      const errorData = await response.json();
+      throw new Error(errorData.message);
     }
 
     return await response.json();
@@ -133,35 +133,35 @@ export class AuthService {
   }
 
   async editUser(id: number, username?: string, password?: string) {
-    const response = await fetch(`${this.apiUrl}/usuarios/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({id: id, password: password, username: username})
-    });
+    try {
+      const body = { username, password };
 
-    if (!response.ok) {
-      throw new Error('Error al editar el usuario');
+      const response = await fetch(`${this.apiUrl}/usuarios/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        // Suponiendo que el backend responde con un mensaje de error si el username ya existe
+        if (errorData.message === 'Username already exists') {
+          throw new Error('username already exists');
+        }
+
+        throw new Error('Error al editar el usuario');
+      }
+
+      return await response.json();
+    } catch (error) {
+      throw error;
     }
-
-    return response.json();
   }
 
   deleteUser(id: number) {
-    this.http.delete(`${this.apiUrl}/usuarios/${id}`)
-    .subscribe({
-      next: () => {
-        alert('Usuario eliminado con éxito');
-        
-      },
-      error: (error: any) => {
-        console.error('Error al eliminar el usuario:', error);
-        alert('Hubo un error al eliminar el usuario');
-      }
-    });
-
-    return true;
+    return this.http.delete(`${this.apiUrl}/usuarios/${id}`).toPromise();
   }
 
   async registerProject(project: Omit<Proyecto, "id">): Promise<Proyecto> {

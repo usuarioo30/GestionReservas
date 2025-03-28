@@ -26,7 +26,7 @@ class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    username = db.Column(db.String(120), nullable=False)
+    username = db.Column(db.String(120), unique=True, nullable=False)
     roles = db.Column(db.String(255), nullable=False)
 
     reservas = db.relationship('Reserva', backref='usuario', cascade='all, delete-orphan')
@@ -254,7 +254,7 @@ def obtener_reservas():
 @app.route('/usuarios', methods=['GET'])
 def obtener_usuarios():
     try:
-        usuarios = Usuario.query.filter(Usuario.roles == "user").all()
+        usuarios = Usuario.query.all()
         usuarios_serializados = [
             {
                 "id": usuario.id,
@@ -326,7 +326,6 @@ def eliminarUsuario(id):
 
 # Crear un nuevo usuario
 @app.route('/register', methods=['POST'])
-@app.route('/register', methods=['POST'])
 def crear_usuario():
     try:
         data = request.get_json()
@@ -338,6 +337,14 @@ def crear_usuario():
         # Validar que todos los campos estén presentes
         if not all([email, password, username, roles]):
             return jsonify({"message": "Todos los campos son obligatorios"}), 400
+
+        # Verificar si el correo ya está registrado
+        if Usuario.query.filter_by(email=email).first():
+            return jsonify({"message": "El correo ya está registrado"}), 400
+
+        # Verificar si el nombre de usuario ya está registrado
+        if Usuario.query.filter_by(username=username).first():
+            return jsonify({"message": "El nombre de usuario ya está registrado"}), 400
 
         # Encriptar la contraseña
         password_hash = generate_password_hash(password)
@@ -354,12 +361,6 @@ def crear_usuario():
         db.session.commit()
 
         return jsonify({"message": "Usuario creado con éxito"}), 201
-
-    except IntegrityError as e:
-        db.session.rollback()  # Revertir la transacción en caso de error
-        if "Duplicate entry" in str(e.orig):
-            return jsonify({"message": "El correo ya está registrado"}), 400
-        return jsonify({"message": "Error de integridad en la base de datos", "error": str(e)}), 400
 
     except Exception as e:
         return jsonify({"message": "Error al crear el usuario", "error": str(e)}), 500

@@ -72,10 +72,10 @@ export class ListProyectosComponent implements OnInit {
         () => {
           Swal.fire('Éxito', 'Proyecto actualizado con éxito', 'success');
           this.cargarProyectos();
-          const modal = document.getElementById('editarProyectoModal');
-          if (modal) {
-            (modal as any).classList.remove('show');
-          }
+          // const modal = document.getElementById('editarProyectoModal');
+          // if (modal) {
+          //   (modal as any).classList.remove('show');
+          // }
         },
         (error: any) => {
           console.error('Error al actualizar el proyecto:', error);
@@ -97,10 +97,10 @@ export class ListProyectosComponent implements OnInit {
           Swal.fire('Éxito', 'Proyecto creado con éxito', 'success');
           this.cargarProyectos();
           this.crearProyectoForm.reset();
-          const modal = document.getElementById('crearProyectoModal');
-          if (modal) {
-            (modal as any).classList.remove('show');
-          }
+          // const modal = document.getElementById('crearProyectoModal');
+          // if (modal) {
+          //   (modal as any).classList.remove('show');
+          // }
         },
         (error: any) => {
           console.error('Error al crear el proyecto:', error);
