@@ -51,7 +51,6 @@ export class CrearUsuarioComponent {
         this.newuser.reset();
         this.router.navigate(['/reservas']);
       } catch (error: any) {
-        // Verificar si el error tiene un mensaje específico
         if (error?.message === 'El correo ya está registrado') {
           this.emailExistsError = 'El correo ya está registrado';
         }

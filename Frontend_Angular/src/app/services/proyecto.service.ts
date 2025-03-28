@@ -13,17 +13,14 @@ export class ProyectoService {
 
   constructor(private http: HttpClient) { }
 
-  // Obtener todos los proyectos
   getProyectos1(): Observable<Proyecto[]> {
     return this.http.get<Proyecto[]>(`${this.apiUrl}/proyectos`);
   }
 
-  // Editar un proyecto
   editProyecto(id: number, proyecto: Proyecto): Observable<any> {
     return this.http.put(`${this.apiUrl}/editarProyecto/${id}`, proyecto);
   }
 
-  // Eliminar un proyecto
   deleteProyecto(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/eliminarProyecto/${id}`);
   }

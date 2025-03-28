@@ -26,7 +26,6 @@ export class ListProyectosComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder
   ) {
-    // Inicializar el formulario para crear proyectos
     this.crearProyectoForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
     });
@@ -72,10 +71,6 @@ export class ListProyectosComponent implements OnInit {
         () => {
           Swal.fire('Éxito', 'Proyecto actualizado con éxito', 'success');
           this.cargarProyectos();
-          // const modal = document.getElementById('editarProyectoModal');
-          // if (modal) {
-          //   (modal as any).classList.remove('show');
-          // }
         },
         (error: any) => {
           console.error('Error al actualizar el proyecto:', error);
@@ -97,10 +92,6 @@ export class ListProyectosComponent implements OnInit {
           Swal.fire('Éxito', 'Proyecto creado con éxito', 'success');
           this.cargarProyectos();
           this.crearProyectoForm.reset();
-          // const modal = document.getElementById('crearProyectoModal');
-          // if (modal) {
-          //   (modal as any).classList.remove('show');
-          // }
         },
         (error: any) => {
           console.error('Error al crear el proyecto:', error);
@@ -136,7 +127,6 @@ export class ListProyectosComponent implements OnInit {
           }
         );
       } else {
-        // Si el usuario cancela, no hacer nada
         console.log("Eliminación cancelada");
       }
     }).catch((error) => {

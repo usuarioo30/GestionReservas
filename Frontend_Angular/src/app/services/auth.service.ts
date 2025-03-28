@@ -197,10 +197,8 @@ export class AuthService {
   }
 
   logout(): void {
-    // Eliminar el token del localStorage
     localStorage.removeItem('access_token');
 
-    // Redirigir al usuario al login (o página inicial)
     this.router.navigate(['/login']);
   }
 

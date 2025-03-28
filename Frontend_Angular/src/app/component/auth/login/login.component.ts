@@ -61,11 +61,9 @@ export class LoginComponent implements OnInit {
 
     this.authService.loginWithGoogle(response.credential)
       .then(res => {
-        //console.log('Inicio de sesión con Google exitoso:', res);
         Swal.fire('Éxito', 'Inicio de sesión con Google exitoso', "success");
         localStorage.setItem("access_token", JSON.stringify(response.credential));
         this.router.navigate(['/reservas']);
-        // Redirige al usuario o realiza alguna acción
 
       })
       .catch(err => {

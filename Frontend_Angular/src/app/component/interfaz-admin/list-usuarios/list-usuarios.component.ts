@@ -25,7 +25,6 @@ export class ListUsuariosComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder
   ) {
-    // Inicializar el formulario para crear proyectos
     this.crearProyectoForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
     });
@@ -40,11 +39,9 @@ export class ListUsuariosComponent implements OnInit {
       if (role !== 'admin') {
         this.tieneAcceso = false;
       } else {
-        // Obtener todos los usuarios, no solo los admins
         this.authService.getUsers().then(usuarios => {
           this.usuarios = usuarios;
 
-          // Obtener el usuario si el token existe
           if (token) {
             this.authService.getUserByMail(this.authService.decodeToken(token).email).then(usuario => {
               this.usuario = usuario;
@@ -61,16 +58,12 @@ export class ListUsuariosComponent implements OnInit {
     });
   }
 
-
-
-  // Abrir el modal para editar un usuario
   abrirModalEditar(usuario: Usuario): void {
     this.proyectoSeleccionado = { ...usuario };
   }
 
 
   async eliminarUsuario(id: number) {
-    // Muestra la alerta de confirmación utilizando SweetAlert2
     const confirmacion = await Swal.fire({
       title: "¿Estás seguro?",
       text: "No podrás revertir esta acción.",
@@ -82,19 +75,15 @@ export class ListUsuariosComponent implements OnInit {
       cancelButtonText: "Cancelar"
     });
 
-    // Si el usuario cancela la acción, no se hace nada
     if (!confirmacion.isConfirmed) {
       return;
     }
 
     try {
-      // Llamada al servicio para eliminar el usuario
       await this.authService.deleteUser(id);
 
-      // Eliminar el usuario de la lista localmente
       this.usuarios = this.usuarios.filter(usuario => usuario.id !== id);
 
-      // Mostrar un mensaje de éxito con SweetAlert
       await Swal.fire({
         title: '¡Usuario eliminado!',
         text: 'El usuario ha sido eliminado exitosamente.',
@@ -104,8 +93,6 @@ export class ListUsuariosComponent implements OnInit {
 
     } catch (error) {
       console.error("Error al eliminar el usuario:", error);
-
-      // Mostrar un mensaje de error si ocurre algún problema
       await Swal.fire({
         title: 'Error',
         text: 'Hubo un problema al intentar eliminar el usuario.',
