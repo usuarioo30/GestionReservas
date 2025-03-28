@@ -69,10 +69,8 @@ export class ListUsuariosComponent implements OnInit {
   }
 
 
-  // Eliminar un usuario
   async eliminarUsuario(id: number) {
-
-    //window.confirm("¿Estás seguro de que deseas eliminar este usuario?"); //Nativo de js para eliminar
+    // Muestra la alerta de confirmación utilizando SweetAlert2
     const confirmacion = await Swal.fire({
       title: "¿Estás seguro?",
       text: "No podrás revertir esta acción.",
@@ -84,19 +82,36 @@ export class ListUsuariosComponent implements OnInit {
       cancelButtonText: "Cancelar"
     });
 
+    // Si el usuario cancela la acción, no se hace nada
     if (!confirmacion.isConfirmed) {
       return;
     }
 
     try {
-      const eliminado = await this.authService.deleteUser(id);
-      if (eliminado) {
-        this.usuarios = this.usuarios.filter(usuario => usuario.id !== id);
-      } else {
-        console.error("Ha ocurrido un error al eliminar el usuario");
-      }
+      // Llamada al servicio para eliminar el usuario
+      await this.authService.deleteUser(id);
+
+      // Eliminar el usuario de la lista localmente
+      this.usuarios = this.usuarios.filter(usuario => usuario.id !== id);
+
+      // Mostrar un mensaje de éxito con SweetAlert
+      await Swal.fire({
+        title: '¡Usuario eliminado!',
+        text: 'El usuario ha sido eliminado exitosamente.',
+        icon: 'success',
+        confirmButtonColor: '#3085d6',
+      });
+
     } catch (error) {
       console.error("Error al eliminar el usuario:", error);
+
+      // Mostrar un mensaje de error si ocurre algún problema
+      await Swal.fire({
+        title: 'Error',
+        text: 'Hubo un problema al intentar eliminar el usuario.',
+        icon: 'error',
+        confirmButtonColor: '#d33',
+      });
     }
   }
 
