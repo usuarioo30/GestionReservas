@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="grid-parent">
   <div class="dropdown position-absolute top-0 end-0 p-3">
     <a href="#" class="text-black text-decoration-none dropdown-toggle" id="dropdownTheme" data-bs-toggle="dropdown"
       aria-expanded="false">
@@ -15,93 +15,116 @@
 
   
   <!--Aquí empieza la row-->
-  <button class="btn btn-primary my-3" [ngClass]="{'d-none': deployed}" type="button" (click)="deploySidebar()">
-    <i class="bi bi-list"></i> Menú
+  <!-- Botón para abrir el sidebar -->
+  <button class="btn btn-primary my-3"
+  [ngClass]="{
+    'd-none': deployed,  
+    'd-lg-block sidebar-button': !deployed 
+  }"
+  type="button" 
+  (click)="deploySidebar()">
+  <i class="bi bi-list"></i> Menú
   </button>
-  <div class="row">
 
-    <!--Aquí empieza la columna del sidebar-->
-    <div class="col-lg-2 col-md-1 p-2 position-fixed vh-100 sidebar" [ngClass]="{'bg-dark text-light': isDarkTheme, 'bg-light text-dark': !isDarkTheme, 'deployed': deployed}">
-      <div class="">
-        <button type="button" class="btn btn-transparent text-decoration-none p-0 text-black" id="botonA"
-          [routerLink]="['/reservas']">
-          <h5 class="mt-2 mb-4" id="">Apeiroo Rooms</h5>
-        </button>
-        <button type="button" class="btn-close position-absolute top-0 end-0 m-2" aria-label="Close" (click)="deploySidebar()"></button>
-      </div>
-      <div class="">
-        <!-- Menú de navegación -->
-        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-          <li class="nav-item hall">
-            <a [routerLink]="['/reservas']" [queryParams]="{ sala: 'upper' }" routerLinkActive="active"
-              class="nav-link align-middle" [ngClass]="{
-                 'active-dark': isDarkTheme && sala === 'upper',
-                 'text-light': isDarkTheme,
-                 'text-black': !isDarkTheme
-               }" [class.active]="sala === 'upper'">
-              <i class="bi bi-arrow-bar-up"></i>
-              <span class="ms-2 d-none d-sm-inline">Sala de arriba</span>
-              <span class="d-sm-none">Arriba</span>
-            </a>
-          </li>
-          <li class="hall">
-            <a [routerLink]="['/reservas']" [queryParams]="{ sala: 'lower' }" routerLinkActive="active"
-              class="nav-link align-middle" [ngClass]="{
-                 'active-dark': isDarkTheme && sala === 'lower',
-                 'text-light': isDarkTheme,
-                 'text-black': !isDarkTheme
-               }" [class.active]="sala === 'lower'">
-              <i class="bi bi-arrow-bar-down"></i>
-              <span class="ms-2 d-none d-sm-inline">Sala de abajo</span>
-              <span class="d-sm-none">Abajo</span>
-            </a>
-          </li>
-          <li class="hall" *ngIf="role === 'admin'">
-            <a [routerLink]="['/proyectos']" routerLinkActive="active" class="nav-link align-middle proyecto" [ngClass]="{
-                 'active-dark': isDarkTheme,
-                 'active-light': !isDarkTheme,
-                 'text-light': isDarkTheme,
-                 'text-black': !isDarkTheme,
-               }">
-              <i class="bi bi-file-code"></i>
-              <span class="ms-2 d-none d-sm-inline">Proyectos</span>
-            </a>
-          </li>
+<div class="">
+<!-- Sidebar -->
+<div class="p-2"
+  [ngClass]="{
+    'bg-dark text-light': isDarkTheme,
+    'bg-light text-dark': !isDarkTheme,
+    'sidebar': deployed,
+    'd-none' : !deployed
+  }">
+  
+  <div class="position-relative">
+    <button type="button" class="btn btn-transparent text-decoration-none p-0 text-black" id="botonA"
+      [routerLink]="['/reservas']">
+      <h5 class="mt-2 mb-4">Apeiroo Rooms</h5>
+    </button>
+    <button type="button" class="btn-close position-absolute top-0 end-0 m-2" aria-label="Close"
+      (click)="deploySidebar()"></button>
+  </div>
 
-          <li class="hall" *ngIf="role === 'admin'">
-            <a [routerLink]="['/listusers']" routerLinkActive="active" class="nav-link align-middle proyecto" [ngClass]="{
-                 'active-dark': isDarkTheme,
-                 'active-light': !isDarkTheme,
-                 'text-light': isDarkTheme,
-                 'text-black': !isDarkTheme,
-               }">
-              <i class="bi bi-person"></i>
-              <span class="ms-2 d-none d-sm-inline">Usuarios</span>
-            </a>
-          </li>
-        </ul>
-        <hr>
-        <div class="dropdown pb-4">
-          <a href="#" class="d-flex align-items-center text-black text-decoration-none dropdown-toggle"
-            id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-            <small class="d-none d-sm-inline mx-1">({{role}}) {{email}}</small>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li class="hall"><a *ngIf="role === 'admin'" class="dropdown-item" [routerLink]="['/createuser']">Crear usuario</a></li>
-            <li class="hall"><a class="dropdown-item" [routerLink]="['/profile']">Editar Perfil</a></li>
-            <li class="hall"><a class="dropdown-item" href="#" (click)="onLogout()">Cerrar sesión</a></li>
-          </ul>
-        </div>
-      </div>
+  <div class="">
+    <!-- Menú de navegación -->
+    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start">
+      <li class="nav-item hall">
+        <a [routerLink]="['/reservas']" [queryParams]="{ sala: 'upper' }" routerLinkActive="active"
+          class="nav-link align-middle"
+          [ngClass]="{
+             'active-dark': isDarkTheme && sala === 'upper',
+             'text-light': isDarkTheme,
+             'text-black': !isDarkTheme
+           }"
+          [class.active]="sala === 'upper'">
+          <i class="bi bi-arrow-bar-up"></i>
+          <span class="ms-2 d-none d-sm-inline">Sala de arriba</span>
+          <span class="d-sm-none">Arriba</span>
+        </a>
+      </li>
+      <li class="hall">
+        <a [routerLink]="['/reservas']" [queryParams]="{ sala: 'lower' }" routerLinkActive="active"
+          class="nav-link align-middle"
+          [ngClass]="{
+             'active-dark': isDarkTheme && sala === 'lower',
+             'text-light': isDarkTheme,
+             'text-black': !isDarkTheme
+           }"
+          [class.active]="sala === 'lower'">
+          <i class="bi bi-arrow-bar-down"></i>
+          <span class="ms-2 d-none d-sm-inline">Sala de abajo</span>
+          <span class="d-sm-none">Abajo</span>
+        </a>
+      </li>
+      <li class="hall" *ngIf="role === 'admin'">
+        <a [routerLink]="['/proyectos']" routerLinkActive="active" class="nav-link align-middle proyecto"
+          [ngClass]="{
+             'active-dark': isDarkTheme,
+             'active-light': !isDarkTheme,
+             'text-light': isDarkTheme,
+             'text-black': !isDarkTheme,
+           }">
+          <i class="bi bi-file-code"></i>
+          <span class="ms-2 d-none d-sm-inline">Proyectos</span>
+        </a>
+      </li>
+      <li class="hall" *ngIf="role === 'admin'">
+        <a [routerLink]="['/listusers']" routerLinkActive="active" class="nav-link align-middle proyecto"
+          [ngClass]="{
+             'active-dark': isDarkTheme,
+             'active-light': !isDarkTheme,
+             'text-light': isDarkTheme,
+             'text-black': !isDarkTheme,
+           }">
+          <i class="bi bi-person"></i>
+          <span class="ms-2 d-none d-sm-inline">Usuarios</span>
+        </a>
+      </li>
+    </ul>
+    <hr>
+    <div class="dropdown pb-4">
+      <a href="#" class="d-flex align-items-center text-black text-decoration-none dropdown-toggle"
+        id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+        <small class="d-none d-sm-inline mx-1">({{role}}) {{email}}</small>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+        <li class="hall"><a *ngIf="role === 'admin'" class="dropdown-item"
+            [routerLink]="['/createuser']">Crear usuario</a></li>
+        <li class="hall"><a class="dropdown-item" [routerLink]="['/profile']">Editar Perfil</a></li>
+        <li class="hall"><a class="dropdown-item" href="#" (click)="onLogout()">Cerrar sesión</a></li>
+      </ul>
     </div>
+  </div>
+</div>
+</div>
 
+    <!--Aquí termina el sidebar-->
 
-
-    <div class="col">
-      <div class="container py-3">
+    <div class="reservation-table py-3">
+      
         <div class="row justify-content-center">
           <div class="col-12 col-md-10 col-lg-8">
             <div class="card shadow-sm">
@@ -193,7 +216,7 @@
             </div>
           </div>
         </div>
-      </div>
+      
     </div>
 
     <!-- Modal para crear reserva -->

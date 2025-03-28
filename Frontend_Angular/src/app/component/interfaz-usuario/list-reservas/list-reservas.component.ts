@@ -13,7 +13,6 @@ import { Usuario } from '../../../interfaces/usuario';
 import Swal from 'sweetalert2';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
-
 @Component({
   imports: [CommonModule, ReactiveFormsModule, RouterLink, FormsModule,
     SweetAlert2Module],
@@ -36,7 +35,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   dateActual: string = '';
   proyectos!: Proyecto[];
   usuarios!: Usuario[];
-  deployed: boolean = true;
+  deployed: boolean = false;
 
   constructor(private reservasService: ReservasService,
     private authService: AuthService,
