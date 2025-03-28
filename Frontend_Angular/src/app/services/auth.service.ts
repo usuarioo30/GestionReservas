@@ -10,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5000'; // URL del backend
+  private apiUrl = 'http://localhost:5000';
   private apiUrl1 = "http://127.0.0.1:5000/login";
   
   constructor(private router: Router, private http: HttpClient) {}
@@ -27,7 +27,7 @@ export class AuthService {
       body: JSON.stringify({ username: username, password: password })
     });
 
-    return response //Devolvemos la promesa
+    return response
 
   }
 
@@ -65,7 +65,6 @@ export class AuthService {
   async getUsers(): Promise<Usuario[]> {
     try {
           return await firstValueFrom(this.http.get<Usuario[]>(`${this.apiUrl}/usuarios`));
-          //firstValueFrom() convierte un Observable en una Promise
         } catch (error) {
           console.error('Error al obtener los usuarios:', error);
           return [];
@@ -89,10 +88,10 @@ export class AuthService {
       try {
         // Decodificar el token
         const decodedToken: any = jwtDecode(token);
-        console.log('Decoded Token:', decodedToken); // Ver en consola el contenido del token
+        console.log('Decoded Token:', decodedToken);
 
         // Verifica que el rol esté presente en el token
-        return decodedToken?.rol || (await this.getUserByMail(decodedToken.email)).roles; // Usar 'rol' en lugar de 'role'
+        return decodedToken?.rol || (await this.getUserByMail(decodedToken.email)).roles;
       } catch (error) {
         console.error('Error al decodificar el token:', error);
         return null;
@@ -156,7 +155,7 @@ export class AuthService {
         alert('Usuario eliminado con éxito');
         
       },
-      error: (error: any) => { // Declarar explícitamente el tipo del parámetro error
+      error: (error: any) => {
         console.error('Error al eliminar el usuario:', error);
         alert('Hubo un error al eliminar el usuario');
       }

@@ -15,16 +15,16 @@ import Swal from 'sweetalert2';
   styleUrls: ['./list-proyectos.component.css'],
 })
 export class ListProyectosComponent implements OnInit {
-  proyectos: Proyecto[] = []; // Lista de proyectos
-  proyectoSeleccionado: Proyecto = { id: 0, nombre: '' }; // Proyecto seleccionado para editar
-  crearProyectoForm: FormGroup; // Formulario para crear proyectos
+  proyectos: Proyecto[] = [];
+  proyectoSeleccionado: Proyecto = { id: 0, nombre: '' };
+  crearProyectoForm: FormGroup;
   tieneAcceso: boolean = true;
 
   constructor(
     private authService: AuthService,
     private proyectoService: ProyectoService,
     private router: Router,
-    private fb: FormBuilder // Inyectar FormBuilder
+    private fb: FormBuilder
   ) {
     // Inicializar el formulario para crear proyectos
     this.crearProyectoForm = this.fb.group({
@@ -33,14 +33,14 @@ export class ListProyectosComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const role = await this.authService.getRole(); // Obtener el rol del usuario desde el token
-  console.log('User Role:', role); // Verificar el valor del rol en la consola
+    const role = await this.authService.getRole();
+    console.log('User Role:', role);
 
-  if (role !== 'admin') {
-    this.tieneAcceso = false; // Si no es admin, no tiene acceso
-  } else {
-    this.cargarProyectos(); // Si es admin, cargamos los proyectos
-  }
+    if (role !== 'admin') {
+      this.tieneAcceso = false;
+    } else {
+      this.cargarProyectos();
+    }
   }
 
   // Cargar todos los proyectos
@@ -57,7 +57,7 @@ export class ListProyectosComponent implements OnInit {
 
   // Abrir el modal para editar un proyecto
   abrirModalEditar(proyecto: Proyecto): void {
-    this.proyectoSeleccionado = { ...proyecto }; // Clonar el proyecto seleccionado
+    this.proyectoSeleccionado = { ...proyecto };
   }
 
   // Guardar los cambios del proyecto
@@ -65,16 +65,16 @@ export class ListProyectosComponent implements OnInit {
     if (this.proyectoSeleccionado.id) {
       const proyectoEditado: Proyecto = {
         id: this.proyectoSeleccionado.id,
-        nombre: this.proyectoSeleccionado.nombre.trim(), // Asegurarse de que el nombre no tenga espacios innecesarios
+        nombre: this.proyectoSeleccionado.nombre.trim(),
       };
 
       this.proyectoService.editProyecto(proyectoEditado.id, proyectoEditado).subscribe(
         () => {
           Swal.fire('Éxito', 'Proyecto actualizado con éxito', 'success');
-          this.cargarProyectos(); // Recargar la lista de proyectos
+          this.cargarProyectos();
           const modal = document.getElementById('editarProyectoModal');
           if (modal) {
-            (modal as any).classList.remove('show'); // Cerrar el modal
+            (modal as any).classList.remove('show');
           }
         },
         (error: any) => {
@@ -95,11 +95,11 @@ export class ListProyectosComponent implements OnInit {
       this.proyectoService.addProyecto(nuevoProyecto).subscribe(
         () => {
           Swal.fire('Éxito', 'Proyecto creado con éxito', 'success');
-          this.cargarProyectos(); // Recargar la lista de proyectos
-          this.crearProyectoForm.reset(); // Reiniciar el formulario
+          this.cargarProyectos();
+          this.crearProyectoForm.reset();
           const modal = document.getElementById('crearProyectoModal');
           if (modal) {
-            (modal as any).classList.remove('show'); // Cerrar el modal
+            (modal as any).classList.remove('show');
           }
         },
         (error: any) => {
@@ -108,25 +108,40 @@ export class ListProyectosComponent implements OnInit {
         }
       );
     } else {
-      this.crearProyectoForm.markAllAsTouched(); // Marcar todos los campos como tocados para mostrar errores
+      this.crearProyectoForm.markAllAsTouched();
     }
   }
 
   // Eliminar un proyecto
   eliminarProyecto(id: number): void {
-    const confirmar = confirm('¿Estás seguro de que deseas eliminar este proyecto?');
-    if (confirmar) {
-      this.proyectoService.deleteProyecto(id).subscribe(
-        () => {
-          Swal.fire('Éxito', 'Proyecto eliminado con éxito', 'success');
-          this.cargarProyectos(); // Recargar la lista de proyectos
-        },
-        (error: any) => { // Declarar explícitamente el tipo del parámetro error
-          console.error('Error al eliminar el proyecto:', error);
-          Swal.fire('Error', 'Hubo un error al eliminar el proyecto', 'error');
-        }
-      );
-    }
+    Swal.fire({
+      title: "¿Estás seguro de eliminar este proyecto?",
+      text: "No podrás revertir esta acción.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.proyectoService.deleteProyecto(id).subscribe(
+          () => {
+            Swal.fire('Éxito', 'Proyecto eliminado con éxito', 'success');
+            this.cargarProyectos();
+          },
+          (error: any) => {
+            console.error('Error al eliminar el proyecto:', error);
+            Swal.fire('Error', 'Hubo un error al eliminar el proyecto', 'error');
+          }
+        );
+      } else {
+        // Si el usuario cancela, no hacer nada
+        console.log("Eliminación cancelada");
+      }
+    }).catch((error) => {
+      console.error("Error al mostrar el cuadro de confirmación", error);
+    });
   }
 
   volverAReservas(): void {

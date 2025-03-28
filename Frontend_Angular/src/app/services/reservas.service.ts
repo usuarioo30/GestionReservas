@@ -8,17 +8,17 @@ import { Proyecto } from '../interfaces/proyecto';
   providedIn: 'root'
 })
 export class ReservasService {
-  private apiUrl = 'http://localhost:5000/'; // URL del endpoint de tu backend
+  private apiUrl = 'http://localhost:5000/';
 
   constructor(private http: HttpClient) {}
 
   async getReservas(): Promise<any[]> {
     try {
-      const response = await fetch(`${this.apiUrl}reservas`); // Realiza la solicitud HTTP con Fetch API
+      const response = await fetch(`${this.apiUrl}reservas`);
       if (!response.ok) {
         throw new Error(`Error HTTP: ${response.status}`);
       }
-      return await response.json(); // Devuelve los datos en formato JSON
+      return await response.json();
     } catch (error) {
       console.error('Error al obtener las reservas:', error);
       throw error;
@@ -39,13 +39,12 @@ export class ReservasService {
   }
 
   async addReserva(reserva: Omit<Reserva, "id">): Promise<void> {
-    //console.log(localStorage.getItem('access_token')); Esto se hizo en su momento para comprobar que el token se guardaba correctamente
     try {
       const response = await fetch(`${this.apiUrl}registrarReserva`, { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Autorization': `Bearer ${localStorage.getItem('access_token')}`, // Añade el token JWT a la cabecera
+          'Autorization': `Bearer ${localStorage.getItem('access_token')}`,
         },
         body: JSON.stringify(reserva),
       });

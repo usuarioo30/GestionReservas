@@ -24,7 +24,7 @@ export class EditprofileComponent implements OnInit{
     username: ['', [Validators.required]],
     password: ['', []],
     confirmPassword: ['', []]
-  }, { validators: this.passwordsMatchValidator }); // <-- CORREGIDO
+  }, { validators: this.passwordsMatchValidator });
 
   async ngOnInit(): Promise<void> {
       this.token = localStorage.getItem("access_token");
@@ -37,7 +37,7 @@ export class EditprofileComponent implements OnInit{
           id: this.user.id,
           email: this.user.email,
           username: this.user.username,
-          password: '', //Angular me obligó a poner estos 2 últimos campos
+          password: '',
           confirmPassword: ''
         })
 
@@ -55,7 +55,7 @@ export class EditprofileComponent implements OnInit{
     const confirmPassword = group.get('confirmPassword')?.value;
 
     return password && confirmPassword && password !== confirmPassword
-      ? { passNoCoinciden: true }  // ✅ Devuelve el error correctamente
+      ? { passNoCoinciden: true }
       : null;
   }
 

@@ -117,7 +117,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
       .toISOString()
       .slice(0, 16); // Formato 'YYYY-MM-DDTHH:mm'
     this.minDateTime = localDateTime;
-    this.dateActual = localDateTime.slice(0, 10); // Formato 'YYYY-MM-DD'
+    this.dateActual = localDateTime.slice(0, 10);
   }
 
   // Método para verificar si la fecha seleccionada es hoy
@@ -128,7 +128,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   // Método para manejar cambios en la fecha seleccionada
   onDateTimeChange(event: any): void {
     const selectedDateTime = event.target.value;
-    const selectedDate = selectedDateTime.slice(0, 10); // Extraer solo la fecha (YYYY-MM-DD)
+    const selectedDate = selectedDateTime.slice(0, 10);
 
     // Crear objetos de fecha a partir de la fecha seleccionada y la fecha actual
     const minDateTimeToDate = new Date(this.minDateTime);
@@ -153,7 +153,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // Detecta cambios en el valor de @Input() sala
     if (changes['sala'] && !changes['sala'].isFirstChange()) {
-      this.filterReservas(this.nombreProyecto); // Filtra las reservas cuando cambia el valor de sala
+      this.filterReservas(this.nombreProyecto);
     }
   }
 
