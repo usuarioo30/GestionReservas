@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Usuario } from '../../../interfaces/usuario';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
   templateUrl: './list-usuarios.component.html',
   styleUrl: './list-usuarios.component.css'
 })
-export class ListUsuariosComponent {
+export class ListUsuariosComponent implements OnInit {
 
   usuarios: Usuario[] = [];
   proyectoSeleccionado!: Usuario;
@@ -31,26 +31,41 @@ export class ListUsuariosComponent {
     });
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     const token = localStorage.getItem('access_token');
-    const role = await this.authService.getRole();
-    console.log('User Role:', role);
 
-    if (role !== 'admin') {
-      this.tieneAcceso = false;
-    } else {
-      this.usuarios = await this.authService.getUsers()
-      if (token)
-        this.usuario = await this.authService.getUserByMail(this.authService.decodeToken(token).email);
+    this.authService.getRole().then(role => {
+      console.log('User Role:', role);
 
-    }
+      if (role !== 'admin') {
+        this.tieneAcceso = false;
+      } else {
+        // Obtener todos los usuarios, no solo los admins
+        this.authService.getUsers().then(usuarios => {
+          this.usuarios = usuarios;
+
+          // Obtener el usuario si el token existe
+          if (token) {
+            this.authService.getUserByMail(this.authService.decodeToken(token).email).then(usuario => {
+              this.usuario = usuario;
+            }).catch(error => {
+              console.error('Error al obtener el usuario:', error);
+            });
+          }
+        }).catch(error => {
+          console.error('Error al obtener los usuarios:', error);
+        });
+      }
+    }).catch(error => {
+      console.error('Error al obtener el rol:', error);
+    });
   }
 
 
 
-  // Abrir el modal para editar un proyecto
-  abrirModalEditar(proyecto: Usuario): void {
-    this.proyectoSeleccionado = { ...proyecto };
+  // Abrir el modal para editar un usuario
+  abrirModalEditar(usuario: Usuario): void {
+    this.proyectoSeleccionado = { ...usuario };
   }
 
 

@@ -12,8 +12,8 @@ import { HttpClient } from '@angular/common/http';
 export class AuthService {
   private apiUrl = 'http://localhost:5000';
   private apiUrl1 = "http://127.0.0.1:5000/login";
-  
-  constructor(private router: Router, private http: HttpClient) {}
+
+  constructor(private router: Router, private http: HttpClient) { }
 
   //Método de iniciar sesión, es llamado cuando el formulario es válido
   async logIn(username: string, password: string) {
@@ -64,11 +64,11 @@ export class AuthService {
 
   async getUsers(): Promise<Usuario[]> {
     try {
-          return await firstValueFrom(this.http.get<Usuario[]>(`${this.apiUrl}/usuarios`));
-        } catch (error) {
-          console.error('Error al obtener los usuarios:', error);
-          return [];
-        }
+      return await firstValueFrom(this.http.get<Usuario[]>(`${this.apiUrl}/usuarios`));
+    } catch (error) {
+      console.error('Error al obtener los usuarios:', error);
+      return [];
+    }
   }
 
   async getUser(id: number) {
@@ -138,7 +138,7 @@ export class AuthService {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({id: id, password: password, username: username})
+      body: JSON.stringify({ id: id, password: password, username: username })
     });
 
     if (!response.ok) {
@@ -150,16 +150,16 @@ export class AuthService {
 
   deleteUser(id: number) {
     this.http.delete(`${this.apiUrl}/usuarios/${id}`)
-    .subscribe({
-      next: () => {
-        alert('Usuario eliminado con éxito');
-        
-      },
-      error: (error: any) => {
-        console.error('Error al eliminar el usuario:', error);
-        alert('Hubo un error al eliminar el usuario');
-      }
-    });
+      .subscribe({
+        next: () => {
+          alert('Usuario eliminado con éxito');
+
+        },
+        error: (error: any) => {
+          console.error('Error al eliminar el usuario:', error);
+          alert('Hubo un error al eliminar el usuario');
+        }
+      });
 
     return true;
   }

@@ -9,14 +9,14 @@
             <b>No tienes permisos para acceder a esta página.</b>
           </div>
 
-          <div *ngIf="proyectos.length === 0 && tieneAcceso" class="alert alert-primary custom-alert">
-            <b>No hay proyectos disponibles.</b>
-          </div>
-
           <button *ngIf="tieneAcceso" class="btn btn-primary mb-3 boton me-3" data-bs-toggle="modal"
             data-bs-target="#crearProyectoModal">
             Crear Proyecto
           </button>
+
+          <div *ngIf="proyectos.length === 0 && tieneAcceso" class="alert alert-primary custom-alert">
+            <b>No hay proyectos disponibles.</b>
+          </div>
 
           <div *ngIf="proyectos.length > 0 && tieneAcceso" class="table-responsive"
             style="max-height: 400px; overflow-y: auto;">
