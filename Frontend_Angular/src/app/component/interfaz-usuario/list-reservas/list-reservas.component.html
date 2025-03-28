@@ -47,7 +47,7 @@
         'sidebar-dark': isDarkTheme,
         'sidebar-light': !isDarkTheme
       }">
-        <li class="nav-item">
+        <li class="nav-item hall">
           <a [routerLink]="['/reservas']" [queryParams]="{ sala: 'upper' }" routerLinkActive="active"
              class="nav-link"
              [ngClass]="{
@@ -59,7 +59,7 @@
             <span class="d-sm-none">Arriba</span>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item hall">
           <a [routerLink]="['/reservas']" [queryParams]="{ sala: 'lower' }" routerLinkActive="active"
              class="nav-link"
              [ngClass]="{
@@ -71,7 +71,7 @@
             <span class="d-sm-none">Abajo</span>
           </a>
         </li>
-        <li class="nav-item" *ngIf="role === 'admin'">
+        <li class="nav-item hall" *ngIf="role === 'admin'">
           <a [routerLink]="['/proyectos']" routerLinkActive="active" class="nav-link"
              [ngClass]="{
                 'active-dark': isDarkTheme,
@@ -81,7 +81,7 @@
             <span class="ms-2">Proyectos</span>
           </a>
         </li>
-        <li class="nav-item" *ngIf="role === 'admin'">
+        <li class="nav-item hall" *ngIf="role === 'admin'">
           <a [routerLink]="['/listusers']" routerLinkActive="active" class="nav-link"
              [ngClass]="{
                 'active-dark': isDarkTheme,
@@ -101,13 +101,13 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
           <li><hr class="dropdown-divider"></li>
-          <li *ngIf="role === 'admin'">
+          <li *ngIf="role === 'admin'" class="hall">
             <a class="dropdown-item" [routerLink]="['/createuser']">Crear usuario</a>
           </li>
-          <li>
+          <li class="hall">
             <a class="dropdown-item" [routerLink]="['/profile']">Editar Perfil</a>
           </li>
-          <li>
+          <li class="hall">
             <a class="dropdown-item" href="#" (click)="onLogout()">Cerrar sesión</a>
           </li>
         </ul>

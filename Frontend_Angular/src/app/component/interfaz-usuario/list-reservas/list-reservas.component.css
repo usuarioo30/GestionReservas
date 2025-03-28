@@ -35,25 +35,32 @@
 /* Menú dropdown responsivo */
 @media (max-width: 576px) {
   .responsive-dropdown {
-    min-width: 0 !important; /* permite ancho flexible */
-    width: 100% !important;  /* ocupa todo ancho disponible */
+    min-width: 0 !important;
+    /* permite ancho flexible */
+    width: 100% !important;
+    /* ocupa todo ancho disponible */
     overflow-x: hidden;
   }
 
   .responsive-dropdown .dropdown-item {
-    white-space: normal !important; /* permite salto de línea */
-    word-wrap: break-word !important; /* ajusta palabras largas */
-    padding: 10px !important; /* mejora espacio táctil en móviles */
+    white-space: normal !important;
+    /* permite salto de línea */
+    word-wrap: break-word !important;
+    /* ajusta palabras largas */
+    padding: 10px !important;
+    /* mejora espacio táctil en móviles */
   }
 
   .responsive-dropdown .dropdown-divider {
-    margin: 0.5rem 0 !important; /* margen consistente y reducido */
+    margin: 0.5rem 0 !important;
+    /* margen consistente y reducido */
   }
 }
 
 .boton {
   margin-bottom: 10px;
 }
+
 .proyecto {
   margin-top: 10px;
 }
@@ -99,6 +106,7 @@
 .menu-button {
   transition: opacity 0.3s ease-in-out;
 }
+
 .menu-button.hidden {
   opacity: 0;
   pointer-events: none;
@@ -107,6 +115,7 @@
 .menu-button {
   transition: opacity 0.3s ease-in-out;
 }
+
 .menu-button.hidden {
   opacity: 0;
   pointer-events: none;
@@ -137,7 +146,8 @@ body {
 .sidebar {
   position: fixed;
   top: 0;
-  left: -250px; /* Oculto por defecto */
+  left: -250px;
+  /* Oculto por defecto */
   width: 250px;
   height: 100vh;
   background: #222;
@@ -207,7 +217,8 @@ body {
 /* Responsivo */
 @media (max-width: 768px) {
   .sidebar {
-    width: 100%; /* Ocupa toda la pantalla en móviles */
+    width: 100%;
+    /* Ocupa toda la pantalla en móviles */
     left: -100%;
   }
 
@@ -216,7 +227,8 @@ body {
   }
 
   .content.shift {
-    margin-left: 0; /* No mueve el contenido en móviles */
+    margin-left: 0;
+    /* No mueve el contenido en móviles */
   }
 }
 
@@ -225,7 +237,8 @@ body {
   position: fixed;
   top: 20px;
   left: 20px;
-  background-color: #007bff; /* Color principal, puedes cambiarlo */
+  background-color: #007bff;
+  /* Color principal, puedes cambiarlo */
   border: none;
   border-radius: 50%;
   width: 50px;
@@ -244,4 +257,12 @@ body {
 .toggle-btn:hover {
   background-color: #0056b3;
   transform: scale(1.05);
+}
+
+.hall {
+  transition: transform 0.3s ease;
+}
+
+.hall:hover {
+  font-size: 20px;
 }
