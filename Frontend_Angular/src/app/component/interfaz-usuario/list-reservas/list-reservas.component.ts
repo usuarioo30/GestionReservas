@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges, OnInit, inject, Renderer2 } from '@angular/core';
 import { ReservasService } from '../../../services/reservas.service';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, NgModel, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { Reserva } from '../../../interfaces/reserva';
@@ -12,6 +12,7 @@ import { Proyecto } from '../../../interfaces/proyecto';
 import { Usuario } from '../../../interfaces/usuario';
 import Swal from 'sweetalert2';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule, RouterLink, FormsModule,
@@ -324,44 +325,50 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
+  //Método para cerrar sesión
   onLogout(): void {
     this.authService.logout();
   }
 
+  //Método para añadir al formulario de edición los valores de la reserva a editar
   editReserva(id: number): void {
     const reserva = this.reservas.find(res => res.id === id);
-
-    if (reserva) {
-
-      // Asigna los valores de la reserva a los campos del formulario
-      this.editReservation.controls['id'].setValue(reserva.id);
-      this.editReservation.controls['email'].setValue(reserva.email);
-      this.editReservation.controls['fechaHoraInicio'].setValue(reserva.fechaHoraInicio);
-      this.editReservation.controls['duracion'].setValue(reserva.duracion);
-      this.editReservation.controls['proyectoAsociado'].setValue(reserva.proyectoAsociado);
-      this.editReservation.controls['descripcion'].setValue(reserva.descripcion);
-      this.editReservation.controls['idUsuario'].setValue(reserva.idUsuario);
-
-
-    } else {
-      Swal.fire('Error', `No se encontró la reserva con ID
-      ${id}`, 'error');
+  
+    if (!reserva) {
+      Swal.fire('Error', `No se encontró la reserva con ID ${id}`, 'error');
+      return; // Salir temprano si no se encuentra la reserva
     }
+  
+    // Asignar los valores de la reserva al formulario en una sola operación
+    const fields: (keyof Showreserva)[] = [ //keyof me permite asignar elementos como índices siempre y cuando compartan el mismo nombre
+      'id', 'email', 'fechaHoraInicio', 'duracion', 
+      'proyectoAsociado', 'descripcion', 'idUsuario'
+    ];
+  
+    fields.forEach(field => {
+      this.editReservation.controls[field].setValue(reserva[field]);
+    });
   }
 
+  //Método para editar una reserva cuando sus valores sean válidos
   async editReservaSubmit() {
     if (this.editReservation.valid) {
-      const reserva: Reserva = {
-        id: this.editReservation.value.id,
-        sala: this.sala === 'upper' ? 'arriba' : 'abajo',
-        fechaHoraInicio: this.editReservation.value.fechaHoraInicio,
-        duracion: this.editReservation.value.duracion,
-        proyectoAsociado: this.editReservation.value.proyectoAsociado,
-        descripcion: this.editReservation.value.descripcion,
-        idUsuario: this.editReservation.value.idUsuario,
-      };
+      const reserva: Partial<Reserva> = {};
 
-      await this.reservasService.editReserva(reserva);
+      // Lista de campos que queremos copiar del formulario
+      const fields: (keyof Reserva)[] = [
+        'id', 'sala', 'fechaHoraInicio', 'duracion', 
+        'proyectoAsociado', 'descripcion', 'idUsuario'
+      ];
+
+      // Asignar valores al objeto reserva
+      fields.forEach(field => {
+        reserva[field] = field === 'sala' 
+          ? this.sala === 'upper' ? 'arriba' : 'abajo' 
+          : this.editReservation.value[field];
+      });
+
+      await this.reservasService.editReserva(reserva as Reserva);
       Swal.fire('Éxito', 'Reserva editada con éxito', 'success');
       await this.loadReservas();
       this.filterReservas(this.nombreProyecto, this.nombreUsuario);
@@ -371,6 +378,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
+  //Método para eliminar la reserva
   deleteReserva(id: number): void {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -379,19 +387,17 @@ export class ListReservasComponent implements OnInit, OnChanges {
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        this.reservasService.deleteReserva(id).subscribe(
-          async () => {
-            this.reservas = this.reservas.filter(reserva => reserva.id !== id);
-            await Swal.fire('Eliminado', 'Reserva eliminada con éxito', 'success');
-            await this.loadReservas();
-            this.filterReservas(this.nombreProyecto, this.nombreUsuario);
-          },
-          () => {
-            Swal.fire('Error', 'Error al eliminar la reserva', 'error');
-          }
-        );
+        try {
+          await firstValueFrom(this.reservasService.deleteReserva(id)); // Esperamos la respuesta de la eliminación
+          this.reservas = this.reservas.filter(reserva => reserva.id !== id);
+          await Swal.fire('Eliminado', 'Reserva eliminada con éxito', 'success');
+          await this.loadReservas();
+          this.filterReservas(this.nombreProyecto, this.nombreUsuario);
+        } catch (error) {
+          Swal.fire('Error', 'Error al eliminar la reserva', 'error');
+        }
       }
     });
   }

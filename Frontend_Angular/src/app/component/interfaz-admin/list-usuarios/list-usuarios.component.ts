@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 })
 export class ListUsuariosComponent implements OnInit {
 
+  //Lista de usuarios existentes
   usuarios: Usuario[] = [];
   proyectoSeleccionado!: Usuario;
   crearProyectoForm: FormGroup;
@@ -103,7 +104,7 @@ export class ListUsuariosComponent implements OnInit {
   }
 
 
-
+  //Método para redirigir al usuario
   volverAReservas(): void {
     this.router.navigate(['/reservas']);
   }
