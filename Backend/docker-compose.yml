@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.1.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: toor
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+  
+  python:
+    build:
+      context: ./app  # Le indica a Docker Compose que construya la imagen usando el Dockerfile dentro de ./app
+    container_name: python_app
+    volumes:
+      - ./app:/app  # Para facilitar el desarrollo, si cambian archivos en ./app se reflejarán en el contenedor
+    ports:
+      - "5000:5000"  # Si tu aplicación usa el puerto 5000, lo exponemos
+    networks:
+      - app_network
+  
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./app:/app
+    ports:
+      - "80:80"
+    depends_on:
+      - python
+    networks:
+      - app_network
