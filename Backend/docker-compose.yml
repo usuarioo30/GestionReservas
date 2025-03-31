@@ -1,14 +1,12 @@
 services:
   frontend:
     build:
-      context: ./FrontendAngular
+      context: ./FrontendAngular  # Contexto de construcción del contenedor Angular
     container_name: angular_app
     volumes:
       - ./FrontendAngular:/app
     working_dir: /app
     command: npm start --configuration=development
-    ports:
-      - "80:80"
     networks:
       - app_network
     depends_on:
@@ -36,7 +34,7 @@ services:
     volumes:
       - ./Backend/nginx.conf:/etc/nginx/nginx.conf  # Usa tu archivo de configuración Nginx si tienes uno
     ports:
-      - "8080:80"
+      - "82:80"
     depends_on:
       - python
     networks:
