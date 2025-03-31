@@ -1,66 +1,39 @@
 services:
   frontend:
     build:
-      context: ./FrontendAngular  # Contexto de construcción del contenedor Angular
+      context: ./FrontendAngular  # Usará el Dockerfile para construir la imagen con Nginx
     container_name: angular_app
-    volumes:
-      - ./FrontendAngular:/app
-    working_dir: /app
-    command: npm start --configuration=development
+    ports:
+      - "80:80"  # Mapea el puerto 80 del contenedor al puerto 80 del host
     networks:
       - app_network
     depends_on:
-      - python
+      - python  # Si el frontend depende del backend
 
   python:
-    build:
-      context: ./Backend
+    image: python:3.9-slim  # Imagen base de Python para tu aplicación Flask
     container_name: python_app
     volumes:
-      - ./Backend:/app
+      - ./Backend:/app  # El código de tu aplicación Flask
     working_dir: /app
-    command: >
-      sh -c "while ! nc -z mysql 3306; do sleep 1; done; python app.py"
+    command: python app.py  # Comando para ejecutar la aplicación Flask
     ports:
-      - "5000:5000"
+      - "5000:5000"  # El backend sigue en el puerto 5000
     networks:
       - app_network
     depends_on:
       - mysql
-    
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    volumes:
-      - ./Backend/nginx.conf:/etc/nginx/nginx.conf  # Usa tu archivo de configuración Nginx si tienes uno
-    ports:
-      - "82:80"
-    depends_on:
-      - python
-    networks:
-      - app_network
-  
+
   db:
     image: mysql:8.1.0
     container_name: mysql
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: toor
+    ports:
+      - "3306:3306"
     volumes:
       - ./mysql_data:/var/lib/mysql
-    networks:
-      - app_network
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    ports:
-      - "8081:80"
-    depends_on:
-      - db
-    environment:
-      PMA_HOST: db
     networks:
       - app_network
 

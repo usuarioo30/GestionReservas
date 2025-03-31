@@ -1,20 +1,32 @@
-# Usamos la imagen oficial de Node.js
-FROM node:16-slim
+# Paso 1: Construir la aplicación Angular
+FROM node:22.14.0-slim AS build
 
-# Establecemos el directorio de trabajo
 WORKDIR /app
 
-# Copiamos el package.json y el package-lock.json
+# Copiamos el package.json y package-lock.json
 COPY package.json package-lock.json ./
 
 # Instalamos las dependencias
 RUN npm install
 
-# Copiamos el código de la aplicación Angular al contenedor
+# Copiamos el código de la aplicación Angular
 COPY . .
 
-# Exponemos el puerto 80, ya que Angular debe escuchar en el puerto 80
+# Creamos la versión de producción de la aplicación Angular
+RUN npm run build --prod  # El comando que genera los archivos estáticos de la aplicación
+
+# Paso 2: Configurar Nginx para servir los archivos estáticos de Angular
+FROM nginx:alpine
+
+# Copiamos los archivos de la aplicación Angular desde el contenedor de construcción
+COPY --from=build /app/dist/frontend-angular /usr/share/nginx/html
+
+# Copiamos un archivo de configuración personalizado de Nginx si lo tienes
+# Puedes personalizar la configuración de Nginx (esto es opcional)
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Exponemos el puerto 80, que es el puerto por defecto de Nginx
 EXPOSE 80
 
-# Comando para iniciar la aplicación Angular
-CMD ["npm", "start"]  # Esto ejecutará el servidor de desarrollo de Angular en el puerto 80
+# Comando para ejecutar Nginx
+CMD ["nginx", "-g", "daemon off;"]
