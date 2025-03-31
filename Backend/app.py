@@ -331,11 +331,11 @@ def obtener_usuario_por_email(email):
 @app.route('/usuarios/<int:id>', methods=['DELETE'])
 def eliminarUsuario(id):
     try:
-        # Buscar la reserva por su ID
+        # Buscar un usuario por su ID
         usuario = Usuario.query.get(id)
 
         if usuario:
-            # Eliminar la reserva
+            # Eliminar al usuario
             db.session.delete(usuario)
             db.session.commit()
             return jsonify({"message": "Usuario eliminado con éxito"}), 200

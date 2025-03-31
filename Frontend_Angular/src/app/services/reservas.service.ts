@@ -8,10 +8,15 @@ import { Proyecto } from '../interfaces/proyecto';
   providedIn: 'root'
 })
 export class ReservasService {
+  //Url de la Api
   private apiUrl = 'http://localhost:5000/';
 
   constructor(private http: HttpClient) {}
 
+  /**
+   * Función encargada de obtener todas las reservas de la API
+   * @returns Promise resuelta en formato json
+   */
   async getReservas(): Promise<any[]> {
     try {
       const response = await fetch(`${this.apiUrl}reservas`);
@@ -25,6 +30,11 @@ export class ReservasService {
     }
   }
 
+  /**
+   * Función encargada de obtener todos los datos de un proyecto dado su id
+   * @param id Clave primaria de la Tabla proyecto
+   * @returns Promise<Proyecto>
+   */
   async getNombreProyecto(id: number): Promise<Proyecto> { 
     try {
       const response = await fetch(`${this.apiUrl}proyectos/${id}`); 
@@ -38,6 +48,11 @@ export class ReservasService {
     }
   }
 
+  /**
+   * Función encargada de añadir una nueva reserva a la base de datos
+   * @param reserva La nueva reserva a añadir sin id
+   * @returns Promise<void> Respuesta de la API en formato JSON
+   */
   async addReserva(reserva: Omit<Reserva, "id">): Promise<void> {
     try {
       const response = await fetch(`${this.apiUrl}registrarReserva`, { 
@@ -59,6 +74,11 @@ export class ReservasService {
     }
   }
 
+  /**
+   * Función encargada de editar una reserva
+   * @param reserva La nueva información que queremos persistir en una reserva existente
+   * @returns Promise<void> Respuesta de la API en formato JSON
+   */
   async editReserva(reserva: Reserva): Promise<void> { 
     try {
 
@@ -82,7 +102,12 @@ export class ReservasService {
     }
   }
 
-   deleteReserva(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/eliminarReserva/${id}`);
+  /**
+   * 
+   * @param id Identificador de la reserva que queremos eliminar
+   * @returns Observable<any>
+   */
+  deleteReserva(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/eliminarReserva/${id}`);
   }
 }
