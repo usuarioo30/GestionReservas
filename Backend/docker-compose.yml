@@ -1,12 +1,11 @@
 services:
   
-  # Servicio para la aplicación Angular
   angular:
     build:
       context: ./FrontendAngular
     container_name: angular_app
     ports:
-      - "80:80"  # Expone el puerto 80
+      - "80:80"
     networks:
       - app_network
     depends_on:
@@ -24,27 +23,33 @@ services:
     networks:
       - app_network
     depends_on:
-      - mysql
-    
+      - db
+
   db:
     image: mysql:8.1.0
-    ports:
-      - "3306:3306"
+    container_name: mysql_db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: toor
+    ports:
+      - "3306:3306"
     volumes:
       - ./mysql_data:/var/lib/mysql
+    networks:
+      - app_network
 
-  # Servicio para phpMyAdmin
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
     ports:
       - "8081:80"
-    depends_on:
-      - db
     environment:
       PMA_HOST: db
+      PMA_PORT: 3306
+    depends_on:
+      - db
+    networks:
+      - app_network
 
 networks:
   app_network:
