@@ -14,11 +14,19 @@ import { RouterLink } from '@angular/router';
 })
 export class EditprofileComponent implements OnInit{
 
+  //Token del usuario
   token!: string | null;
+
+  //Datos del usuario
   user!: Usuario
+
   private fb: FormBuilder = inject(FormBuilder);
   private auth: AuthService = inject(AuthService);
+  
+  //Atributo usado para comprobar si el nuevo nombre de usuario elegido ya está ocupado
   validUsername!: any;
+
+  //Formulario de edició de usuario
   editUser: FormGroup = this.fb.group({
     id: ['', []],
     email: ['', []],
@@ -46,10 +54,20 @@ export class EditprofileComponent implements OnInit{
 
   }
 
+  /**
+   * Método para validar los campos del formulario
+   * @param field Nombre del campo del formulario a validar
+   * @returns True si el campo es inválido, false si es válido
+   */
   inValidField(field: string): boolean {
     return this.editUser.controls[field]?.invalid && this.editUser.controls[field]?.touched;
   }
 
+  /**
+   * Validación personalizada para el formulario
+   * @param group Formulario de editar usuario
+   * @returns null si las contraseñas coinciden, error si no lo hacen
+   */
   private passwordsMatchValidator(group: FormGroup) {
     const password = group.get('password')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;
@@ -59,47 +77,64 @@ export class EditprofileComponent implements OnInit{
       : null;
   }
 
+  /**
+   * Método para comprobar la disponibilidad de un username
+   * @param username Nombre de usuario nuevo
+   * @returns True si está ocupado, false si está disponible
+   */
   async checkTakenUser(username: string) {
     this.validUsername = await this.auth.getUserByUsername(username);
     return this.validUsername.username? true : false;
   }
 
+  /**
+   * Método para editar la información del perfil
+   * 
+   */
   async editUserSubmit() {
-    if (this.editUser.valid && !(await this.checkTakenUser(this.editUser.get('username')?.value))) {
-      
+    if (this.editUser.valid) {
       const { id, username, password } = this.editUser.value;
-      
-      try {
-        
-        if (password) {
-          await this.auth.editUser(id, username, password);
-          await Swal.fire({
-                title: "Resultado",
-                text: "Usuario editado con éxito",
-                icon: "success",
-                confirmButtonColor: "green",
-                confirmButtonText: "Hecho",
-              });
-        } else {
-          await this.auth.editUser(id, username);
-          await Swal.fire({
-            title: "Resultado",
-            text: "Usuario editado con éxito",
-            icon: "success",
-            confirmButtonColor: "green",
-            confirmButtonText: "Hecho",
-          });
-        }
-      } catch (error) {
-        
+  
+      // Verificar si el nombre de usuario está disponible
+      const usernameTaken = await this.checkTakenUser(username);
+      if (usernameTaken) {
+        this.validUsername = false;
+        return; // Salimos si el nombre de usuario ya está tomado
       }
-
-
+  
+      try {
+        // Editar el usuario dependiendo de si se pasa la contraseña
+        const userUpdate = password 
+          ? this.auth.editUser(id, username, password)
+          : this.auth.editUser(id, username);
+  
+        await userUpdate;
+  
+        // Mostrar mensaje de éxito
+        await Swal.fire({
+          title: "Resultado",
+          text: "Usuario editado con éxito",
+          icon: "success",
+          confirmButtonColor: "green",
+          confirmButtonText: "Hecho",
+        });
+  
+      } catch (error) {
+        // Manejar error de forma adecuada
+        console.error('Error al editar usuario:', error);
+        await Swal.fire({
+          title: "Error",
+          text: "Hubo un error al editar el usuario. Inténtalo nuevamente.",
+          icon: "error",
+          confirmButtonText: "Cerrar",
+        });
+      }
     } else {
       this.validUsername = false;
       this.editUser.markAllAsTouched();
     }
   }
+  
 }
 
 

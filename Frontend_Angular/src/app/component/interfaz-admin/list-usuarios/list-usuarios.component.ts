@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Usuario } from '../../../interfaces/usuario';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
@@ -8,27 +7,25 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list-usuarios',
-  imports: [ReactiveFormsModule, NgIf, NgFor],
+  imports: [NgIf, NgFor],
   templateUrl: './list-usuarios.component.html',
   styleUrl: './list-usuarios.component.css'
 })
 export class ListUsuariosComponent implements OnInit {
 
+  //Lista de usuarios existentes
   usuarios: Usuario[] = [];
-  proyectoSeleccionado!: Usuario;
-  crearProyectoForm: FormGroup;
+
+  //Boolean para comprobar si tiene acceso
   tieneAcceso: boolean = true;
+
+  //Usuario seleccionado
   usuario!: Usuario;
 
   constructor(
     private authService: AuthService,
-    private router: Router,
-    private fb: FormBuilder
-  ) {
-    this.crearProyectoForm = this.fb.group({
-      nombre: ['', [Validators.required, Validators.minLength(3)]],
-    });
-  }
+    private router: Router
+  ) {}
 
   ngOnInit() {
     const token = localStorage.getItem('access_token');
@@ -56,10 +53,6 @@ export class ListUsuariosComponent implements OnInit {
     }).catch(error => {
       console.error('Error al obtener el rol:', error);
     });
-  }
-
-  abrirModalEditar(usuario: Usuario): void {
-    this.proyectoSeleccionado = { ...usuario };
   }
 
 
@@ -102,8 +95,7 @@ export class ListUsuariosComponent implements OnInit {
     }
   }
 
-
-
+  //Método para redirigir al usuario
   volverAReservas(): void {
     this.router.navigate(['/reservas']);
   }
