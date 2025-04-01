@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # Configuración de la base de datos y otros parámetros
 class Config:
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:Usuario1234@localhost/gestionreservas'
+    SQLALCHEMY_DATABASE_URI = 'mysql://user:userpassword@mysql-db/mydb'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'miClave'  # Clave secreta para JWT
     JWT_SECRET_KEY = 'mi_secreto_jwt'  # Clave secreta para JWT
@@ -331,11 +331,11 @@ def obtener_usuario_por_email(email):
 @app.route('/usuarios/<int:id>', methods=['DELETE'])
 def eliminarUsuario(id):
     try:
-        # Buscar la reserva por su ID
+        # Buscar un usuario por su ID
         usuario = Usuario.query.get(id)
 
         if usuario:
-            # Eliminar la reserva
+            # Eliminar al usuario
             db.session.delete(usuario)
             db.session.commit()
             return jsonify({"message": "Usuario eliminado con éxito"}), 200
@@ -528,4 +528,4 @@ if __name__ == '__main__':
         db.create_all()
 
     # Ejecutar el servidor Flask
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

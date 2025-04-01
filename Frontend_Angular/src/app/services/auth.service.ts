@@ -10,16 +10,21 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class AuthService {
+  //Url de la API
   private apiUrl = 'http://localhost:5000';
-  private apiUrl1 = "http://127.0.0.1:5000/login";
 
   constructor(private router: Router, private http: HttpClient) { }
 
-  //Método de iniciar sesión, es llamado cuando el formulario es válido
+  /**
+   * Método de iniciar sesión, es llamado cuando el formulario es válido
+   * @param username Nombre del usuario
+   * @param password Contraseña del usuario
+   * @returns El token de inicio de sesión
+   */
   async logIn(username: string, password: string) {
 
     //Llamada a la api para iniciar sesión
-    const response = await fetch(`${this.apiUrl1}`, {
+    const response = await fetch(`${this.apiUrl}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -31,7 +36,10 @@ export class AuthService {
 
   }
 
-  // Método para obtener el nombre de usuario desde el token
+  /**
+   * Método para obtener el nombre de usuario desde el token
+   * @returns El email del usuario
+   */
   getEmail(): string | null {
     const token = localStorage.getItem('access_token');
     if (token) {
@@ -49,6 +57,11 @@ export class AuthService {
     return null;
   }
 
+  /**
+   * Método para obtener a un usuario dado su email
+   * @param email Correo electrónico del usuario
+   * @returns Promise<Usuario> El usuario registrado con ese correo
+   */
   async getUserByMail(email: string): Promise<Usuario> {
     const response = await fetch(`${this.apiUrl}/usuarios/email/${email}`)
 
@@ -62,6 +75,11 @@ export class AuthService {
 
   }
 
+  /**
+   * Método para obtener un usuario dado su nombre de usuario
+   * @param username El nombre de usuario del usuario
+   * @returns El usuario al que pertenece ese username
+   */
   async getUserByUsername(username:string): Promise<any> {
     const response = await fetch(`${this.apiUrl}/usuarios/username/${username}`);
     if (response.status === 404) {
@@ -76,6 +94,10 @@ export class AuthService {
     return json;
   }
 
+  /**
+   * Método para obtener a todos los usuarios existentes
+   * @returns Lista de usuarios existentes
+   */
   async getUsers(): Promise<Usuario[]> {
     try {
       return await firstValueFrom(this.http.get<Usuario[]>(`${this.apiUrl}/usuarios`));
@@ -85,6 +107,11 @@ export class AuthService {
     }
   }
 
+  /**
+   * Método para obtener a un usuario dado su id
+   * @param id del usuario
+   * @returns El usuario al que pertenece ese id
+   */
   async getUser(id: number) {
     const response = await fetch(`${this.apiUrl}/usuarios/${id}`)
 
@@ -96,6 +123,10 @@ export class AuthService {
 
   }
 
+  /**
+   * Método para obtener el rol del usuario logueado mediante su token almacenado localmente
+   * @returns El rol del usuario
+   */
   async getRole() {
     const token = localStorage.getItem('access_token');
     if (token) {
@@ -114,7 +145,12 @@ export class AuthService {
     return null;
   }
 
-  async loginWithGoogle(response: any) {
+  /**
+   * Método para iniciar sesión con google
+   * @param response 
+   * @returns El email obtenido al decodificar el token de google
+   */
+  async loginWithGoogle(response: string) {
     const decodedToken = this.decodeJwtResponse(response);
     console.log("Decoded token", decodedToken);
     const fetchResponse = await fetch(`${this.apiUrl}/api/google-login`, {
@@ -128,6 +164,11 @@ export class AuthService {
     return fetchResponse.json();
   }
 
+  /**
+   * Método para registrar un usuario
+   * @param user El usuario a registrar sin id asignado
+   * @returns Promise<Usuario> El usuario con un id ya asignado
+   */
   async registerUser(user: Omit<Usuario, "id">): Promise<Usuario> {
     const response = await fetch(`${this.apiUrl}/register`, {
       method: 'POST',
@@ -146,6 +187,13 @@ export class AuthService {
 
   }
 
+  /**
+   * Método para crear un usuario
+   * @param id Clave del usuario a editar
+   * @param username Nuevo nombre de usuario (opcional)
+   * @param password Nueva contraseña (opcional)
+   * @returns El usuario editado
+   */
   async editUser(id: number, username?: string, password?: string) {
     try {
       const body = { username, password };
@@ -174,6 +222,11 @@ export class AuthService {
     }
   }
 
+  /**
+   * 
+   * @param id Clave del usuario a eliminar
+   * @returns Mensaje de éxito al borrar o borrado fallido
+   */
   deleteUser(id: number) {
     return this.http.delete(`${this.apiUrl}/usuarios/${id}`).toPromise();
   }
@@ -196,6 +249,9 @@ export class AuthService {
 
   }
 
+  /**
+   * Método para cerrar sesión y redirigir al login
+   */
   logout(): void {
     localStorage.removeItem('access_token');
 
@@ -217,7 +273,12 @@ export class AuthService {
     return JSON.parse(jsonPayload);
   }
 
-  // Método para decodificar el token JWT
+  
+  /**
+   * Método para decodificar el token JWT
+   * @param token El token de inicio de sesión
+   * @returns El token de inicio de sesión decodificado
+   */
   decodeToken(token: string): any {
     return jwtDecode(token);
   }

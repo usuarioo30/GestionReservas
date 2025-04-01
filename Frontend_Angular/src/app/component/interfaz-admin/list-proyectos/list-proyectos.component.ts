@@ -134,6 +134,7 @@ export class ListProyectosComponent implements OnInit {
     });
   }
 
+  //Método para redirigir al usuario
   volverAReservas(): void {
     this.router.navigate(['/reservas']);
   }

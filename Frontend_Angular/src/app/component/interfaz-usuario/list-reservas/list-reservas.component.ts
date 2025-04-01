@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges, OnInit, inject, Renderer2 } from '@angular/core';
 import { ReservasService } from '../../../services/reservas.service';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, NgModel, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { Reserva } from '../../../interfaces/reserva';
@@ -12,6 +12,7 @@ import { Proyecto } from '../../../interfaces/proyecto';
 import { Usuario } from '../../../interfaces/usuario';
 import Swal from 'sweetalert2';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule, RouterLink, FormsModule,
@@ -22,20 +23,46 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 })
 export class ListReservasComponent implements OnInit, OnChanges {
 
+  //Listado de reservas existentes filtradas
   reservas: Showreserva[] = [];
+
+  //Listado de reservas existente sin filtrar
   showReservas: Showreserva[] = [];
+
+  //Booleano que indica si el tema es claro u oscuro
   isDarkTheme = false;
+
+  //Nombre del proyecto existente por el que filtrar las reservas
   nombreProyecto: string = '';
+
+  //Nombre del usuario existente por el que filtrar las reservas
   nombreUsuario: string = '';
+
+  //Sala en la que se encuentran las habitaciones reservadas
   @Input() sala?: string;
+
+  //Correo electrónico del usuario
   email: string | null = null;
+
+  //Id del usuario
   id!: number | undefined;
+
+  //Rol del usuario
   role: string | null = null;
+
+  //Fecha mínima de reserva
   minDateTime: string = '';
+
+  //Fecha actual
   dateActual: string = '';
+
+  //Proyectos existentes
   proyectos!: Proyecto[];
+
+  //Usuarios existentes
   usuarios!: Usuario[];
-  deployed: boolean = false;
+  
+  //Boleano que indica si el sidebar está desplegado o no
   isSidebarOpen: boolean = false;
 
   constructor(private reservasService: ReservasService,
@@ -57,6 +84,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
   private fb: FormBuilder = inject(FormBuilder);
   private proyectoService = inject(ProyectoService);
 
+  //Formulario de creación de reservas
   reservation: FormGroup = this.fb.group({
     email: [''],
     fechaHoraInicio: ['', [Validators.required]],
@@ -66,6 +94,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     idUsario: [this.id]
   });
 
+  //Formulario de edición de reservas
   editReservation: FormGroup = this.fb.group({
     id: [''],
     email: [''],
@@ -76,38 +105,51 @@ export class ListReservasComponent implements OnInit, OnChanges {
     idUsario: [this.id]
   });
 
+  //Estado inicial del componente, refactorizado para que sea más rápido
   async ngOnInit(): Promise<void> {
-
     const token = localStorage.getItem('access_token');
-
+    
+    // Primero, actualizar el minDateTime y verificar el tema guardado
     this.updateMinDateTime();
-    this.proyectos = await this.proyectoService.getProyectos();
-    this.usuarios = (await this.authService.getUsers()).filter(user => user.roles === "user");
-    const now = new Date();
-    this.minDateTime = now.toISOString().slice(0, 16);
-
-    this.email = this.authService.getEmail();
-    if (this.email) {
-      await this.waitFetch(this.email);
-      this.role = await this.getRole(this.id!);
-
-    }
-    if (!token) {
-      this.router.navigate(['/login']);
-    }
-
-
-    // Lógica para restaurar el tema guardado previamente (oscuro | claro)
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       this.isDarkTheme = true;
       this.renderer.addClass(document.body, 'dark-theme');
     }
 
+    // Ejecutar las solicitudes en paralelo usando Promise.all
+    const [proyectos, usuarios, email] = await Promise.all([
+      this.proyectoService.getProyectos(),
+      this.authService.getUsers(),
+      Promise.resolve(this.authService.getEmail())
+    ]);
+
+    this.proyectos = proyectos;
+    this.usuarios = usuarios.filter(user => user.roles === "user");
+    const now = new Date();
+    this.minDateTime = now.toISOString().slice(0, 16);
+
+    this.email = email;
+
+    // Si hay email, esperar el rol y cargar reservas
+    if (this.email) {
+      await this.waitFetch(this.email);
+      this.role = await this.getRole(this.id!);
+    }
+
+    if (!token) {
+      this.router.navigate(['/login']);
+    }
+
+    // Cargar las reservas
     await this.loadReservas();
+
+    // Filtrar las reservas
     this.filterReservas(this.nombreProyecto);
   }
 
+
+  //Método para abrir y cerrar el sidebar
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
@@ -157,6 +199,11 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * Método para obtener el rol de un usuario dado su id
+   * @param id 
+   * @returns Rol del usuario
+   */
   async getRole(id: number) {
     const response = await this.authService.getUser(id);
 
@@ -164,6 +211,10 @@ export class ListReservasComponent implements OnInit, OnChanges {
   }
 
 
+  /**
+   * Método para esperar a que se resuelva la petición del getUserByMail
+   * @param email Del usuario que queremos obtener
+   */
   async waitFetch(email: string): Promise<any> {
     try {
       const user = await this.authService.getUserByMail(email);
@@ -175,6 +226,9 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * Método para cargar la nueva información de las reservas
+   */
   async loadReservas(): Promise<void> {
     try {
       let reservas = await this.reservasService.getReservas();
@@ -194,70 +248,55 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * Método para filtrar reservas (Refactorizado de 50 líneas a 15)
+   * @param nombreproyecto 
+   * @param nombreusuario 
+   */
   filterReservas(nombreproyecto: string, nombreusuario?: string): void {
+    //Creamos un mapa para convertir upper/lower en arriba/abajo
+    const salaMap: Record<string, string> = {
+        upper: 'arriba',
+        lower: 'abajo'
+    };
 
-
-    switch (this.sala) {
-      case 'upper':
-
-        if (nombreproyecto && !nombreusuario) {
-          this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()));
-          break;
-        }
-
-        if (nombreusuario) {
-          this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()) && reserva.owner.toLowerCase().includes(nombreusuario.toLowerCase().trim()));
-          break;
-        }
-
-        this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba');
-        break;
-      case 'lower':
-        if (nombreproyecto && !nombreusuario) {
-          this.reservas = this.showReservas.filter(reserva => reserva.sala === 'abajo' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()));
-          console.log(this.reservas);
-          break;
-        }
-
-        if (nombreusuario) {
-          this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()) && reserva.owner.toLowerCase().includes(nombreusuario.toLowerCase().trim()));
-          break;
-        }
-
-        this.reservas = this.showReservas.filter(reserva => reserva.sala === 'abajo');
-        break;
-      default:
-        if (nombreproyecto && !nombreusuario) {
-          this.reservas = this.showReservas.filter(reserva => reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()));
-          console.log("Probamos".toLowerCase().trim().includes(nombreproyecto.toLowerCase().trim()));
-          break;
-        }
-
-        else if (nombreusuario) {
-          this.reservas = this.showReservas.filter(reserva => reserva.sala === 'arriba' && reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()) && reserva.owner.toLowerCase().includes(nombreusuario.toLowerCase().trim()));
-          break;
-        }
-
-        else {
-          this.reservas = this.showReservas;
-          break;
-
-        }
-    }
+    //Convertimos el valor de sala
+    const salaFiltrada = salaMap[this.sala as keyof typeof salaMap]; 
+    
+    //filtramos las reservas y devolvemos los elementos que cumplan las condiciones
+    this.reservas = this.showReservas.filter(reserva => {
+        const coincideSala = salaFiltrada ? reserva.sala === salaFiltrada : true;
+        const coincideProyecto = nombreproyecto ? reserva.proyectoAsociado.toLowerCase().includes(nombreproyecto.toLowerCase().trim()) : true;
+        const coincideUsuario = nombreusuario ? reserva.owner.toLowerCase().includes(nombreusuario.toLowerCase().trim()) : true;
+        
+        return coincideSala && coincideProyecto && coincideUsuario;
+    });
   }
 
+  /**
+   * Método para validar los campos del formulario de creación de reservas
+   * @param field Nombre del campo a validar
+   * @returns True si es inválido, false si es válido
+   */
   inValidField(field: string): boolean {
     return this.reservation?.controls[field]?.invalid && this.reservation?.controls[field]?.touched;
   }
 
+    /**
+   * Método para validar los campos del formulario de edición de reservas
+   * @param field Nombre del campo a validar
+   * @returns True si es inválido, false si es válido
+   */
   inValidFieldEdit(field: string): boolean {
     return this.editReservation?.controls[field]?.invalid;
   }
 
+  //Método para formatear la fecha
   private formatearFecha = (fecha: string): string => {
     return fecha.replace("T", " ") + ":00";
   };
 
+  //Método para añadir la reserva si todos sus campos son válidos
   async submitReservation() {
 
     if (this.reservation.valid && this.id) {
@@ -286,44 +325,50 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
+  //Método para cerrar sesión
   onLogout(): void {
     this.authService.logout();
   }
 
+  //Método para añadir al formulario de edición los valores de la reserva a editar
   editReserva(id: number): void {
     const reserva = this.reservas.find(res => res.id === id);
-
-    if (reserva) {
-
-      // Asigna los valores de la reserva a los campos del formulario
-      this.editReservation.controls['id'].setValue(reserva.id);
-      this.editReservation.controls['email'].setValue(reserva.email);
-      this.editReservation.controls['fechaHoraInicio'].setValue(reserva.fechaHoraInicio);
-      this.editReservation.controls['duracion'].setValue(reserva.duracion);
-      this.editReservation.controls['proyectoAsociado'].setValue(reserva.proyectoAsociado);
-      this.editReservation.controls['descripcion'].setValue(reserva.descripcion);
-      this.editReservation.controls['idUsuario'].setValue(reserva.idUsuario);
-
-
-    } else {
-      Swal.fire('Error', `No se encontró la reserva con ID
-      ${id}`, 'error');
+  
+    if (!reserva) {
+      Swal.fire('Error', `No se encontró la reserva con ID ${id}`, 'error');
+      return; // Salir temprano si no se encuentra la reserva
     }
+  
+    // Asignar los valores de la reserva al formulario en una sola operación
+    const fields: (keyof Showreserva)[] = [ //keyof me permite asignar elementos como índices siempre y cuando compartan el mismo nombre
+      'id', 'email', 'fechaHoraInicio', 'duracion', 
+      'proyectoAsociado', 'descripcion', 'idUsuario'
+    ];
+  
+    fields.forEach(field => {
+      this.editReservation.controls[field].setValue(reserva[field]);
+    });
   }
 
+  //Método para editar una reserva cuando sus valores sean válidos
   async editReservaSubmit() {
     if (this.editReservation.valid) {
-      const reserva: Reserva = {
-        id: this.editReservation.value.id,
-        sala: this.sala === 'upper' ? 'arriba' : 'abajo',
-        fechaHoraInicio: this.editReservation.value.fechaHoraInicio,
-        duracion: this.editReservation.value.duracion,
-        proyectoAsociado: this.editReservation.value.proyectoAsociado,
-        descripcion: this.editReservation.value.descripcion,
-        idUsuario: this.editReservation.value.idUsuario,
-      };
+      const reserva: Partial<Reserva> = {};
 
-      await this.reservasService.editReserva(reserva);
+      // Lista de campos que queremos copiar del formulario
+      const fields: (keyof Reserva)[] = [
+        'id', 'sala', 'fechaHoraInicio', 'duracion', 
+        'proyectoAsociado', 'descripcion', 'idUsuario'
+      ];
+
+      // Asignar valores al objeto reserva
+      fields.forEach(field => {
+        reserva[field] = field === 'sala' 
+          ? this.sala === 'upper' ? 'arriba' : 'abajo' 
+          : this.editReservation.value[field];
+      });
+
+      await this.reservasService.editReserva(reserva as Reserva);
       Swal.fire('Éxito', 'Reserva editada con éxito', 'success');
       await this.loadReservas();
       this.filterReservas(this.nombreProyecto, this.nombreUsuario);
@@ -333,6 +378,7 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
+  //Método para eliminar la reserva
   deleteReserva(id: number): void {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -341,19 +387,17 @@ export class ListReservasComponent implements OnInit, OnChanges {
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        this.reservasService.deleteReserva(id).subscribe(
-          async () => {
-            this.reservas = this.reservas.filter(reserva => reserva.id !== id);
-            await Swal.fire('Eliminado', 'Reserva eliminada con éxito', 'success');
-            await this.loadReservas();
-            this.filterReservas(this.nombreProyecto, this.nombreUsuario);
-          },
-          () => {
-            Swal.fire('Error', 'Error al eliminar la reserva', 'error');
-          }
-        );
+        try {
+          await firstValueFrom(this.reservasService.deleteReserva(id)); // Esperamos la respuesta de la eliminación
+          this.reservas = this.reservas.filter(reserva => reserva.id !== id);
+          await Swal.fire('Eliminado', 'Reserva eliminada con éxito', 'success');
+          await this.loadReservas();
+          this.filterReservas(this.nombreProyecto, this.nombreUsuario);
+        } catch (error) {
+          Swal.fire('Error', 'Error al eliminar la reserva', 'error');
+        }
       }
     });
   }
@@ -371,8 +415,5 @@ export class ListReservasComponent implements OnInit, OnChanges {
     }
   }
 
-  deploySidebar() {
-    this.deployed = !this.deployed;
-  }
 
 }

@@ -3,7 +3,7 @@
     <h2 class="text-center mb-2 mt-4">Apeiroo Rooms</h2>
     <h5 class="text-center mb-4 mt-4">Añadir usuario</h5>
     <p class="text-center mb-4">Agrega un usuario nuevo</p>
-    <form [formGroup]="newuser" (ngSubmit)="submitedForm()">
+    <form [formGroup]="newuser" (ngSubmit)="submitForm()">
       <div class="mb-3">
         <label for="email" class="form-label">Correo electrónico</label>
         <input id="email" formControlName="email" type="email" class="form-control"
